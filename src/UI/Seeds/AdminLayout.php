@@ -4,6 +4,7 @@ namespace Epesi\Core\UI\Seeds;
 
 use atk4\ui\jQuery;
 use atk4\ui\Layout\Generic;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -79,9 +80,10 @@ class AdminLayout extends Generic
         $this->app->addStyle('');
 
         // company logo
-        $logo = $this->menu->add(['class' => ['epesi-logo']])->add(['Image', url('img/tsm_logo_agile.png')]);
+        $this->menu->add(['class' => ['epesi-logo']])->add(['Image', url('img/tsm_logo_agile.png')]);
         
         if ($this->burger) {
+        	/** @scrutinizer ignore-call */
         	$this->burger = $this->menu->addItem(['class' => ['icon atk-leftMenuTrigger']]);
         }
        	
@@ -106,7 +108,7 @@ class AdminLayout extends Generic
 
 		$crumb->popTitle();
 		
-		$this->app->title = implode(' > ', array_prepend($crumbs, config('epesi.app.title', 'EPESI')));
+		$this->app->title = implode(' > ', Arr::prepend($crumbs, config('epesi.app.title', 'EPESI')));
 		
 		return $this;
 	}
@@ -130,12 +132,10 @@ class AdminLayout extends Generic
         if ($this->menuLeft) return;
         
         $this->menuLeft = $this->add(new NavMenu('left vertical labeled sidebar'), 'LeftMenu');
-        
-        $this->leftMenu = $this->menuLeft;
 
         if (! $this->burger) return;
 
-        if (! Session::get('menu', 1)) {
+        if (! session()->get('menu', 1)) {
         	$this->isMenuLeftVisible = false;
         }
         
@@ -144,8 +144,8 @@ class AdminLayout extends Generic
         		(new jQuery('.epesi-logo'))->toggleClass('expanded'),
         		(new jQuery('body'))->toggleClass('atk-leftMenu-visible'),
         		$this->burger->add('jsCallback')->set(function($j, $visible) {
-        			Session::put('menu', $visible? 1: 0);
-        			Session::save();
+        			session()->put('menu', $visible? 1: 0);
+        			session()->save();
         		}, [new \atk4\ui\jsExpression( '$("#' . $this->menuLeft->id . '").hasClass("visible")? 1: 0' )])
         ]);
     }

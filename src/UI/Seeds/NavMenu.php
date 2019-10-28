@@ -17,7 +17,6 @@ class NavMenu extends BaseMenu
 		parent::init();
 		
 		$this->addHeader($this->app->title);
-// 		$this->addHeader('')->addClass('recent');
 		
 		$items = collect();
 		foreach(NavMenuJoint::collect() as $joint) {
@@ -80,6 +79,7 @@ class NavMenu extends BaseMenu
 				foreach ($subitems as $subitem) {
 					$subitem = $section->add(['Item', 'Test', 'ui' => 'item'])->setElement('a');
 					
+					$action = null;
 					$link = $item['link']?? '';
 					if (is_string($link) || is_array($link)) {
 						$action = $section->url($link);
@@ -93,10 +93,6 @@ class NavMenu extends BaseMenu
 						$subitem->js('click', $link);
 					}
 				}
-				
-// 				$section->addClass('inverted');
-				
-				
 // 				self::addItems($accordion, collect($subitems));
 			}
 			else {
@@ -110,42 +106,4 @@ class NavMenu extends BaseMenu
 			}
 		});
 	}
-	
-// 	public function addItems($menu, Collection $items)
-// 	{		
-// 		$items->sortBy('weight')->map(function($item, $caption) use ($menu) {
-// 			if (! ($item['access']?? true)) return;
-
-// 			if (!isset($item['link']) && !is_array($item)) {
-// 				$item = [
-// 						'link' => $item
-// 				];
-// 			}
-			
-// 			$item['caption'] = $item['caption']?? $caption;
-
-// 			if (is_array($item['caption'])) {
-// 				$item['caption'] = [$caption] + $item['caption'];
-// 			}
-			
-// 			if ($subitems = $item['menu']?? []) {
-// 				$submenu = $menu->addMenu($item['caption']);
-				
-// 				$this->addItems($submenu, collect($subitems));
-// 			}
-// 			elseif ($subitems = $item['group']?? []) {
-// 				$subgroup = $menu->addGroup($item['caption']);
-
-// 				if (($item['toggle']?? true) && !$this->in_dropdown) {
-// 					$subgroup->addClass('toggle-group');
-// 					$subgroup->add(['Icon', 'dropdown'], 'Icon')->removeClass('item');
-// 				}
-
-// 				$this->addItems($subgroup, collect($subitems));
-// 			}
-// 			else {
-// 				$menu->add($item['caption'], $item['link']?? '');
-// 			}
-// 		});
-// 	}
 }

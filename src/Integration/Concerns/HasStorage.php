@@ -13,7 +13,7 @@ trait HasStorage
 	 *
 	 * Do not use directly.
 	 *
-	 * @param string module name
+	 * @param $module string
 	 * @return bool true if directory was created or already exists, false otherwise
 	 */
 	public static final function createStorage($module) {
@@ -25,7 +25,7 @@ trait HasStorage
 	 *
 	 * Do not use directly.
 	 *
-	 * @param string module name
+	 * @param $module string 
 	 * @return bool true if directory was removed or did not exist, false otherwise
 	 */
 	final public static function removeStorage($module) {

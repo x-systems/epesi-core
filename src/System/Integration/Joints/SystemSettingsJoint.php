@@ -14,7 +14,7 @@ abstract class SystemSettingsJoint extends ModuleJoint
 	/**
 	 * Define the section under which admin button is displayed
 	 *
-	 * @return string
+	 * @return string|array|null
 	 */
 	public function section()
 	{

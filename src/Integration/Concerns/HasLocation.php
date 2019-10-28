@@ -26,7 +26,7 @@ trait HasLocation
 	 * Get or set the location caption displayed
 	 * 
 	 * @param string | array $location
-	 * @return \Epesi\Core\Integration\Module\ModuleView|string
+	 * @return \Epesi\Core\Integration\Module\ModuleView|array
 	 */
 	public function location($location = null)
 	{

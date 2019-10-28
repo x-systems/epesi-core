@@ -89,6 +89,6 @@ class ActionBar extends View
 
 	public static function clear()
 	{
-		self::$buttons = [];
+		self::$buttons = collect();
 	}
 }

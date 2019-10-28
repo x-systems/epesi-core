@@ -22,10 +22,23 @@ abstract class ModuleCore
 	
 	protected static $view;
 	
+	/**
+	 * Define joints that this class manifests to the other modules
+	 * 
+	 * @var array
+	 */
 	protected static $joints = [];
 	
+	/**
+	 * Define module alias
+	 * 
+	 * @var string
+	 */
 	protected static $alias;
 	
+	/**
+	 * Information about the module
+	 */
 	public static function info() {}
 		
 	/**

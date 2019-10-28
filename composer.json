@@ -18,7 +18,8 @@
 	"type" : "project",
 	"require" : {
 		"php" : ">=7.2",
-		"atk4/ui": "^1.7"
+		"atk4/ui": "^1.7",
+		"laravel/framework": "5.8.*"
 	},
 	"require-dev" : {
 		"phpunit/phpunit" : "6.*"
@@ -34,8 +35,7 @@
 	"extra" : {
 		"laravel" : {
 			"providers" : [
-				"Epesi\\Core\\Providers\\EpesiServiceProvider",
-				"Epesi\\Core\\Providers\\RouteServiceProvider"
+				"Epesi\\Core\\Providers\\EpesiServiceProvider"
 			],
 			"aliases" : {
 				"Epesi" : "Epesi\\Core\\Facades\\Epesi"

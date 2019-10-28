@@ -19,6 +19,8 @@ trait HasLaunchButton
 	
 	/**
 	 * Define the launch button link
+	 * 
+	 * @return array|string
 	 */
 	public function link() {
 		return '';
@@ -27,7 +29,7 @@ trait HasLaunchButton
 	/**
 	 * Define the launch button
 	 * 
-	 * @return HasLaunchButton
+	 * @return LaunchButton
 	 */
 	final public function button()
 	{

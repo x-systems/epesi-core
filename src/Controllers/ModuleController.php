@@ -2,12 +2,17 @@
 
 namespace Epesi\Core\Controllers;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Routing\Controller;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Epesi\Core\App as Epesi;
 use Epesi\Core\Database\Models\Module;
 
 class ModuleController extends Controller
 {
+	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+	
 	public function view(Epesi $epesi, $module, $method = 'body', $args = [])
 	{
 		$alias = explode('_', $module);
@@ -15,6 +20,7 @@ class ModuleController extends Controller
 		$moduleAlias = $alias[0];
 		$viewAlias = $alias[1]?? null;
 		
+		$view = null;		
 		if ($module = Module::getClass($moduleAlias)) {
 			$viewClass = $module::view($viewAlias);
 			

@@ -64,8 +64,8 @@ trait HasLinks
 	/**
 	 * Encode arguments for the module method
 	 * 
-	 * @param string $args
-	 * @return array
+	 * @param array|mixed $args
+	 * @return string
 	 */
 	final public static function encodeArgs($args) {
 		$args = is_array($args)? $args: [$args];

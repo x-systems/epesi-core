@@ -3,6 +3,7 @@
 namespace Epesi\Core\Database\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class Module extends Model
 {
@@ -16,7 +17,7 @@ class Module extends Model
 	private static function cache() {
 		if(isset(self::$cache)) return;
 		
-		self::$cache = self::pluck('class', 'alias');
+		self::$cache = Schema::hasTable('modules')? self::pluck('class', 'alias'): collect();
 	}
 	
 	public static function isInstalled($classOrAlias) {
@@ -34,7 +35,7 @@ class Module extends Model
 	public static function getInstalled() {
 		self::cache();
 		
-		return self::$cache;
+		return self::$cache?: collect();
 	}
 	
 	/**

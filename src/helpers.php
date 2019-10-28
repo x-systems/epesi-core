@@ -10,14 +10,14 @@ if (! function_exists('epesi')) {
 if (! function_exists('eval_css')) {
 	function eval_css($css)
     {
-    	return epesi()->addStyle($css);
+    	epesi()->addStyle($css);
     }
 }
 
 if (! function_exists('eval_js')) {
 	function eval_js($js, $args = [])
     {
-    	return epesi()->addJS($js, $args);
+    	epesi()->addJS($js, $args);
     }
 }
 

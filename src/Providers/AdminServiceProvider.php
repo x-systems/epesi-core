@@ -17,7 +17,7 @@ class AdminServiceProvider extends ServiceProvider
     public function boot()
     {
     	// Register migrations from installed modules
-    	$this->loadMigrationsFrom(Module::collect('migrations'), 'epesi.module.migrations');
+    	$this->loadMigrationsFrom(Module::collect('migrations'));
 
     	// Publish files from installed modules
     	$this->publishes(Module::collect('public'), 'epesi.module.public');

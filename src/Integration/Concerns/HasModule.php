@@ -52,7 +52,7 @@ trait HasModule
 	 */
 	final public static function namespace()
 	{
-		return join(array_slice(explode('\\', static::class), 0, -1), '\\');
+		return join('\\', array_slice(explode('\\', static::class), 0, -1));
 	}
 	
 	/**
