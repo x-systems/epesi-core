@@ -1,0 +1,50 @@
+{
+	"name" : "epesi/core",
+	"description" : "Epesi CRM / ERP core functionality.",
+	"keywords" : [
+		"epesi",
+		"laravel",
+		"crm",
+		"erp",
+		"composer",
+		"package"
+	],
+	"license" : "MIT",
+	"authors" : [{
+			"name" : "Georgi Hristov",
+			"email" : "info@xsystems.io"
+		}
+	],
+	"type" : "project",
+	"require" : {
+		"php" : ">=7.2",
+		"atk4/ui": "^1.7"
+	},
+	"require-dev" : {
+		"phpunit/phpunit" : "6.*"
+	},
+	"autoload" : {
+		"files" : [
+			"src/helpers.php"
+		],
+		"psr-4" : {
+			"Epesi\\Core\\" : "src/"
+		}
+	},
+	"extra" : {
+		"laravel" : {
+			"providers" : [
+				"Epesi\\Core\\Providers\\EpesiServiceProvider",
+				"Epesi\\Core\\Providers\\RouteServiceProvider"
+			],
+			"aliases" : {
+				"Epesi" : "Epesi\\Core\\Facades\\Epesi"
+			}
+		},
+		"epesi" : {
+			"modules" : [
+				"Epesi\\Core\\EpesiCore"
+			]
+		}
+	}
+}

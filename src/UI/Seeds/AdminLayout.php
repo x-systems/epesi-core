@@ -1,0 +1,176 @@
+<?php
+
+namespace Epesi\Core\UI\Seeds;
+
+use atk4\ui\jQuery;
+use atk4\ui\Layout\Generic;
+use Illuminate\Support\Facades\Session;
+
+/**
+ * Implements a classic 100% width admin layout.
+ *
+ * Optional left menu in inverse with fixed width is most suitable for contextual navigation or
+ *  providing core object list (e.g. folders in mail)
+ *
+ * Another menu on the top for actions that can have a pull-down menus.
+ *
+ * A top-right spot is for user icon or personal menu, labels or stats.
+ *
+ * On top of the content there is automated title showing page title but can also work as a bread-crumb or container for buttons.
+ *
+ * Footer for a short copyright notice and perhaps some debug elements.
+ *
+ * Spots:
+ *  - LeftMenu  (has_menuLeft)
+ *  - Menu
+ *  - RightMenu (has_menuRight)
+ *  - Footer
+ *
+ *  - Content
+ */
+class AdminLayout extends Generic
+{
+    public $menuLeft;    // vertical menu
+    public $menu;        // horizontal menu
+    public $menuRight;   // vertical pull-down
+    public $actionBar;   
+    public $locationBar;
+    
+    public $burger = true;      // burger menu item
+
+    /*
+     * Whether or not left Menu is visible on Page load.
+     */
+    public $isMenuLeftVisible = true;
+
+    public $defaultTemplate = 'layout/admin.html';
+    
+    protected $location;
+
+    public function init()
+    {
+        parent::init();
+
+        $this->setMenu();
+        $this->setActionBar();
+        
+//         if (request()->pjax()) return;
+        
+        $this->setMenuLeft();        
+        $this->setMenuRight();
+        
+        $this->setVersion();
+        
+//         $this->js(true, null, 'body')->niceScroll();
+//         $this->js(true, null, new jsExpression('window'))->on('pageshow', new jsFunction(['event'], [
+//         			new jsExpression('
+// 		if (event.originalEvent.persisted) {
+//         	window.location.reload(); 
+//     	}')]));
+    }
+    
+    public function setMenu()
+    {
+        if ($this->menu) return;
+
+        //.ui.sidebar, 
+        $this->menu = $this->add(['Menu', 'atk-topMenu fixed horizontal', 'element' => 'header'], 'TopMenu');
+        
+        $this->app->addStyle('');
+
+        // company logo
+        $logo = $this->menu->add(['class' => ['epesi-logo']])->add(['Image', url('img/tsm_logo_agile.png')]);
+        
+        if ($this->burger) {
+        	$this->burger = $this->menu->addItem(['class' => ['icon atk-leftMenuTrigger']]);
+        }
+       	
+		// home icon
+		$this->menu->addItem(['class' => ['icon epesi-home']], url('view/dashboard'))->add(['Icon',	'home']);
+
+		// location bar
+		$this->locationBar = $this->menu->add(['View',	['ui' => 'epesi-location']]);
+	}
+
+	public function setLocation($crumbs)
+	{
+		$this->location = $crumbs;
+
+		$crumb = $this->locationBar->add('BreadCrumb');
+		foreach ($crumbs as $level) {
+			$label = $level['label']?? $level;
+			$link = $level['link']?? null;
+			
+			$crumb->addCrumb($label, $link);
+		}
+
+		$crumb->popTitle();
+		
+		$this->app->title = implode(' > ', array_prepend($crumbs, config('epesi.app.title', 'EPESI')));
+		
+		return $this;
+	}
+	
+	public function getLocation()
+	{
+		return $this->location;
+	}
+	
+	public function setMenuRight()
+	{
+		if ($this->menuRight) return;
+
+		$this->menuRight = $this->menu->add(new RightMenu([
+				'ui' => false
+		]), 'RightMenu')->addClass('right menu')->removeClass('item');
+	}
+	
+    public function setMenuLeft()
+    {
+        if ($this->menuLeft) return;
+        
+        $this->menuLeft = $this->add(new NavMenu('left vertical labeled sidebar'), 'LeftMenu');
+        
+        $this->leftMenu = $this->menuLeft;
+
+        if (! $this->burger) return;
+
+        if (! Session::get('menu', 1)) {
+        	$this->isMenuLeftVisible = false;
+        }
+        
+        $this->burger->add(['Icon',	'content'])->on('click', [
+        		(new jQuery('.ui.left.sidebar'))->toggleClass('visible'),
+        		(new jQuery('.epesi-logo'))->toggleClass('expanded'),
+        		(new jQuery('body'))->toggleClass('atk-leftMenu-visible'),
+        		$this->burger->add('jsCallback')->set(function($j, $visible) {
+        			Session::put('menu', $visible? 1: 0);
+        			Session::save();
+        		}, [new \atk4\ui\jsExpression( '$("#' . $this->menuLeft->id . '").hasClass("visible")? 1: 0' )])
+        ]);
+    }
+    
+    public function setActionBar()
+    {
+    	if ($this->actionBar) return;
+    	
+    	$this->actionBar = $this->add(new ActionBar(), 'ActionBar');
+    }
+    
+    public function setVersion()
+    {
+    	$this->template->trySet('version', $this->app->version);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    
+    public function renderView()
+    {
+    	if ($this->menuLeft && $this->isMenuLeftVisible) {
+               $this->menuLeft->addClass('visible');
+        }
+        parent::renderView();
+    }
+}

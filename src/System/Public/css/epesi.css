@@ -1,0 +1,85 @@
+.atk-layout {
+	background-color: #f9fafc;
+}
+
+.atk-footer {
+	background-color: #ffffff;
+	font-weight: bold;
+}
+
+.atk-topMenu.ui.menu.fixed {
+	z-index: 999;
+}
+
+.atk-mainContainer .atk-mainContainerWrapper {
+    padding: 1.5em;
+}
+
+.atk-mainContainer {
+	padding-top: 2em;
+}
+
+.ui.menu .epesi-logo.item {
+	padding: 5px;
+}
+
+.ui.actionbar {
+	background-color: #3c8dbc !important;
+}
+
+.item.header {
+	height: 44px;
+}
+
+.item.recent {
+	height: 38px;
+	background: #3c8dbc !important;
+	color: white !important;
+	padding: 2px;
+}
+
+.epesi-logo img {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
+.ui.item.epesi-location {
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.launch.button {
+	width: 6em;
+	height: 6em;
+}
+
+.ui.launch.icon.button>.icon {
+	font-size: 2em;
+	margin-top: 15px !important;
+}
+
+.launch.button span {
+	display: block;
+	margin-top: 1em;
+}
+
+.actionbar.segment {
+	padding: 0.1em 0.1em !important;
+	position: fixed !important;
+	z-index: 99;
+	margin: 0px !important;
+	top: 3.1em;
+	width: 100%;
+}
+
+.action.button i {
+	font-size: 1.2em;
+	margin-top: 0.2em;
+}
+
+.action.button span {
+	margin-top: 0.8em;
+	font-size: 0.8em;
+	margin-left: 5px;
+}
