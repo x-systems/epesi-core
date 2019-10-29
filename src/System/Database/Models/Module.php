@@ -1,6 +1,6 @@
 <?php
 
-namespace Epesi\Core\Database\Models;
+namespace Epesi\Core\System\Database\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
@@ -44,11 +44,13 @@ class Module extends Model
 	 * @param string $method
 	 * @return array
 	 */
-	public static function collect($method)
+	public static function collect($method, $args = [])
 	{
+		$args = is_array($args)? $args: [$args];
+		
 		$ret = [];
 		foreach (self::getInstalled() as $module) {
-			if (! $list = $module::$method()) continue;
+			if (! $list = $module::$method(...$args)) continue;
 			
 			$ret = array_merge($ret, is_array($list)? $list: [$list]);
 		}

@@ -1,6 +1,6 @@
 <?php
 
-namespace Epesi\Core\Integration\Module;
+namespace Epesi\Core\Integration;
 
 use Exception;
 use Illuminate\Filesystem\Filesystem;

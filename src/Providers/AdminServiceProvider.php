@@ -3,7 +3,7 @@
 namespace Epesi\Core\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Epesi\Core\Database\Models\Module;
+use Epesi\Core\System\Database\Models\Module;
 
 class AdminServiceProvider extends ServiceProvider
 {

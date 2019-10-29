@@ -1,25 +1,18 @@
 <?php
 
-namespace Epesi\Core\Integration\Module;
+namespace Epesi\Core\Integration;
 
 use atk4\ui\View;
-use Epesi\Core\UI\Traits\Notifies;
-use Epesi\Core\Integration\Concerns\HasLinks;
-use Epesi\Core\Integration\Concerns\HasLocation;
-use Epesi\Core\Integration\Concerns\HasAssetsAccess;
-use Epesi\Core\Integration\Concerns\HasAccessControl;
-use Epesi\Core\Integration\Concerns\HasModule;
-use Epesi\Core\Integration\Concerns\HasVariables;
 
 abstract class ModuleView extends View
 {
-	use HasModule;
-	use HasLinks;
-	use HasAssetsAccess;
-	use HasAccessControl;
-	use HasLocation;
-	use HasVariables;
-	use Notifies;
+	use Concerns\HasModule;
+	use Concerns\HasLinks;
+	use Concerns\HasAssetsAccess;
+	use Concerns\HasAccessControl;
+	use Concerns\HasLocation;
+	use Concerns\HasVariables;
+	use Concerns\Notifies;
 	
 	/**
 	 * @var \Epesi\Core\App

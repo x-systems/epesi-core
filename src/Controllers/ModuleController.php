@@ -7,7 +7,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Epesi\Core\App as Epesi;
-use Epesi\Core\Database\Models\Module;
+use Epesi\Core\System\Database\Models\Module;
 
 class ModuleController extends Controller
 {

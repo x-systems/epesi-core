@@ -3,10 +3,11 @@
 namespace Epesi\Core;
 
 use atk4\ui\App as BaseApp;
-use Epesi\Core\UI\Seeds\AdminLayout;
 use atk4\ui\jsExpression;
 use Epesi\Core\Integration\Concerns\HasLinks;
 use Epesi\Core\System\SystemCore;
+use Epesi\Base\Layout\LayoutView;
+use Epesi\Core\System\Database\Models\Module;
 
 class App extends BaseApp
 {
@@ -21,19 +22,21 @@ class App extends BaseApp
 	{
 		$this->cdn = array_merge($this->cdn, config('epesi.app.cdn', []));
 		
-		//TODO: set the skin from admin / user selection
-		$skin = config('epesi.app.skin', $this->skin);
-		
-		$this->template_dir = $this->template_dir?: [];
-		
-		$this->template_dir[] = __DIR__.'/UI/Templates/'. $skin;
+		$this->collectTemplates();
 		
 		parent::__construct([
 				'title' => config('epesi.app.title', 'EPESI'),
-				'skin' => $skin
 		]);
 		
-		$this->initLayout(new AdminLayout());
+		$this->initLayout(new LayoutView());
+	}
+	
+	final public function collectTemplates()
+	{
+		//TODO: set the skin from admin / user selection
+		$this->skin = config('epesi.app.skin', $this->skin);
+
+		$this->template_dir = array_merge(Module::collect('templates', $this->skin), $this->template_dir?: []);
 	}
 	
 	final public static function module()

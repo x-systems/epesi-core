@@ -1,6 +1,6 @@
 <?php
 
-namespace Epesi\Core\UI\Seeds;
+namespace Epesi\Core\System\Seeds;
 
 use atk4\ui\View;
 use atk4\ui\Icon;

@@ -1,6 +1,6 @@
 <?php 
 
-namespace Epesi\Core\UI\Traits;
+namespace Epesi\Core\Integration\Concerns;
 
 trait Notifies
 {

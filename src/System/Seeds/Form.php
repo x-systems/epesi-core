@@ -1,11 +1,11 @@
 <?php
 
-namespace Epesi\Core\UI\Seeds;
+namespace Epesi\Core\System\Seeds;
 
 use atk4\ui\Form as BaseForm;
 use atk4\ui\jsExpression;
 use atk4\ui\jsFunction;
-use Epesi\Core\UI\Traits\Notifies;
+use Epesi\Core\Integration\Concerns\Notifies;
 
 class Form extends BaseForm
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Epesi\Core\Database\Models;
+namespace Epesi\Core\System\Database\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;

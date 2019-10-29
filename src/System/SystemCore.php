@@ -2,8 +2,8 @@
 
 namespace Epesi\Core\System;
 
-use Epesi\Core\Integration\Module\ModuleCore;
-use Epesi\Core\System\Integration\Joints\SystemControlUserMenu;
+use Epesi\Core\Integration\ModuleCore;
+use Epesi\Core\System\Integration\SystemControlUserMenu;
 
 class SystemCore extends ModuleCore
 {

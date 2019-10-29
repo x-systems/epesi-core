@@ -28,7 +28,7 @@ trait HasModule
 	 */
 	final public static function alias()
 	{
-		if (is_a(static::class, \Epesi\Core\Integration\Module\ModuleCore::class, true) && empty(static::$alias)) {
+		if (is_a(static::class, \Epesi\Core\Integration\ModuleCore::class, true) && empty(static::$alias)) {
 			throw new \Exception('Undefined alias in module core class ' . static::class);
 		}
 		

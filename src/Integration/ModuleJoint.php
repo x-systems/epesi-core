@@ -1,17 +1,15 @@
 <?php 
 
-namespace Epesi\Core\Integration\Module;
+namespace Epesi\Core\Integration;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
-use Epesi\Core\Integration\Concerns\HasLinks;
-use Epesi\Core\Database\Models\Module;
-use Epesi\Core\Integration\Concerns\HasAccessControl;
+use Epesi\Core\System\Database\Models\Module;
 
 abstract class ModuleJoint
 {
-	use HasLinks;
-	use HasAccessControl;
+	use Concerns\HasLinks;
+	use Concerns\HasAccessControl;
 	
 	protected static $packageManifest;
 	
@@ -63,7 +61,7 @@ abstract class ModuleJoint
 		foreach (Module::getInstalled() as $module) {
 			$ret = $ret->merge($module::joints());
 		}
-		
+
 		return $ret->all();
 	}
 	

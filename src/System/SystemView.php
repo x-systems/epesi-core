@@ -2,7 +2,7 @@
 
 namespace Epesi\Core\System;
 
-use Epesi\Core\Integration\Module\ModuleView;
+use Epesi\Core\Integration\ModuleView;
 use Epesi\Core\System\Integration\Joints\SystemSettingsJoint;
 use Illuminate\Support\Facades\Auth;
 

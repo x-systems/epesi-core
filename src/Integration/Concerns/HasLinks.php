@@ -2,7 +2,7 @@
 
 namespace Epesi\Core\Integration\Concerns;
 
-use Epesi\Core\Integration\Module\ModuleView;
+use Epesi\Core\Integration\ModuleView;
 
 trait HasLinks
 {

@@ -4,9 +4,8 @@ namespace Epesi\Core\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
 use Epesi\Core\App;
-use Epesi\Core\Database\Models\Module;
+use Epesi\Core\System\Database\Models\Module;
 
 class EpesiServiceProvider extends ServiceProvider
 {

@@ -1,9 +1,9 @@
 <?php 
 
-namespace Epesi\Core\System\Integration\Joints;
+namespace Epesi\Core\System\Integration;
 
-use Epesi\Core\Integration\Joints\UserMenuJoint;
 use Epesi\Core\System\SystemView;
+use Epesi\Base\Layout\Integration\Joints\UserMenuJoint;
 
 class SystemControlUserMenu extends UserMenuJoint
 {

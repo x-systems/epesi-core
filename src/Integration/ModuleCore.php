@@ -1,20 +1,14 @@
 <?php
 
-namespace Epesi\Core\Integration\Module;
-
-use Epesi\Core\Integration\Concerns\HasAssets;
-use Epesi\Core\Integration\Concerns\HasStorage;
-use Epesi\Core\Integration\Concerns\HasServiceProviders;
-use Epesi\Core\Integration\Concerns\HasAssetsAccess;
-use Epesi\Core\Integration\Concerns\HasModule;
+namespace Epesi\Core\Integration;
 
 abstract class ModuleCore
 {
-	use HasModule;
-	use HasAssets;
-	use HasAssetsAccess;
-	use HasStorage;
-	use HasServiceProviders;
+	use Concerns\HasModule;
+	use Concerns\HasAssets;
+	use Concerns\HasAssetsAccess;
+	use Concerns\HasStorage;
+	use Concerns\HasServiceProviders;
 	
 	protected $version = '0.0.0';
 	
@@ -50,6 +44,18 @@ abstract class ModuleCore
 	{
 		return implode(DIRECTORY_SEPARATOR, [static::path(), 'Database', 'Migrations']); 
 	}
+			
+	public static function templates($skin = null)
+	{
+		$templatesDir = static::path() . DIRECTORY_SEPARATOR . 'Templates';
+		
+		if (! is_dir($templatesDir)) return;
+		
+		$skinDir = $templatesDir . DIRECTORY_SEPARATOR . $skin;
+		
+		return is_dir($skinDir)? $skinDir: $templatesDir;
+	}
+	
 			
 	/**
 	 * Module installation method

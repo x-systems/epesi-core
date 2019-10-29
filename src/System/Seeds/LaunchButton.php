@@ -1,6 +1,6 @@
 <?php
 
-namespace Epesi\Core\UI\Seeds;
+namespace Epesi\Core\System\Seeds;
 
 class LaunchButton extends ActionButton
 {

@@ -2,7 +2,7 @@
 
 namespace Epesi\Core\System\Integration\Joints;
 
-use Epesi\Core\Integration\Module\ModuleJoint;
+use Epesi\Core\Integration\ModuleJoint;
 use Epesi\Core\Integration\Concerns\HasLaunchButton;
 use Epesi\Core\Integration\Concerns\HasOptions;
 

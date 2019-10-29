@@ -2,8 +2,8 @@
 
 namespace Epesi\Core\Integration\Concerns;
 
-use Epesi\Core\UI\Seeds\LaunchButton;
-use Epesi\Core\Integration\Module\ModuleView;
+use Epesi\Core\System\Seeds\LaunchButton;
+use Epesi\Core\Integration\ModuleView;
 
 trait HasLaunchButton
 {
