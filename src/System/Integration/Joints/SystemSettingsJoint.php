@@ -2,9 +2,9 @@
 
 namespace Epesi\Core\System\Integration\Joints;
 
-use Epesi\Core\Integration\ModuleJoint;
-use Epesi\Core\Integration\Concerns\HasLaunchButton;
-use Epesi\Core\Integration\Concerns\HasOptions;
+use Epesi\Core\System\Integration\Modules\ModuleJoint;
+use Epesi\Core\System\Integration\Modules\Concerns\HasLaunchButton;
+use Epesi\Core\System\Integration\Modules\Concerns\HasOptions;
 
 abstract class SystemSettingsJoint extends ModuleJoint
 {

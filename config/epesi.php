@@ -34,6 +34,9 @@ return [
 		'joints' => [
 
 		],
+		'modules' => [
+				
+		],
 		'disk' => [
 				'driver' => 'local',
 				'root' => storage_path('epesi')

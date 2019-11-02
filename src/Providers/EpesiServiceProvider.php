@@ -5,7 +5,7 @@ namespace Epesi\Core\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Epesi\Core\App;
-use Epesi\Core\System\Database\Models\Module;
+use Epesi\Core\System\Integration\Modules\ModuleManager;
 
 class EpesiServiceProvider extends ServiceProvider
 {
@@ -16,19 +16,23 @@ class EpesiServiceProvider extends ServiceProvider
     {
     	$this->ensureHttps();
     	
-    	Route::group(['namespace' => 'Epesi\Core\Controllers', 'middleware' => ['web', 'auth']], function() {
+    	Route::group(['namespace' => 'Epesi\Core\Controllers', 'middleware' => ['web']], function() {
     		header("Cache-Control: no-cache, no-store, must-revalidate"); //HTTP 1.1
     		header("Pragma: no-cache"); //HTTP 1.0
     		header("Expires: 0");
     		
-    		Route::any('view/{alias}/{method?}/{args?}', 'ModuleController@view');
+    		Route::any('view/{alias}/{method?}/{args?}', 'ModuleController@view')->middleware('auth');
+    		
+    		Route::any('install', 'InstallController@index');
     	});
-    	
-		// Register providers declared in modules
-		foreach (Module::collect('providers') as $provider) {
-			$this->app->register($provider);
-		}
 
+    	// call boot methods on all modules
+    	ModuleManager::call('boot');
+    		
+		foreach (ModuleManager::collect('translations') as $path) {
+			$this->loadJsonTranslationsFrom($path);
+		}
+		
     	// Register admin service provider if in admin mode or in console
     	// TODO: apply access restriction to admin mode
 //     	if ($this->app->runningInConsole() || (request('admin', false) && Auth::user()->can('modify system'))) {

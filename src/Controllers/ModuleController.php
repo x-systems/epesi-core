@@ -7,7 +7,8 @@ use Illuminate\Routing\Controller;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Epesi\Core\App as Epesi;
-use Epesi\Core\System\Database\Models\Module;
+use Epesi\Core\Layout\LayoutView;
+use Epesi\Core\System\Integration\Modules\ModuleManager;
 
 class ModuleController extends Controller
 {
@@ -15,13 +16,15 @@ class ModuleController extends Controller
 	
 	public function view(Epesi $epesi, $module, $method = 'body', $args = [])
 	{
+		$epesi->initLayout(new LayoutView());
+		
 		$alias = explode('_', $module);
 		
 		$moduleAlias = $alias[0];
 		$viewAlias = $alias[1]?? null;
 		
-		$view = null;		
-		if ($module = Module::getClass($moduleAlias)) {
+		$view = null;
+		if ($module = ModuleManager::getClass($moduleAlias, true)) {
 			$viewClass = $module::view($viewAlias);
 			
 			if (class_exists($viewClass)) {

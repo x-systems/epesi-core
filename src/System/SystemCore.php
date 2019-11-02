@@ -2,15 +2,20 @@
 
 namespace Epesi\Core\System;
 
-use Epesi\Core\Integration\ModuleCore;
-use Epesi\Core\System\Integration\SystemControlUserMenu;
-
-class SystemCore extends ModuleCore
+class SystemCore extends Integration\Modules\ModuleCore
 {
 	protected static $alias = 'system';
 	
+	protected static $view = SystemSettings::class;
+	
 	protected static $joints = [
-			SystemControlUserMenu::class
+			Integration\SystemSettingsUserMenu::class
+	];
+	
+	protected static $requires = [
+			\Epesi\Core\Layout\LayoutCore::class,
+			'Epesi\\Base\\User\\UserCore',
+			'Epesi\\Base\\Dashboard\\DashboardCore'
 	];
 	
 	public function install()

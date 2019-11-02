@@ -19,10 +19,11 @@
 	"require" : {
 		"php" : ">=7.2",
 		"atk4/ui": "^1.7",
-		"laravel/framework": "5.8.*"
+		"laravel/framework": "5.8.*",
+		"joedixon/laravel-translation": "^1.0"
 	},
 	"require-dev" : {
-		"phpunit/phpunit" : "6.*"
+		"orchestra/testbench": "^3.8"
 	},
 	"autoload" : {
 		"files" : [
@@ -30,6 +31,11 @@
 		],
 		"psr-4" : {
 			"Epesi\\Core\\" : "src/"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"Epesi\\Core\\Tests\\" : "tests/"
 		}
 	},
 	"extra" : {
@@ -43,7 +49,8 @@
 		},
 		"epesi" : {
 			"modules" : [
-				"Epesi\\Core\\EpesiCore"
+				"Epesi\\Core\\System\\SystemCore",
+				"Epesi\\Core\\Layout\\LayoutCore"
 			]
 		}
 	}

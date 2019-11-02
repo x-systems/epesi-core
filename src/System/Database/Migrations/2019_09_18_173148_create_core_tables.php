@@ -21,10 +21,10 @@ class CreateCoreTables extends Migration
         });
     	
     	Schema::create('modules', function (Blueprint $table) {
-            $table->string('class', 512)->unique();
+            $table->string('class', 512);
             $table->string('alias', 128)->unique();
-            $table->smallInteger('priority');
-            $table->smallInteger('state');
+            $table->smallInteger('priority')->default(0);
+            $table->smallInteger('state')->default(1);
         });
     }
 

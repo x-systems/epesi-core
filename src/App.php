@@ -4,10 +4,9 @@ namespace Epesi\Core;
 
 use atk4\ui\App as BaseApp;
 use atk4\ui\jsExpression;
-use Epesi\Core\Integration\Concerns\HasLinks;
+use Epesi\Core\System\Integration\Modules\Concerns\HasLinks;
 use Epesi\Core\System\SystemCore;
-use Epesi\Base\Layout\LayoutView;
-use Epesi\Core\System\Database\Models\Module;
+use Epesi\Core\System\Integration\Modules\ModuleManager;
 
 class App extends BaseApp
 {
@@ -21,14 +20,12 @@ class App extends BaseApp
 	public function __construct($defaults = [])
 	{
 		$this->cdn = array_merge($this->cdn, config('epesi.app.cdn', []));
-		
+
 		$this->collectTemplates();
 		
 		parent::__construct([
 				'title' => config('epesi.app.title', 'EPESI'),
 		]);
-		
-		$this->initLayout(new LayoutView());
 	}
 	
 	final public function collectTemplates()
@@ -36,7 +33,7 @@ class App extends BaseApp
 		//TODO: set the skin from admin / user selection
 		$this->skin = config('epesi.app.skin', $this->skin);
 
-		$this->template_dir = array_merge(Module::collect('templates', $this->skin), $this->template_dir?: []);
+		$this->template_dir = array_merge(ModuleManager::collect('templates', $this->skin), $this->template_dir?: []);
 	}
 	
 	final public static function module()
@@ -200,5 +197,12 @@ class App extends BaseApp
 	public function setLocation($location)
 	{
 		return $this->layout->setLocation($location);
+	}
+	
+	public function packageInfo()
+	{
+		$content = file_get_contents(__DIR__ . '/../composer.json');
+		
+		return json_decode($content, true);
 	}
 }
