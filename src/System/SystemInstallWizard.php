@@ -95,15 +95,21 @@ class SystemInstallWizard extends Wizard
 		$columns = $wizard->add('Columns');
 		$column = $columns->addColumn();
 		
-		$column->add(['View', 'defaultTemplate' => 'license.html'])->setStyle(['max-height' => '500px', 'overflow' => 'auto', 'padding' => '5px']);
+		$license = $column->add(['View', 'defaultTemplate' => 'license.html'])->setStyle(['max-height' => '500px', 'overflow' => 'auto', 'padding' => '5px']);
+		
+		$license->js(true)->niceScroll();
+		
+		$license->template->setHTML('epesi', config('epesi.app.title'));
+		
+		$license->template->setHTML('copyright', config('epesi.app.copyright'));
 		
 		$column = $columns->addColumn();
 		
 		$form = $column->add(new Form());
 		$form->addField('copyright', ['Checkbox', 'caption' => __('I will not remove the Copyright notice as required by the MIT license.')], ['required'=>true]);
-		$form->addField('logo', ['Checkbox', 'caption' => __('I will not remove "EPESI powered" logo and the link from the application login screen or the toolbar.')], ['required'=>true]);
+		$form->addField('logo', ['Checkbox', 'caption' => __('I will not remove ":epesi powered" logo and the link from the application login screen or the toolbar.', ['epesi' => config('epesi.app.title')])], ['required'=>true]);
 		$form->addField('support', ['Checkbox', 'caption' => __('I will not remove "Support -> About" credit page from the application menu.')], ['required'=>true]);
-		$form->addField('store', ['Checkbox', 'caption' => __('I will not remove or rename "EPESI Store" links from the application.')], ['required'=>true]);
+		$form->addField('store', ['Checkbox', 'caption' => __('I will not remove or rename ":epesi Store" links from the application.', ['epesi' => config('epesi.app.title')])], ['required'=>true]);
 		
 		$form->onSubmit(function ($form) use ($wizard) {
 			return $wizard->jsNext();
