@@ -31,8 +31,9 @@ class SystemInstallWizard extends Wizard
 		
 		$this->addStep([__('Environment'), 'icon'=>'configure', 'description'=>__('Check environment')], [__CLASS__, 'stepEnvironment']);
 		
+		// below step is skipped because of redirecting to 'login' path once system installed
+		// see Epesi\Core\Controllers\SystemController::install
 		$this->addFinish([__CLASS__, 'stepInstallationCompleted']);
-		
 	}
 	
 	public function addRequiredNote()
