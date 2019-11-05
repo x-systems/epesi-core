@@ -80,31 +80,31 @@ class App extends BaseApp
 				
 		//TODO: include below in app.js and app.css
 		// jQuery
-		$urlJs = $this->cdn['jquery']?? 'modules/system/js';
+		$urlJs = $this->cdn['jquery']?? 'storage/system/js';
 		$this->requireJS($urlJs.'/jquery.min.js');
 		
 		// Semantic UI
-		$urlJs = $this->cdn['semantic-ui']?? 'modules/system/js';
-		$urlCss = $this->cdn['semantic-ui']?? 'modules/system/css';
+		$urlJs = $this->cdn['semantic-ui']?? 'storage/system/js';
+		$urlCss = $this->cdn['semantic-ui']?? 'storage/system/css';
 		$this->requireJS($urlJs.'/semantic.min.js');
 		$this->requireCSS($urlCss.'/semantic.min.css');
 		
 		// Serialize Object
-		$urlJs = $this->cdn['serialize-object']?? 'modules/system/js';
+		$urlJs = $this->cdn['serialize-object']?? 'storage/system/js';
 		$this->requireJS($urlJs.'/jquery.serialize-object.min.js');
 		
 		// Agile UI
-		$urlJs = $this->cdn['atk']?? 'modules/system/js';
-		$urlCss = $this->cdn['atk']?? 'modules/system/css';
+		$urlJs = $this->cdn['atk']?? 'storage/system/js';
+		$urlCss = $this->cdn['atk']?? 'storage/system/css';
 		$this->requireJS($urlJs.'/atkjs-ui.min.js');
 		$this->requireCSS($urlCss.'/agileui.css');
 		
 		// Draggable
-		$urlJs = $this->cdn['draggable']?? 'modules/system/js';
+		$urlJs = $this->cdn['draggable']?? 'storage/system/js';
 		$this->requireJS($urlJs.'/draggable.bundle.js');
 		
 		// jQuery UI	
-		$urlJs = $this->cdn['jquery-ui']?? 'modules/system/js';
+		$urlJs = $this->cdn['jquery-ui']?? 'storage/system/js';
 		$this->requireJS($urlJs.'/jquery-ui.js');
 		
 // 		$this->requireJS('https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js');
