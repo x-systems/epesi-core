@@ -22,7 +22,7 @@ class ModuleManager
 		return self::getClass($classOrAlias, true)? 1: 0;
 	}
 	
-	public static function isAvalable($classOrAlias)
+	public static function isAvailable($classOrAlias)
 	{
 		return class_exists(self::getClass($classOrAlias));
 	}
@@ -209,7 +209,7 @@ class ModuleManager
 				throw new Exception('Cross dependency: '. $parentModule);
 			}
 				
-			if (! self::isAvalable($parentModule)) {
+			if (! self::isAvailable($parentModule)) {
 				throw new Exception('Module not found: "' . $parentModule . '"');
 			}
 	
