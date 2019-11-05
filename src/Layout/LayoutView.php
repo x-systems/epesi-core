@@ -61,7 +61,8 @@ class LayoutView extends ModuleView
         
         $this->setVersion();
         
-//         $this->js(true, null, 'body')->niceScroll();
+        $this->js(true, null, 'body')->niceScroll();
+        
 //         $this->js(true, null, new jsExpression('window'))->on('pageshow', new jsFunction(['event'], [
 //         			new jsExpression('
 // 		if (event.originalEvent.persisted) {

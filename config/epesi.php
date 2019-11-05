@@ -31,6 +31,7 @@ return [
 							'semantic-ui'      	=> 'https://cdn.jsdelivr.net/npm/fomantic-ui@2.7.2/dist',
 							'draggable'      	=> 'https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.5/lib',
 							'jquery-ui'      	=> 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.0',
+							'jquery-nicescroll' => 'https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6',
 				],
 		],
 		'joints' => [
@@ -39,8 +40,4 @@ return [
 		'modules' => [
 				
 		],
-		'disk' => [
-				'driver' => 'local',
-				'root' => storage_path('epesi')
-		]
 ];

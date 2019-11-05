@@ -107,7 +107,9 @@ class App extends BaseApp
 		$urlJs = $this->cdn['jquery-ui']?? 'storage/system/js';
 		$this->requireJS($urlJs.'/jquery-ui.js');
 		
-// 		$this->requireJS('https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js');
+		// jQuery niceScroll	
+		$urlJs = $this->cdn['jquery-nicescroll']?? 'storage/system/js';
+		$this->requireJS($urlJs.'/jquery.nicescroll.js');
 	}
 	
 	public function addCsrfToken()
