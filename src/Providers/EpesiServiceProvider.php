@@ -16,14 +16,19 @@ class EpesiServiceProvider extends ServiceProvider
     {
     	$this->ensureHttps();
     	
-    	Route::group(['namespace' => 'Epesi\Core\Controllers', 'middleware' => ['web']], function() {
+    	Route::group(['namespace' => 'Epesi\Core\Controllers', 'middleware' => 'web'], function() {
     		header("Cache-Control: no-cache, no-store, must-revalidate"); //HTTP 1.1
     		header("Pragma: no-cache"); //HTTP 1.0
     		header("Expires: 0");
-    		
-    		Route::any('view/{alias}/{method?}/{args?}', 'ModuleController@view')->middleware('auth');
-    		
+
+    		Route::any('/', 'HomeController@index');
     		Route::any('install', 'InstallController@index');
+    		
+    		Route::group(['middleware' => 'auth'], function() {
+    			Route::any('home', 'HomeController@home')->name('home');
+    			
+    			Route::any('view/{alias}/{method?}/{args?}', 'ModuleController@view');
+    		});
     	});
 
     	// call boot methods on all modules
