@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Epesi\Core\App;
 use Epesi\Core\System\Integration\Modules\ModuleManager;
+use Epesi\Core\Middleware\NoCacheHeaders;
 
 class EpesiServiceProvider extends ServiceProvider
 {
@@ -17,15 +18,12 @@ class EpesiServiceProvider extends ServiceProvider
     	$this->ensureHttps();
     	
     	Route::group(['namespace' => 'Epesi\Core\Controllers', 'middleware' => 'web'], function() {
-    		header("Cache-Control: no-cache, no-store, must-revalidate"); //HTTP 1.1
-    		header("Pragma: no-cache"); //HTTP 1.0
-    		header("Expires: 0");
-
-    		Route::any('/', 'HomeController@index');
-    		Route::any('install', 'InstallController@index');
+    		Route::any('/', 'SystemController@index');
+    		Route::get('logo', 'SystemController@logo');
+    		Route::any('install', 'SystemController@install');
     		
-    		Route::group(['middleware' => 'auth'], function() {
-    			Route::any('home', 'HomeController@home')->name('home');
+    		Route::group(['middleware' => ['auth', NoCacheHeaders::class]], function() {
+    			Route::any('home', 'SystemController@home')->name('home');
     			
     			Route::any('view/{alias}/{method?}/{args?}', 'ModuleController@view');
     		});

@@ -12,6 +12,8 @@ return [
 				 */
 				'title' => 'EPESI',
 				
+				'copyright' => sprintf('Copyright &copy; %d X Systems Ltd', date('Y')),
+				
 				/*
 				 |--------------------------------------------------------------------------
 				 | Epesi skin

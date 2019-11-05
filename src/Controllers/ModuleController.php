@@ -26,13 +26,13 @@ class ModuleController extends Controller
 		$view = null;
 		if ($module = ModuleManager::getClass($moduleAlias, true)) {
 			$viewClass = $module::view($viewAlias);
-			
+
 			if (class_exists($viewClass)) {
 				$view = new $viewClass();
 			}
 		}
 
-		if (empty ($view)) abort(404);
+		if (! $view) abort(404);
 
 		$epesi->add($view)->displayModuleContent($method, $args);
 		
