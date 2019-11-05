@@ -42,7 +42,7 @@ class HomePageSettings extends ModuleView
 		$availablePages = HomePageCommon::getAvailableHomePages();
 		
 		$this->grid->addDecorator('path', ['Multiformat', function($row, $column) use ($availablePages) {
-			return [['Template', $availablePages[$row[$column]]]];
+			return [['Template', $availablePages[$row[$column]]?? '[' . __('missing: :path', ['path' => $row[$column]]) . ']']];
 		}]);
 		
 		$this->grid->addDragHandler()->onReorder(function ($order) {
