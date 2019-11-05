@@ -59,7 +59,7 @@ class SystemInstallWizard extends Wizard
 		
 		$column = $columns->addColumn();
 		$column->add(['Message', __('Thank you for downloading EPESI!')])->text
-		->addParagraph(__('This wizard will guide you though the process of setting up your new installation'))
+		->addParagraph(__('This wizard will guide you though the process of setting up your new CRM / ERP installation'))
 		->addParagraph(__('Select the installation language and click NEXT button to proceed to next step'));
 		
 		$column = $columns->addColumn();

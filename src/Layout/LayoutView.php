@@ -5,7 +5,6 @@ namespace Epesi\Core\Layout;
 use atk4\ui\jQuery;
 use Illuminate\Support\Arr;
 use Epesi\Core\System\Integration\Modules\ModuleView;
-use Epesi\Core\HomePage\HomePageCommon;
 
 /**
  * Implements a classic 100% width admin layout.
@@ -77,14 +76,16 @@ class LayoutView extends ModuleView
         $this->menu = $this->add(['Menu', 'atk-topMenu fixed horizontal', 'element' => 'header'], 'TopMenu');
 
         // company logo
-        $this->menu->add(['class' => ['epesi-logo']])->add(['Image', url('img/tsm_logo_agile.png')]);
+        // see Epesi\Core\Controllers\SystemController::logo
+        $this->menu->add(['class' => ['epesi-logo'], 'style' => ['width' =>  '167px']])->add(['Image', url('logo')])->setStyle(['max-height' => '32px']);
         
         if ($this->burger) {
         	/** @scrutinizer ignore-call */
         	$this->burger = $this->menu->addItem(['class' => ['icon atk-leftMenuTrigger']]);
         }
        	
-		// home icon
+		// home icon redirects to /home path 
+		// see Epesi\Core\Controllers\SystemController::home
         $this->menu->addItem(['class' => ['icon epesi-home']], url('home'))->add(['Icon', 'home']);
 
 		// location bar

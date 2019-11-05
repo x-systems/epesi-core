@@ -24,6 +24,9 @@ class SystemController extends Controller
     	
     	$epesi->initLayout('Centered');
     	
+    	$epesi->layout->set('logo', url('logo'));
+    	$epesi->layout->template->setHTML('copyright', config('epesi.app.copyright'));
+    	
     	$epesi->add(new SystemInstallWizard());
     	
     	return $epesi->response();
