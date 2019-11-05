@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Artisan;
 use Epesi\Core\System\Integration\Modules\Concerns\HasAdminMode;
 use Illuminate\Support\Facades\App;
 use Epesi\Core\System\Integration\Modules\ModuleManager;
+use Epesi\Base\User\Database\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class SystemInstallWizard extends Wizard
 {
@@ -30,6 +32,10 @@ class SystemInstallWizard extends Wizard
 		$this->addStep([__('Database'), 'icon'=>'database', 'description'=>__('Database connection settings')], [__CLASS__, 'stepDatabase']);
 		
 		$this->addStep([__('Environment'), 'icon'=>'configure', 'description'=>__('Check environment')], [__CLASS__, 'stepEnvironment']);
+		
+		$this->addStep([__('Super Admin'), 'icon'=>'user', 'description'=>__('Create first user')], [__CLASS__, 'stepUser']);
+		
+		$this->addStep([__('Complete'), 'icon'=>'check', 'description'=>__('Complete installation')], [__CLASS__, 'stepInstallationCompleted']);
 		
 		// below step is skipped because of redirecting to 'login' path once system installed
 		// see Epesi\Core\Controllers\SystemController::install
@@ -174,6 +180,40 @@ class SystemInstallWizard extends Wizard
 		ob_end_clean();
 		
 		$wizard->add(new SystemEnvironmentOverview());
+	}
+	
+	public static function stepUser($wizard)
+	{
+		$wizard->addRequiredNote();
+		
+		$form = $wizard->add([new Form, 'buttonSave' => 'Button']);
+		
+		$form->addField('name', __('Name'), ['required'=>true])->placeholder = __('e.g. John Doe');
+		$form->addField('email', __('Email'), ['required'=>true])->placeholder = __('e.g. john.doe@epesi.cloud');
+		$form->addField('password', ['Password', 'caption' => __('Password')], ['required'=>true]);
+		$form->addField('password_verify', ['Password', 'caption' => __('Verify Password')], ['required'=>true]);
+		
+		$form->addFieldRules('email', [[
+				'type'   => 'email',
+				'prompt' => __('Invalid email address')
+		]]);
+		
+		$form->addFieldRules('password_verify', [[
+				'type'   => 'match[password]',
+				'prompt' => __('Password mismatch')
+		]]);
+		
+		$form->validate(function ($form) use ($wizard) {
+			$user = $form->model->get();
+			
+			User::create([
+					'name' => $user['name'],
+					'email' => $user['email'],
+					'password' => Hash::make($user['password']),
+			])->assignRole('Super Admin');
+			
+			return $wizard->jsNext();
+		});
 	}
 	
 	public static function stepInstallationCompleted($wizard)
