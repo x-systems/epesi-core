@@ -64,9 +64,4 @@ class EpesiServiceProvider extends ServiceProvider
     		$this->app['request']->server->set('HTTPS', true);
     	}
     }
-    
-    protected function registerStorageDisk()
-    {
-    	$this->app['config']['filesystems.disks.epesi'] = config('epesi.disk');
-    }
 }
