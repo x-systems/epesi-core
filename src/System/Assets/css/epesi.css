@@ -54,14 +54,13 @@
 	height: 6em;
 }
 
-.ui.launch.icon.button>.icon {
+.ui.launch.icon.button i.icon {
 	font-size: 2em;
-	margin-top: 15px !important;
+	margin: 10px auto 0px auto !important;
 }
 
 .launch.button span {
-	display: block;
-	margin-top: 1em;
+	display: inline-flex;
 }
 
 .actionbar.segment {
