@@ -64,16 +64,37 @@ class ModuleManager
 	 * 
 	 * @return \Illuminate\Support\Collection;
 	 */
+	
 	public static function getAll()
 	{
 		return self::getCached('epesi-modules-available', function () {
 			$modules = collect();
-			foreach (array_merge(config('epesi.modules', []), self::packageManifest()->modules()?: []) as $moduleClass) {
-				$modules->add(['alias' => $moduleClass::alias(), 'class' => $moduleClass]);
+			foreach (array_merge(config('epesi.modules', []), self::packageManifest()->modules()?: []) as $namespace => $path) {
+				foreach (self::discoverModuleClasses($namespace, $path) as $moduleClass) {
+					$modules->add(['alias' => $moduleClass::alias(), 'class' => $moduleClass]);
+				}
 			}
-
+			
 			return $modules->pluck('class', 'alias');
 		});
+	}
+	
+	protected static function discoverModuleClasses($namespace, $basePath)
+	{
+		$ret = collect();
+		foreach (glob($basePath . '/*', GLOB_ONLYDIR|GLOB_NOSORT) as $path) {
+			$moduleNamespace = '\\' . trim($namespace, '\\') . '\\' . basename($path);
+			
+			$moduleClass = $moduleNamespace . '\\' . basename($path) . 'Core';
+
+			$ret = $ret->merge(self::discoverModuleClasses($moduleNamespace, $path));
+			
+			if (! class_exists($moduleClass) || !is_a($moduleClass, ModuleCore::class, true)) continue;
+			
+			$ret->add($moduleClass);
+		}
+		
+		return $ret;
 	}
 	
 	/**

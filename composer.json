@@ -49,12 +49,9 @@
 			}
 		},
 		"epesi" : {
-			"modules" : [
-				"Epesi\\Core\\System\\SystemCore",
-				"Epesi\\Core\\System\\User\\UserCore",
-				"Epesi\\Core\\Layout\\LayoutCore",
-				"Epesi\\Core\\HomePage\\HomePageCore"
-			]
+			"modules" : {
+				"Epesi\\Core\\" : "src/"
+			}
 		}
 	}
 }

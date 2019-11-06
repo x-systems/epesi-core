@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "57dac15a4de8074a89433274d7db8a7a",
+    "content-hash": "3cb74c83be64804c9d0f4ba09424370c",
     "packages": [
         {
             "name": "atk4/core",
