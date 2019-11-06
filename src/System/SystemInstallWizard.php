@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 use Epesi\Core\System\Integration\Modules\Concerns\HasAdminMode;
 use Illuminate\Support\Facades\App;
 use Epesi\Core\System\Integration\Modules\ModuleManager;
-use Epesi\Base\User\Database\Models\User;
+use Epesi\Core\System\User\Database\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class SystemInstallWizard extends Wizard

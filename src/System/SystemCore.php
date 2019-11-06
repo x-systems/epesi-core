@@ -14,8 +14,11 @@ class SystemCore extends Integration\Modules\ModuleCore
 	
 	protected static $requires = [
 			\Epesi\Core\Layout\LayoutCore::class,
-			'Epesi\\Base\\User\\UserCore',
-			'Epesi\\Base\\Dashboard\\DashboardCore'
+			User\UserCore::class,
+	];
+	
+	protected static $recommends = [
+			'dashboard'
 	];
 	
 	public function install()

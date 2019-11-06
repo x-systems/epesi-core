@@ -188,6 +188,7 @@ class ModuleManager
 			try {
 				self::install($recommendedModule);
 			} catch (Exception $e) {
+				// just continue, nothing to do if module cannot be installed
 			}			
 		}
 		

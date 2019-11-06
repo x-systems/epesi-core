@@ -20,7 +20,8 @@
 		"php" : ">=7.2",
 		"atk4/ui": "^1.7",
 		"laravel/framework": "5.8.*",
-		"joedixon/laravel-translation": "^1.0"
+		"joedixon/laravel-translation": "^1.0",
+		"spatie/laravel-permission" : "^3.2"
 	},
 	"require-dev" : {
 		"orchestra/testbench": "^3.8"
@@ -50,6 +51,7 @@
 		"epesi" : {
 			"modules" : [
 				"Epesi\\Core\\System\\SystemCore",
+				"Epesi\\Core\\System\\User\\UserCore",
 				"Epesi\\Core\\Layout\\LayoutCore",
 				"Epesi\\Core\\HomePage\\HomePageCore"
 			]
