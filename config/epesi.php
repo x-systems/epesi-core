@@ -12,6 +12,14 @@ return [
 				 */
 				'title' => 'EPESI',
 				
+				/*
+				 |--------------------------------------------------------------------------
+				 | Epesi copyright
+				 |--------------------------------------------------------------------------
+				 |
+				 | This value is the copyright of Epesi as displayed (in html format).
+				 |
+				 */
 				'copyright' => sprintf('Copyright &copy; %d X Systems Ltd', date('Y')),
 				
 				/*
