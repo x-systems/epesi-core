@@ -184,6 +184,13 @@ class ModuleManager
 				'alias' => $module->alias()
 		]);
 		
+		foreach ($module->recommended() as $recommendedModule) {
+			try {
+				self::install($recommendedModule);
+			} catch (Exception $e) {
+			}			
+		}
+		
 		self::clearCache();
 		
 		print ('Module ' . $classOrAlias . ' successfully installed!');
