@@ -64,7 +64,6 @@ class ModuleManager
 	 * 
 	 * @return \Illuminate\Support\Collection;
 	 */
-	
 	public static function getAll()
 	{
 		return self::getCached('epesi-modules-available', function () {
@@ -83,13 +82,13 @@ class ModuleManager
 	{
 		$ret = collect();
 		foreach (glob($basePath . '/*', GLOB_ONLYDIR|GLOB_NOSORT) as $path) {
-			$moduleNamespace = '\\' . trim($namespace, '\\') . '\\' . basename($path);
+			$moduleNamespace = trim($namespace, '\\') . '\\' . basename($path);
 			
-			$moduleClass = $moduleNamespace . '\\' . basename($path) . 'Core';
-
 			$ret = $ret->merge(self::discoverModuleClasses($moduleNamespace, $path));
 			
-			if (! class_exists($moduleClass) || !is_a($moduleClass, ModuleCore::class, true)) continue;
+			$moduleClass = $moduleNamespace . '\\' . basename($path) . 'Core';
+			
+			if (! is_a($moduleClass, ModuleCore::class, true)) continue;
 			
 			$ret->add($moduleClass);
 		}

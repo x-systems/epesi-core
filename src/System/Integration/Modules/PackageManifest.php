@@ -78,7 +78,7 @@ class PackageManifest
     public function modules()
     {
     	return collect($this->getManifest())->flatMap(function ($configuration, $package) {
-    		array_map(function($moduleRelativePath) use ($package) {
+    		return array_map(function($moduleRelativePath) use ($package) {
     			return str_ireplace('/', DIRECTORY_SEPARATOR, implode('/', [$this->vendorPath, $package, $moduleRelativePath]));
     		}, (array) ($configuration['modules'] ?? []));
     	})->filter()->all();
