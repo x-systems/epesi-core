@@ -3,6 +3,7 @@
 namespace Epesi\Core\HomePage;
 
 use Epesi\Core\System\Integration\Modules\ModuleCore;
+use Epesi\Core\System\User\Access\AccessCore;
 
 class HomePageCore extends ModuleCore
 {
@@ -15,7 +16,7 @@ class HomePageCore extends ModuleCore
 	];
 	
 	protected static $requires = [
-			'Epesi\\Base\\User\\Access\\AccessCore'
+			AccessCore::class
 	];
 	
 	public function install()
