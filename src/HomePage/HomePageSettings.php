@@ -24,7 +24,7 @@ class HomePageSettings extends ModuleView
 	
 	public function body()
 	{
-		ActionBar::addButton('back')->link('view/system');
+		ActionBar::addButton('back')->link(url('view/system'));
 
 		$this->grid = $this->add([
 				'CRUD',
