@@ -8,6 +8,7 @@ use Epesi\Core\HomePage\HomePageCommon;
 use Epesi\Core\App as Epesi;
 use Epesi\Core\System\SystemInstallWizard;
 use Illuminate\Support\Facades\File;
+use Epesi\Core\System\Integration\Modules\ModuleManager;
 
 class SystemController extends Controller
 {
@@ -18,6 +19,9 @@ class SystemController extends Controller
     
     public function install(Epesi $epesi)
     {
+    	// make sure the installation information is fresh
+    	ModuleManager::clearCache();
+    	
     	if (SystemCore::isInstalled()) return redirect('home');
     	
     	$epesi->title = config('epesi.app.title') . ' > ' . __('Installation');
@@ -34,7 +38,7 @@ class SystemController extends Controller
     
     public function home()
     {
-    	return redirect(HomePageCommon::getUserHomePagePath());
+    	return redirect(SystemCore::isInstalled()? HomePageCommon::getUserHomePagePath(): 'install');
     }
     
     public function logo()
