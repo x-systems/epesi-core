@@ -19,7 +19,7 @@ class CreateHomePageTable extends Migration
     		$table->increments('id');
             $table->string('path', 64);
             $table->string('role', 64);
-            $table->smallInteger('priority');
+            $table->smallInteger('priority')->default(0);
         });
     }
 
