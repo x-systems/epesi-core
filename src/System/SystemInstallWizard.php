@@ -71,13 +71,6 @@ class SystemInstallWizard extends Wizard
 		
 		$column = $columns->addColumn();
 
-		if (! function_exists('locale_get_display_language')) {
-			$column->addClass('middle aligned');
-			$column->add(['Label', __('Install php-intl extension to enable language selection!'), 'class' => ['red']]);
-			
-			return;
-		}
-
 		$systemLanguages = app()->make(\JoeDixon\Translation\Drivers\Translation::class)->allLanguages()->toArray();
 
 		$values = array_intersect_key(self::getDisplayLanguages(), $systemLanguages);
