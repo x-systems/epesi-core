@@ -173,12 +173,6 @@ class SystemInstallWizard extends Wizard
 	
 	public static function stepEnvironment($wizard)
 	{
-		Artisan::call('migrate');
-		
-		ob_start();
-		ModuleManager::install('system');
-		ob_end_clean();
-		
 		$wizard->add(new SystemEnvironmentOverview());
 	}
 	
@@ -203,14 +197,10 @@ class SystemInstallWizard extends Wizard
 				'prompt' => __('Password mismatch')
 		]]);
 		
+		$form->setValues($wizard->recall('user'));
+		
 		$form->validate(function ($form) use ($wizard) {
-			$user = $form->model->get();
-			
-			User::create([
-					'name' => $user['name'],
-					'email' => $user['email'],
-					'password' => Hash::make($user['password']),
-			])->assignRole('Super Admin');
+			$wizard->memorize('user', $form->model->get());
 			
 			return $wizard->jsNext();
 		});
@@ -218,6 +208,23 @@ class SystemInstallWizard extends Wizard
 	
 	public static function stepInstallationCompleted($wizard)
 	{
+		Artisan::call('migrate');
+		
+		ob_start();
+		ModuleManager::install('system');
+		ob_end_clean();
+		
+		// run boot routine for newly installed modules
+		ModuleManager::call('boot');
+		
+		$user = $wizard->recall('user');		
+		
+		User::create([
+				'name' => $user['name'],
+				'email' => $user['email'],
+				'password' => Hash::make($user['password']),
+		])->assignRole('Super Admin');
+		
 		$wizard->add(['Header', __(':epesi was successfully installed!', ['epesi' => config('epesi.app.title')]), 'huge centered']);
 	}
 
