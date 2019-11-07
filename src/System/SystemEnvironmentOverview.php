@@ -41,12 +41,32 @@ class SystemEnvironmentOverview extends View
 					]
 			]
 	];
-	
+
+	protected static function severityMap()
+	{
+		return [
+				[
+						'color' => 'green', 
+						'result' => __('Good')
+				], 
+				[
+						'color' => 'yellow', 
+						'result' => __('Recommended')
+				], 
+				[
+						'color' => 'red', 
+						'result' => __('Critical')
+				]
+		];
+	}
+		
 	public function renderView()
 	{
 		$this->addClass('ui grid');
 		
 		$columns = $this->add('Columns');
+
+		$this->addLegend($columns->addRow());
 		
 		$column = $columns->addColumn()->setStyle('min-width', '350px');
 		
@@ -65,6 +85,18 @@ class SystemEnvironmentOverview extends View
 		parent::renderView();
 	}
 	
+	public function addLegend($container = null)
+	{
+		$container = $container?: $this;
+		
+		$legend = $container->add(['Header', __('Scan of Environment Parameters')])->setStyle('margin-left', '2em');
+		$legend = $container->add('View')->setStyle('margin-left', 'auto');
+		
+		foreach (self::severityMap() as $severity) {
+			$legend->add(['Label', $severity['result'], 'class' => ["$severity[color] horizontal"]]);
+		}
+	}
+	
 	public function addGroupResults($group, $testResults = [], $container = null)
 	{
 		if (! $testResults) return;
@@ -73,14 +105,15 @@ class SystemEnvironmentOverview extends View
 		
 		$container->add(['Header', $group]);
 		
-		$colorMap = ['green', 'yellow', 'red'];
+		$severityMap = self::severityMap();
 		
 		foreach ($testResults as $test) {
-			$color = $colorMap[$test['severity']];
-			
+			$color = $severityMap[$test['severity']]['color'];
+			$result = $test['result']?? $severityMap[$test['severity']]['result'];
+
 			$row = $container->add(['View', 'class' => ['row']]);
 			$row->add(['View', $test['name'], 'class' => ['nine wide column']]);
-			$row->add(['View', 'class' => ['six wide right aligned column']])->add(['Label', $test['result'], 'class' => ["$color horizontal"]]);;
+			$row->add(['View', 'class' => ['six wide right aligned column']])->add(['Label', $result, 'class' => ["$color horizontal"]]);
 		}
 	}
 	
@@ -133,8 +166,6 @@ class SystemEnvironmentOverview extends View
 	
 	protected function testSystemCompatibility()
 	{
-// 		\Composer\Semver\Semver::satisfies(PHP_VERSION, $requiredPhpVersion);
-		
 		$ret = [];
 		
 		if ($requiredPhpVersion = $this->app->packageInfo()['require']['php']?? null) {
