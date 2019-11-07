@@ -8,6 +8,8 @@ use Epesi\Core\HomePage\Database\Models\HomePage;
 use Epesi\Core\Layout\Seeds\ActionBar;
 use Epesi\Core\System\Seeds\Form;
 use Spatie\Permission\Models\Role;
+use atk4\data\Persistence;
+use atk4\data\Persistence_Array;
 
 class HomePageSettings extends ModuleView
 {
@@ -19,7 +21,7 @@ class HomePageSettings extends ModuleView
 	
 	public static function access()
 	{
-		return Auth::user()->can('modify system settings');
+		return Auth::user()->can('modify system settings') && HomePageCommon::getAvailableHomePages();
 	}
 	
 	public function body()
@@ -40,7 +42,7 @@ class HomePageSettings extends ModuleView
 		$this->grid->setModel($this->getModel());
 		
 		$availablePages = HomePageCommon::getAvailableHomePages();
-		
+
 		$this->grid->addDecorator('path', ['Multiformat', function($row, $column) use ($availablePages) {
 			return [['Template', $availablePages[$row[$column]]?? '[' . __('missing: :path', ['path' => $row[$column]]) . ']']];
 		}]);
@@ -77,10 +79,17 @@ class HomePageSettings extends ModuleView
 			];
 		}
 		
-		$model = new \atk4\data\Model(new \atk4\data\Persistence_Static($rows));
+		$rowsEmpty = [];
 		
-		$model->hasField('path')->setDefaults(['caption' => __('Page'), 'values' => $availablePages]);
-		$model->hasField('role')->setDefaults(['caption' => __('Role'), 'enum' => $availableRoles]);
+		$model = new \atk4\data\Model($rows? new \atk4\data\Persistence_Static($rows): new \atk4\data\Persistence_Array($rowsEmpty));
+	
+		$pathField = $rows? $model->hasField('path'): $model->addField('path');
+			
+		$roleField = $rows? $model->hasField('role'): $model->addField('role');
+		
+		$pathField->setDefaults(['caption' => __('Page'), 'values' => $availablePages]);
+
+		$roleField->setDefaults(['caption' => __('Role'), 'enum' => $availableRoles]);
 
 		return $model;
 	}
