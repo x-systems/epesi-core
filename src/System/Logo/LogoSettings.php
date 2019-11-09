@@ -36,9 +36,7 @@ class LogoSettings extends ModuleView
 		]);
 		
 		$logo->onDelete(function($fileName) {
-			$token = md5($fileName);
-			
-			Storage::delete(self::alias() . '/tmp/' . $token);
+			Storage::disk('public')->delete(self::alias() . '/tmp/' . $fileName);
 		});
 
 		$logo->onUpload(function ($files) use ($form, $logo) {
