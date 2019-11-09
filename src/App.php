@@ -129,32 +129,32 @@ class App extends BaseApp
 	public function enablePjax()
 	{
 		// pjax library
-		$this->requireJS('https://cdn.jsdelivr.net/npm/pjax/pjax.js');
+// 		$this->requireJS('https://cdn.jsdelivr.net/npm/pjax/pjax.js');
 		
-		$this->html->template->appendHTML('HEAD', '<script>
-			$(function(){
-				var pjax = new Pjax({
-						"elements": ".pjax", 
-						"selectors": [".atk-layout", "head > script[page-pjax]", "head > title"]
-				});
-			});
-			
-		</script>');
-		
-		// pjax-api library
-// 		$this->requireJS('https://cdn.jsdelivr.net/npm/pjax-api@latest');
-
 // 		$this->html->template->appendHTML('HEAD', '<script>
-
-// 			$(function(){		
-// 				const { Pjax } = require("pjax-api");		
-// 				new Pjax({
-// 						"links": ".pjax", 
-// 						"areas": [".atk-layout", "head > script[page-pjax]", "head > title"]
+// 			$(function(){
+// 				var pjax = new Pjax({
+// 						"elements": ".pjax", 
+// 						"selectors": [".atk-layout", "head > script[page-pjax]", "head > title"]
 // 				});
 // 			});
 			
 // 		</script>');
+		
+		// pjax-api library
+		$this->requireJS('https://cdn.jsdelivr.net/npm/pjax-api@latest');
+
+		$this->html->template->appendHTML('HEAD', '<script>
+
+			$(function(){		
+				const { Pjax } = require("pjax-api");		
+				new Pjax({
+						"links": ".pjax", 
+						"areas": [".atk-layout", "head > script[page-pjax]", "head > title"]
+				});
+			});
+			
+		</script>');
 
 		// common
 		$this->addJs('$(".pjax").click(function(e) {
