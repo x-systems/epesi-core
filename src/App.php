@@ -105,10 +105,6 @@ class App extends BaseApp
 		$urlJs = $this->cdn['draggable']?? 'storage/system/js';
 		$this->requireJS($urlJs.'/draggable.bundle.js');
 		
-		// jQuery UI	
-		$urlJs = $this->cdn['jquery-ui']?? 'storage/system/js';
-		$this->requireJS($urlJs.'/jquery-ui.js');
-		
 		// jQuery niceScroll	
 		$urlJs = $this->cdn['jquery-nicescroll']?? 'storage/system/js';
 		$this->requireJS($urlJs.'/jquery.nicescroll.js');
