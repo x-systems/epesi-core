@@ -14,7 +14,7 @@ trait HasModule
 	 */
 	final public static function view($alias = null)
 	{
-		$class = self::namespace() . '\\' . ($alias? Str::studly($alias): self::name()) . 'View';
+		$class = self::namespace() . '\\' . ($alias? Str::studly($alias): (static::name() . 'View'));
 		
 		if ($alias) return $class;
 		
@@ -55,6 +55,7 @@ trait HasModule
 		return join('\\', array_slice(explode('\\', static::class), 0, -1));
 	}
 	
+	
 	/**
 	 * Base name of the module
 	 *
@@ -85,5 +86,13 @@ trait HasModule
 	 */
 	final public static function relativePath() {
 		return str_ireplace(base_path() . DIRECTORY_SEPARATOR, '', static::path());
+	}
+	
+	final public static function isSubModuleOf($moduleClass) {
+		return static::parentNamespace() == $moduleClass::namespace();
+	}
+	
+	final public static function parentNamespace() {
+		return implode('\\', array_slice(explode('\\', static::namespace()), 0, -1));
 	}
 }

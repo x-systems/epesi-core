@@ -9,7 +9,8 @@ class SystemCore extends Integration\Modules\ModuleCore
 	protected static $view = SystemSettings::class;
 	
 	protected static $joints = [
-			Integration\SystemSettingsUserMenu::class
+			Integration\SystemSettingsUserMenu::class,
+			Integration\ModuleAdministrationSystemSettings::class
 	];
 	
 	protected static $requires = [

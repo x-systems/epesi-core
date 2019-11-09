@@ -6,6 +6,7 @@ use Epesi\Core\System\Database\Models\Module;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\QueryException;
 use atk4\core\Exception;
+use Illuminate\Support\Facades\File;
 
 class ModuleManager
 {
@@ -118,6 +119,8 @@ class ModuleManager
 	public static function clearCache()
 	{
 		self::$installed = null;
+		File::delete(base_path('bootstrap/cache'));
+		
 		Cache::forget('epesi-modules-installed');
 		Cache::forget('epesi-modules-available');
 	}
@@ -146,7 +149,7 @@ class ModuleManager
 		$installedModules = self::getInstalled();
 		
 		// if epesi is not installed fake having the system module to enable its functionality
-		if ($installedModules->isEmpty()) {
+		if (! $installedModules->contains(\Epesi\Core\System\SystemCore::class)) {
 			$installedModules = collect([
 				'system' => \Epesi\Core\System\SystemCore::class
 			]);
