@@ -22,7 +22,7 @@ class SystemController extends Controller
     	
     	if (SystemCore::isInstalled()) return redirect('home');
     	
-    	$epesi->title = config('epesi.app.title') . ' > ' . __('Installation');
+    	$epesi->title = __(':epesi > Installation', ['epesi' => config('epesi.app.title')]);
     	
     	$epesi->initLayout('Centered');
     	
