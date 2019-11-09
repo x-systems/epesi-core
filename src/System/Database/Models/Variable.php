@@ -22,14 +22,12 @@ class Variable extends Model
 		self::$variables = self::pluck('value', 'name');
 	}
 	
-	public static function get($name, $throwError = true) {
+	public static function get($name, $default = null) {
 		self::cache();
 		
-		if (! self::$variables->has($name) && $throwError) {
-			throw new \Exception('No such variable in database: ' . $name);
-		}
+		if (! self::$variables->has($name)) return $default;
 		
-		return self::$variables->get($name, '');
+		return self::$variables->get($name, $default);
 	}
 	
 	public static function put($name, $value) {
