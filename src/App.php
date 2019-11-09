@@ -61,6 +61,8 @@ class App extends BaseApp
 		
 		$this->addCsrfToken();
 		
+		$this->addFavIcon();
+		
 // 		$this->enablePjax();
 		
 		ob_start();
@@ -121,6 +123,11 @@ class App extends BaseApp
 				\'X-CSRF-TOKEN\': $(\'meta[name="csrf-token"]\').attr(\'content\')
 			}
 		})');
+	}
+	
+	public function addFavIcon()
+	{
+		$this->html->template->appendHTML('HEAD', $this->getTag('link', ['rel' => 'shortcut icon', 'href' => config('epesi.app.favicon', url('favicon.png'))]));
 	}
 	
 	public function enablePjax()
