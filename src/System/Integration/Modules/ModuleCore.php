@@ -30,6 +30,13 @@ abstract class ModuleCore
 	 * @var string
 	 */
 	protected static $alias;
+	
+	/**
+	 * Define module label
+	 * 
+	 * @var string
+	 */
+	protected static $label;
 
 	/**
 	 * Module installation method
@@ -52,6 +59,13 @@ abstract class ModuleCore
 	 * Can be used same as service controller boot method
 	 */
 	public static function boot() {}
+	
+	/**
+	 * Label of the module
+	 */
+	public static function label() {
+		return static::$label?: ucwords(str_ireplace('.', ' ', static::alias()));
+	}
 	
 	/**
 	 * Information about the module
