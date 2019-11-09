@@ -17,7 +17,7 @@ class CreateCoreTables extends Migration
     	
     	Schema::create('variables', function (Blueprint $table) {
             $table->string('name', 128)->primary();
-            $table->text('value');
+            $table->text('value')->nullable();
         });
     	
     	Schema::create('modules', function (Blueprint $table) {

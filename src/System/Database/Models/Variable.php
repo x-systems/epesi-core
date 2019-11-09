@@ -27,7 +27,7 @@ class Variable extends Model
 		
 		if (! self::$variables->has($name)) return $default;
 		
-		return self::$variables->get($name, $default);
+		return self::$variables->get($name, $default)?? $default;
 	}
 	
 	public static function put($name, $value) {
