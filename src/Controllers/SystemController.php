@@ -4,11 +4,9 @@ namespace Epesi\Core\Controllers;
 
 use Illuminate\Routing\Controller;
 use Epesi\Core\System\SystemCore;
-use Epesi\Core\HomePage\HomePageCommon;
 use Epesi\Core\App as Epesi;
-use Epesi\Core\System\SystemInstallWizard;
-use Illuminate\Support\Facades\File;
 use Epesi\Core\System\Integration\Modules\ModuleManager;
+use Epesi\Core\Layout\LayoutView;
 
 class SystemController extends Controller
 {
@@ -31,7 +29,7 @@ class SystemController extends Controller
     	$epesi->layout->set('logo', url('logo'));
     	$epesi->layout->template->setHTML('copyright', config('epesi.app.copyright'));
     	
-    	$epesi->add(new SystemInstallWizard());
+    	$epesi->add(new \Epesi\Core\System\SystemInstallWizard());
     	
     	return $epesi->response();
     }
@@ -43,10 +41,35 @@ class SystemController extends Controller
     
     public function logo()
     {
-    	$path = storage_path(implode(DIRECTORY_SEPARATOR, ['app', 'public', 'system', 'logo.png']));
-
-    	$file = new \Symfony\Component\HttpFoundation\File\File($path);
+    	$meta = \Epesi\Core\System\Logo\LogoSettings::getLogoMeta();
     	
-    	return response(File::get($path), 200, ['Content-type' => $file->getMimeType()])->setMaxAge(604800)->setPublic();
+    	return response($meta['contents'], 200, ['Content-type' => $meta['mime']])->setMaxAge(604800)->setPublic();
+    }
+    
+    public function view(Epesi $epesi, $module, $method = 'body', $args = [])
+    {
+    	$epesi->initLayout(new LayoutView());
+    	
+    	$alias = explode(':', $module);
+    	
+    	$moduleAlias = $alias[0];
+    	$viewAlias = $alias[1]?? null;
+    	
+    	$view = null;
+    	if ($module = ModuleManager::getClass($moduleAlias, true)) {
+    		$viewClass = $module::view($viewAlias);
+
+    		if (class_exists($viewClass)) {
+    			$view = new $viewClass();
+    		}
+    	}
+
+    	if (! $view) abort(404);
+    	
+    	$epesi->add($view)->displayModuleContent($method, $args);
+    	
+    	$epesi->setLocation($view->location());
+    	
+    	return $epesi->response();
     }
 }

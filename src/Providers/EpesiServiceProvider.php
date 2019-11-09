@@ -17,6 +17,8 @@ class EpesiServiceProvider extends ServiceProvider
     {
     	$this->ensureHttps();
     	
+    	if (env('APP_DEBUG', false)) ModuleManager::clearCache();
+    	
     	Route::group(['namespace' => 'Epesi\Core\Controllers', 'middleware' => 'web'], function() {
     		Route::any('/', 'SystemController@index');
     		Route::get('logo', 'SystemController@logo');
@@ -25,7 +27,7 @@ class EpesiServiceProvider extends ServiceProvider
     		Route::group(['middleware' => ['auth', NoCacheHeaders::class]], function() {
     			Route::any('home', 'SystemController@home')->name('home');
     			
-    			Route::any('view/{alias}/{method?}/{args?}', 'ModuleController@view');
+    			Route::any('view/{alias}/{method?}/{args?}', 'SystemController@view');
     		});
     	});
 
