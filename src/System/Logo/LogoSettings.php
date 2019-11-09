@@ -27,13 +27,18 @@ class LogoSettings extends ModuleView
 
 		$form = $segment->add(new Form());
 
-		$form->addField('title', __('Base page title'))->set(Variable::get('system.title'));		
+		$form->addField('title', __('Base page title'))->set(Variable::get('system.title'));
+		
+		$form->addField('custom_logo', ['CheckBox', 'caption' => __('Use custom logo')])->set((bool) Variable::get('system.logo'));
+		
 		$logo = $form->addField('logo', [
 				'UploadImg', 
 				'defaultSrc' => url('logo'), 
 				'thumbnail' => (new View(['element'=>'img', 'class' => ['right', 'floated', 'image'], 'ui' => true]))->setStyle('max-width', '150px'),
-				'placeholder' => __('Upload new logo')
+				'placeholder' => __('Upload file to replace system logo')
 		]);
+		
+		$form->addFieldsDisplayRules(['logo' => ['custom_logo' => 'checked']]);
 		
 		$logo->onDelete(function($fileName) {
 			Storage::disk('public')->delete(self::alias() . '/tmp/' . $fileName);
@@ -50,15 +55,23 @@ class LogoSettings extends ModuleView
 		});
 					
 		$form->onSubmit(function($form) {
-			$name = $form->model['logo'];
-						
-			Storage::disk('public')->move(self::alias() . '/tmp/' . $name, self::alias() . '/' . $name);
-						
+			if ($name = $form->model['custom_logo']? $form->model['logo']: null) {
+				$storage = Storage::disk('public');
+				$from = self::alias() . '/tmp/' . $name;
+				$to = self::alias() . '/' . $name;				
+				
+				if ($storage->exists($to)) {
+					$storage->delete($to);
+				}
+				
+				$storage->move($from, $to);
+			}
+	
+			Variable::put('system.logo', $name);
+			
 			Variable::put('system.title', $form->model['title']);
 			
-			Variable::put('system.logo', $name);
-						
-			return $form->notify(__('Title and logo updated!'));
+			return $form->notify(__('Title and logo updated! Refresh page to see changes ...'));
 		});
 			
 		ActionBar::addButton('back')->link(url('view/system'));
