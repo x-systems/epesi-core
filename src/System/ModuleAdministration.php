@@ -6,8 +6,7 @@ use Epesi\Core\System\Integration\Modules\ModuleView;
 use Illuminate\Support\Facades\Auth;
 use Epesi\Core\System\Integration\Modules\ModuleManager;
 use Epesi\Core\Layout\Seeds\ActionBar;
-use atk4\ui\jsFunction;
-use atk4\ui\jsExpression;
+use Epesi\Core\System\Seeds\Form;
 
 class ModuleAdministration extends ModuleView
 {
@@ -51,14 +50,14 @@ class ModuleAdministration extends ModuleView
 				
 				$this->addUninstallButton($section, $moduleClass);
 				
-				$this->addReinstallButton($section, $moduleClass);
+// 				$this->addReinstallButton($section, $moduleClass);
 			}
 			else {
 				$label = ['Label', __('Available'), 'yellow'];
 				
 				$this->addInstallButton($section, $moduleClass);
 			}
-			
+
 			$section->add($label, 'title')->setStyle('float', 'right');
 			
 			$submodules = ModuleManager::getAll()->filter(function ($subModuleClass) use ($moduleClass) {
@@ -85,27 +84,81 @@ class ModuleAdministration extends ModuleView
 	
 	public function addInstallButton($container, $moduleClass)
 	{
-		$installCallback = $this->add('jsCallback')->set(function() use ($moduleClass) {
+		$callback = $installCallback = $this->add('jsCallback')->set(function() use ($moduleClass) {
 			ob_start();
 			ModuleManager::install($moduleClass);
 			
 			return ob_get_clean();
 		});
+		
+		$dependencies = ModuleManager::listDependencies($moduleClass);		
+		$recommended = ModuleManager::listRecommended($moduleClass);
+		
+		if ($dependencies || $recommended) {
+			$modal = $this->add(['Modal', 'title' => __(':module Module Installation', ['module' => $moduleClass::label()])])->set(function($view) use ($installCallback, $moduleClass, $dependencies, $recommended) {
+				if ($dependencies) {
+					$message = $view->add(['Message', __('Module has following dependencies which will be installed')]);
+					
+					foreach ($dependencies as $parentModule) {
+						$message->text->addParagraph($parentModule::label());
+					}
+				}
+				
+				if ($recommended) {
+					$message = $view->add(['Message', __('Select to install recommended modules for best experience')]);
+					
+					$form = $view->add(new Form());
+					foreach ($recommended as $childModule) {
+						if (! ModuleManager::isAvailable($childModule)) continue;
+						
+						$form->addField($childModule::alias(), ['CheckBox', 'caption' => $childModule::label()]);
+					}
+					
+					$form->onSubmit(function ($form) use ($moduleClass) {
+						ob_start();
+						ModuleManager::install($moduleClass, array_keys($form->getValues(), true));
+						
+						return ob_get_clean();
+					});
+				}
+				
+				$view->add(['Button', __('Install'), 'primary'])->on('click', [
+						isset($form)? $form->submit(): $installCallback
+				]);
+			});
 			
-		$modal = $this->add(['Modal', 'title' => __('Module Installation')])->set(function($view) use ($installCallback) {
-			$view->add('Header')->set('Module has following dependencies which will be installed');
-				
-			$view->add(['Button', __('Install'), 'primary'])->on('click', [
-					$installCallback
-			]);
-		});
-				
-		$container->add(['Button', __('Install'), 'class' => ['green']])->on('click', $modal->show());
+			$callback = $modal->show();
+		}		
+		
+		$container->add(['Button', __('Install'), 'class' => ['green']])->on('click', $callback);
 	}
 	
 	public function addUninstallButton($container, $moduleClass)
 	{
-		$container->add(['Button', __('Uninstall'), 'class' => ['red']]);
+		$callback = $uninstallCallback = $this->add('jsCallback')->set(function() use ($moduleClass) {
+			ob_start();
+			ModuleManager::uninstall($moduleClass);
+			
+			return ob_get_clean();
+		});
+		
+		if ($dependents = ModuleManager::listDependents()[$moduleClass]?? []) {
+			$modal = $this->add(['Modal', 'title' => __(':module Module Installation', ['module' => $moduleClass::label()])])->set(function($view) use ($moduleClass, $dependents, $uninstallCallback) {
+				$message = $view->add(['Message', __('Module is required by following modules')]);
+					
+				foreach ($dependents as $childModule) {
+					$message->text->addParagraph($childModule::label());
+				}
+				
+				$view->add(['Button', __('Install'), 'primary'])->on('click', [
+						$uninstallCallback
+				]);
+			});
+			
+			$callback = $modal->show();
+		}
+				
+		$container->add(['Button', __('Uninstall'), 'class' => ['red']])->on('click', $callback);
 	}
 	
 	public function addReinstallButton($container, $moduleClass)

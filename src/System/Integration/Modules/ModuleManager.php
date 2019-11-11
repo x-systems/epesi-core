@@ -170,7 +170,7 @@ class ModuleManager
 	 * 
 	 * @param string $classOrAlias
 	 */
-	public static function install($classOrAlias)
+	public static function install($classOrAlias, $installRecommended = true)
 	{
 		if (self::isInstalled($classOrAlias)) {
 			print ('Module "' . $classOrAlias . '" already installed!');
@@ -207,14 +207,18 @@ class ModuleManager
 				'alias' => $module->alias()
 		]);
 		
-		foreach ($module->recommended() as $recommendedModule) {
-			try {
-				self::install($recommendedModule);
-			} catch (Exception $e) {
-				// just continue, nothing to do if module cannot be installed
-			}			
+		if ($installRecommended) {
+			$installRecommended = is_array($installRecommended)? $installRecommended: $module->recommended();
+			
+			foreach ($installRecommended as $recommendedModule) {
+				try {
+					self::install($recommendedModule);
+				} catch (Exception $e) {
+					// just continue, nothing to do if module cannot be installed
+				}
+			}
 		}
-		
+				
 		self::clearCache();
 		
 		print ('Module ' . $classOrAlias . ' successfully installed!');
@@ -259,6 +263,38 @@ class ModuleManager
 		return collect($moduleClass::requires())->diff(self::getInstalled())->filter()->all();
 	}	
 	
+	public static function listDependencies($moduleClass) {
+		$ret = collect();
+		foreach (collect($moduleClass::requires()) as $parentClass) {
+			$ret->add($parentClass = self::getClass($parentClass));
+			
+			$ret = $ret->merge(self::listDependencies($parentClass));
+		}
+		
+		return $ret->filter()->unique()->all();
+	}
+	
+	public static function listRecommended($moduleClass) {
+		$ret = collect();
+		foreach (collect($moduleClass::recommended()) as $childClass) {
+			$ret->add($childClass = self::getClass($childClass));
+			
+			$ret = $ret->merge(self::listRecommended($childClass));
+		}
+		
+		return $ret->filter()->unique()->all();
+	}
+	
+	public static function listDependents() {
+		$ret = [];
+		foreach (self::getInstalled() as $moduleClass) {
+			foreach ($moduleClass::requires() as $parentClass) {
+				$ret[$parentClass][] = $moduleClass;
+			}
+		}
+		return $ret;
+	}
+	
 	public static function uninstall($classOrAlias)
 	{
 		if (! self::isInstalled($classOrAlias)) {
@@ -269,6 +305,10 @@ class ModuleManager
 		
 		if (! $moduleClass = self::getClass($classOrAlias)) {
 			throw new \Exception('Module "' . $classOrAlias . '" could not be identified');
+		}
+		
+		foreach (self::listDependents()[$moduleClass]?? [] as $childModule) {
+			self::uninstall($childModule);
 		}
 		
 		/**

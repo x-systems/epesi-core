@@ -11,12 +11,12 @@ class ModuleAdministrationSystemSettings extends Joints\SystemSettingsJoint
 	
 	public function label()
 	{
-		return __('Module Administration');
+		return __('Modules Administration');
 	}
 
 	public function icon()
 	{
-		return 'home';
+		return 'cubes';
 	}
 	
 	public function link() {
