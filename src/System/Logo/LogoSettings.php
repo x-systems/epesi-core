@@ -14,6 +14,8 @@ class LogoSettings extends ModuleView
 {
 	protected $label = 'Title & Logo';
 	
+	protected static $defaultLogo = 'epesi-logo.png';
+	
 	public static function access()
 	{
 		return Auth::user()->can('modify system settings');
@@ -40,8 +42,10 @@ class LogoSettings extends ModuleView
 		
 		$form->addFieldsDisplayRules(['logo' => ['custom_logo' => 'checked']]);
 		
-		$logo->onDelete(function($fileName) {
-			Storage::disk('public')->delete(self::alias() . '/tmp/' . $fileName);
+		$logo->onDelete(function($fileName) use ($logo) {
+			$this->storage()->delete(self::alias() . '/tmp/' . $fileName);
+			
+			$logo->setThumbnailSrc(asset('storage/' . self::alias() . '/' . self::$defaultLogo));
 		});
 
 		$logo->onUpload(function ($files) use ($form, $logo) {
@@ -51,12 +55,12 @@ class LogoSettings extends ModuleView
 			
 			$logo->setThumbnailSrc(asset('storage/' . $tmpPath));
 	
-			Storage::disk('public')->put($tmpPath, file_get_contents($files['tmp_name']));
+			$this->storage()->put($tmpPath, file_get_contents($files['tmp_name']));
 		});
 					
 		$form->onSubmit(function($form) {
 			if ($name = $form->model['custom_logo']? $form->model['logo']: null) {
-				$storage = Storage::disk('public');
+				$storage = $this->storage();
 				$from = self::alias() . '/tmp/' . $name;
 				$to = self::alias() . '/' . $name;				
 				
@@ -79,23 +83,19 @@ class LogoSettings extends ModuleView
 		ActionBar::addButton('save')->on('click', $form->submit());
 	}
 	
-	public static function getLogoPath()
+	public static function getLogoFile()
 	{
-		return self::alias() . '/' . Variable::get('system.logo', 'epesi-logo.png');
-	}
-	
-	public static function getLogoMeta()
-	{
-		$logoPath = self::getLogoPath();
-		
-		return array_merge(Storage::getMetadata($logoPath), [
-				'mime' => Storage::mimeType($logoPath),
-				'contents' => Storage::get($logoPath)
-		]);
+		return self::storage()->path(self::alias() . '/' . Variable::get('system.logo', self::$defaultLogo));
 	}
 	
 	public static function getTitle()
 	{
 		return Variable::get('system.title', config('epesi.app.title'));
 	}
+
+	public static function storage()
+	{
+		return Storage::disk('public');
+	}
+	
 }

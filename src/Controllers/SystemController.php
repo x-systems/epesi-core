@@ -7,6 +7,7 @@ use Epesi\Core\System\SystemCore;
 use Epesi\Core\App as Epesi;
 use Epesi\Core\System\Integration\Modules\ModuleManager;
 use Epesi\Core\Layout\LayoutView;
+use Illuminate\Support\Facades\File;
 
 class SystemController extends Controller
 {
@@ -40,10 +41,10 @@ class SystemController extends Controller
     }
     
     public function logo()
-    {
-    	$meta = \Epesi\Core\System\Logo\LogoSettings::getLogoMeta();
-    	
-    	return response($meta['contents'], 200, ['Content-type' => $meta['mime']])->setMaxAge(604800)->setPublic();
+    { 
+    	$logoFile = \Epesi\Core\System\Logo\LogoSettings::getLogoFile();
+
+    	return response(File::get($logoFile), 200, ['Content-type' => File::mimeType($logoFile)])->setMaxAge(604800)->setPublic();
     }
     
     public function view(Epesi $epesi, $module, $method = 'body', $args = [])
