@@ -119,7 +119,7 @@ class ModuleManager
 	public static function clearCache()
 	{
 		self::$installed = null;
-		File::delete(base_path('bootstrap/cache'));
+		File::cleanDirectory(base_path('bootstrap/cache'));
 		
 		Cache::forget('epesi-modules-installed');
 		Cache::forget('epesi-modules-available');
