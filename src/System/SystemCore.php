@@ -21,14 +21,4 @@ class SystemCore extends Integration\Modules\ModuleCore
 	protected static $recommends = [
 			'dashboard'
 	];
-	
-	public function install()
-	{
-		
-	}
-	
-	public function uninstall()
-	{
-		
-	}
 }

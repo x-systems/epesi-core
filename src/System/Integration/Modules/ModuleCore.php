@@ -44,7 +44,7 @@ abstract class ModuleCore
 	 *
 	 * @return bool - true if installation success, false otherwise
 	 */
-	abstract public function install();
+	public function install() {}
 	
 	/**
 	 * Module uninstallation method
@@ -52,7 +52,7 @@ abstract class ModuleCore
 	 *
 	 * @return bool - true if installation success, false otherwise
 	 */
-	abstract public function uninstall();
+	public function uninstall() {}
 	
 	/**
 	 * Method called at system boot

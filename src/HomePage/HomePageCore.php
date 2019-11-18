@@ -33,9 +33,4 @@ class HomePageCore extends ModuleCore
 				'role' => 'Employee'
 		]);
 	}
-	
-	public function uninstall()
-	{
-		
-	}
 }

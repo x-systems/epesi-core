@@ -13,14 +13,4 @@ class UserCore extends ModuleCore
 			Online\OnlineCore::class,
 			Settings\SettingsCore::class,
 	];
-	
-	public function install()
-	{
-		
-	}
-
-	public function uninstall()
-	{
-		
-	}
 }

@@ -12,14 +12,4 @@ class SettingsCore extends ModuleCore
 	protected static $joints = [
 			UserMenu::class
 	];
-	
-	public function install()
-	{
-		
-	}
-
-	public function uninstall()
-	{
-		
-	}
 }

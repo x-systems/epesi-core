@@ -14,16 +14,6 @@ class LogoCore extends ModuleCore
 			Integration\LogoSystemSettings::class
 	];
 	
-	public function install()
-	{
-		
-	}
-
-	public function uninstall()
-	{
-		
-	}
-	
 	public static function boot()
 	{
 		// dynamically set the page title based on GUI setting
