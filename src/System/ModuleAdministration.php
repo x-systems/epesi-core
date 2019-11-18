@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Epesi\Core\System\Integration\Modules\ModuleManager;
 use Epesi\Core\Layout\Seeds\ActionBar;
 use Epesi\Core\System\Seeds\Form;
+use atk4\ui\jsNotify;
+use atk4\ui\jsExpression;
 
 class ModuleAdministration extends ModuleView
 {
@@ -27,7 +29,7 @@ class ModuleAdministration extends ModuleView
 	public function topLevelModules()
 	{
 		$modules = ModuleManager::getAll();
-		
+
 		return $modules->filter(function ($subModuleClass) use ($modules) {
 			return ! $modules->map(function($moduleClass){
 				return $moduleClass::namespace();
@@ -41,8 +43,7 @@ class ModuleAdministration extends ModuleView
 		
 		foreach ($modules as $moduleClass) {
 			$section = $accordion->addSection($moduleClass::label());
-			
-			
+
 			$section->add(['Message', 'ui' => 'tiny message'])->template->appendHTML('Content', $this->formatModuleInfo($moduleClass));
 
 			if (ModuleManager::isInstalled($moduleClass)) {
@@ -84,11 +85,16 @@ class ModuleAdministration extends ModuleView
 	
 	public function addInstallButton($container, $moduleClass)
 	{
-		$callback = $installCallback = $this->add('jsCallback')->set(function() use ($moduleClass) {
+		$callback = $installCallback = $this->add('jsCallback')->set(function() use ($moduleClass, $container) {
 			ob_start();
 			ModuleManager::install($moduleClass);
 			
-			return ob_get_clean();
+			$message = ob_get_clean();
+			
+			return [
+					new jsNotify($message),
+					new jsExpression('window.setTimeout(function() {window.location.replace([])}, 1200)', [self::selfLink()])
+			];
 		});
 		
 		$dependencies = ModuleManager::listDependencies($moduleClass);		
@@ -139,7 +145,12 @@ class ModuleAdministration extends ModuleView
 			ob_start();
 			ModuleManager::uninstall($moduleClass);
 			
-			return ob_get_clean();
+			$message = ob_get_clean();
+			
+			return [
+					new jsNotify($message),
+					new jsExpression('window.setTimeout(function() {window.location.replace([])}, 1200)', [self::selfLink()])
+			];
 		});
 		
 		if ($dependents = ModuleManager::listDependents()[$moduleClass]?? []) {
