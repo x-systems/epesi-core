@@ -3,6 +3,7 @@
 namespace Epesi\Core\System\Integration\Modules\Concerns;
 
 use Epesi\Core\System\Integration\Modules\ModuleView;
+use Illuminate\Support\Str;
 
 trait HasLinks
 {
@@ -21,9 +22,14 @@ trait HasLinks
 		
 		$viewClass = is_a(static::class, ModuleView::class, true)? static::class: $defaultView;
 		
-		if ($viewClass == $defaultView) $viewClass = null;
+		$viewAlias = null;
+		if ($viewClass !== $defaultView) {
+			$names = array_slice(explode('\\', $viewClass), -1);
+			
+			$viewAlias = str_ireplace('_', '-', Str::snake(reset($names)));
+		}
 		
-		return url(implode('/', ['view', implode('_', array_filter([self::alias(), $viewClass])), $method, self::encodeArgs($args)]));
+		return url(implode('/', ['view', implode(':', array_filter([self::alias(), $viewAlias])), $method, self::encodeArgs($args)]));
 	}
 	
 	/**
