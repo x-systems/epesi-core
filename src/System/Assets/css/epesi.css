@@ -52,6 +52,7 @@
 .launch.button {
 	width: auto;
 	height: 90px;
+	display: inline-flex;
 }
 
 .ui.launch.icon.button i.icon {
