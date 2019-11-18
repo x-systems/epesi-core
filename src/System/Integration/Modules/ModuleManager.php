@@ -83,12 +83,18 @@ class ModuleManager
 	{
 		$ret = collect();
 		foreach (glob($basePath . '/*', GLOB_ONLYDIR|GLOB_NOSORT) as $path) {
-			$moduleNamespace = trim($namespace, '\\') . '\\' . basename($path);
+			$moduleNamespace = trim($namespace, '\\');
+						
+			$subModuleNamespace = $moduleNamespace . '\\' . basename($path);
 			
-			$ret = $ret->merge(self::discoverModuleClasses($moduleNamespace, $path));
+			$ret = $ret->merge(self::discoverModuleClasses($subModuleNamespace, $path));
 			
-			$moduleClass = $moduleNamespace . '\\' . basename($path) . 'Core';
-			
+			$names = array_slice(explode('\\', $moduleNamespace), -1);
+
+			if (! $name = $names? reset($names): '') continue;
+
+			$moduleClass = $moduleNamespace . '\\' . $name . 'Core';
+
 			if (! is_a($moduleClass, ModuleCore::class, true)) continue;
 			
 			$ret->add($moduleClass);
