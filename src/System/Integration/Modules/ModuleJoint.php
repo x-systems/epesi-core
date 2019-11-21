@@ -11,6 +11,14 @@ abstract class ModuleJoint
 	use Concerns\HasPackageManifest;
 
 	/**
+	 * List of runtime registered joints
+	 * Can be used for tesing purposes
+	 * 
+	 * @var array
+	 */
+	protected static $registry = [];
+	
+	/**
 	 * 	Make all joints which are applicable to static class and user has access to
 	 *
 	 * @return 	Collection
@@ -40,6 +48,7 @@ abstract class ModuleJoint
 		$joints = collect(config('epesi.joints'))
 			->merge(self::packageManifest()->joints())
 			->merge(self::moduleJoints())
+			->merge(self::$registry)
 			->unique();
 			
 		return $joints->filter(function($class) {
@@ -60,5 +69,10 @@ abstract class ModuleJoint
 		}
 
 		return $ret->all();
+	}
+	
+	final public static function register($class)
+	{
+		self::$registry[] = $class;
 	}
 }
