@@ -15,7 +15,7 @@ use Epesi\Core\System\Seeds\Form;
 use Epesi\Core\Layout\Seeds\ActionBar;
 use Epesi\Core\System\Integration\Modules\ModuleView;
 
-class AccessView extends ModuleView
+class AccessSettings extends ModuleView
 {
 	protected $label = ['System Settings', 'User Access'];
 	

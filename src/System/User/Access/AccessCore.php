@@ -12,6 +12,8 @@ class AccessCore extends ModuleCore
 {
 	protected static $alias = 'user.access';
 	
+	protected static $view = AccessSettings::class;
+	
 	protected static $joints = [
 			UserAccessSystemSettings::class
 	];
