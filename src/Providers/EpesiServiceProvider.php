@@ -66,8 +66,7 @@ class EpesiServiceProvider extends ServiceProvider
     				$db = DB::getFacadeRoot();
     				
     				return new SQL($db);
-    			}
-    			);
+    			});
     }
     
     /**
