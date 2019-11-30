@@ -34,9 +34,7 @@ class RightMenu extends BaseMenu
 		
 		$this->addItem([
 				'icon' => 'th'
-		], new LaunchPad($this))->setAttr([
-				'title' => __('Launchpad'),
-		]);
+		], new LaunchPad($this));
 		
 		foreach(UserMenuJoint::collect() as $joint) {
 			foreach ($joint->tools()?: [] as $tool) {
