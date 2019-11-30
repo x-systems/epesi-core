@@ -5,7 +5,7 @@ namespace Epesi\Core\Data\Persistence;
 use atk4\dsql\Connection;
 use Illuminate\Database\DatabaseManager;
 
-class SQL extends \atk4\data\Persistence_SQL
+class SQL extends \atk4\data\Persistence\SQL
 {
     /**
      * Take a laravel connection and pass it to ATK Data
