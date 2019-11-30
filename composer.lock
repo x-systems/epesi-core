@@ -4,30 +4,40 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8004a512a3d4f8c82175026f1a001698",
+    "content-hash": "ae4286f075118ee1e9155783928e75f8",
     "packages": [
         {
             "name": "atk4/core",
-            "version": "1.3.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atk4/core.git",
-                "reference": "f74ab9f8f8d3cbdac0aad40282703c69179e1d69"
+                "reference": "6fb650572fb2ba0100b47ab394a77f3229235da5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atk4/core/zipball/f74ab9f8f8d3cbdac0aad40282703c69179e1d69",
-                "reference": "f74ab9f8f8d3cbdac0aad40282703c69179e1d69",
+                "url": "https://api.github.com/repos/atk4/core/zipball/6fb650572fb2ba0100b47ab394a77f3229235da5",
+                "reference": "6fb650572fb2ba0100b47ab394a77f3229235da5",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.6.0",
+                "ext-json": "*",
+                "php": ">=7.2.0",
                 "psr/log": "~1.0"
             },
+            "replace": {
+                "atk4/core": "self.version"
+            },
             "require-dev": {
+                "atk4/data": "dev-develop",
                 "codeclimate/php-test-reporter": "*",
-                "phpunit/phpunit": "<6",
-                "satooshi/php-coveralls": "^1.0"
+                "phpunit/phpunit": "*",
+                "satooshi/php-coveralls": "^1.0",
+                "symfony/contracts": "^1.1",
+                "symfony/yaml": "~2.1|~3.0|~4.0"
+            },
+            "suggest": {
+                "symfony/yaml": "~2.1|~3.0|~4.0"
             },
             "type": "library",
             "autoload": {
@@ -54,29 +64,30 @@
                 "php",
                 "trains"
             ],
-            "time": "2019-02-04T13:37:55+00:00"
+            "time": "2019-11-26T17:34:58+00:00"
         },
         {
             "name": "atk4/data",
-            "version": "1.4.1",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atk4/data.git",
-                "reference": "073dfb1d6c205f4f1a85759b46ba024a02887b1e"
+                "reference": "437cec8622ca3ae973a8312b11a4907752656c0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atk4/data/zipball/073dfb1d6c205f4f1a85759b46ba024a02887b1e",
-                "reference": "073dfb1d6c205f4f1a85759b46ba024a02887b1e",
+                "url": "https://api.github.com/repos/atk4/data/zipball/437cec8622ca3ae973a8312b11a4907752656c0b",
+                "reference": "437cec8622ca3ae973a8312b11a4907752656c0b",
                 "shasum": ""
             },
             "require": {
-                "atk4/core": "^1.3",
-                "atk4/dsql": "^1.2",
-                "php": ">=7.0.0"
+                "atk4/core": "dev-develop",
+                "atk4/dsql": "dev-develop",
+                "ext-intl": "*",
+                "php": ">=7.2.0"
             },
             "require-dev": {
-                "atk4/schema": "*",
+                "atk4/schema": "dev-develop",
                 "codeclimate/php-test-reporter": "*",
                 "phpunit/dbunit": ">=1.2",
                 "phpunit/phpcov": "*",
@@ -113,24 +124,24 @@
                 "query",
                 "sql"
             ],
-            "time": "2019-02-23T22:00:56+00:00"
+            "time": "2019-11-26T19:06:14+00:00"
         },
         {
             "name": "atk4/dsql",
-            "version": "1.2.6",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atk4/dsql.git",
-                "reference": "82b39c73ef693a29d4e62fc826b4686125b298b9"
+                "reference": "25d117355a6b22ab8d5afe7f610a1b7a6685ce75"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atk4/dsql/zipball/82b39c73ef693a29d4e62fc826b4686125b298b9",
-                "reference": "82b39c73ef693a29d4e62fc826b4686125b298b9",
+                "url": "https://api.github.com/repos/atk4/dsql/zipball/25d117355a6b22ab8d5afe7f610a1b7a6685ce75",
+                "reference": "25d117355a6b22ab8d5afe7f610a1b7a6685ce75",
                 "shasum": ""
             },
             "require": {
-                "atk4/core": "^1.3",
+                "atk4/core": "dev-develop",
                 "php": ">=5.6.0"
             },
             "require-dev": {
@@ -167,26 +178,27 @@
                 "orm",
                 "sql"
             ],
-            "time": "2019-02-04T13:45:00+00:00"
+            "time": "2019-08-22T17:39:16+00:00"
         },
         {
             "name": "atk4/ui",
-            "version": "1.7.1",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atk4/ui.git",
-                "reference": "1ca8f16ab7e4a499e9e25690eb237ab4be82940c"
+                "reference": "4fad5d4c91f5d8bc91e648d246e5f783e87bf0c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atk4/ui/zipball/1ca8f16ab7e4a499e9e25690eb237ab4be82940c",
-                "reference": "1ca8f16ab7e4a499e9e25690eb237ab4be82940c",
+                "url": "https://api.github.com/repos/atk4/ui/zipball/4fad5d4c91f5d8bc91e648d246e5f783e87bf0c1",
+                "reference": "4fad5d4c91f5d8bc91e648d246e5f783e87bf0c1",
                 "shasum": ""
             },
             "require": {
-                "atk4/core": "<2",
-                "atk4/data": "<2",
-                "php": ">=5.6.0"
+                "atk4/core": "dev-develop",
+                "atk4/data": "dev-develop",
+                "ext-json": "*",
+                "php": ">=7.2.0"
             },
             "require-dev": {
                 "behat/behat": "^3.4",
@@ -194,8 +206,10 @@
                 "behat/mink-selenium2-driver": "^1.3",
                 "codeclimate/php-test-reporter": "*",
                 "fzaninotto/faker": "*",
+                "guzzlehttp/guzzle": "^6.3",
                 "phpunit/phpcov": "^3.0",
-                "phpunit/phpunit": "<6"
+                "phpunit/phpunit": "<6",
+                "symfony/process": "^4.3"
             },
             "type": "library",
             "autoload": {
@@ -229,7 +243,7 @@
                 "web",
                 "widget"
             ],
-            "time": "2019-06-12T01:56:02+00:00"
+            "time": "2019-11-23T13:48:59+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -4610,7 +4624,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "atk4/ui": 20,
+        "atk4/core": 20,
+        "atk4/data": 20,
+        "atk4/dsql": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

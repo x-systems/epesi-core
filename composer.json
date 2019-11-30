@@ -18,10 +18,13 @@
 	"type" : "project",
 	"require" : {
 		"php" : ">=7.2",
-		"atk4/ui": "^1.7",
+		"atk4/ui": "dev-develop",
 		"laravel/framework": "5.8.*",
 		"joedixon/laravel-translation": "^1.0",
-		"spatie/laravel-permission" : "^3.2"
+		"spatie/laravel-permission" : "^3.2",
+		"atk4/core": "dev-develop",
+		"atk4/data": "dev-develop",
+		"atk4/dsql": "dev-develop"
 	},
 	"require-dev" : {
 		"orchestra/testbench": "^3.8",
