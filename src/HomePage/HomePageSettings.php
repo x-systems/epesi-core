@@ -6,8 +6,6 @@ use Epesi\Core\System\Integration\Modules\ModuleView;
 use Illuminate\Support\Facades\Auth;
 use Epesi\Core\HomePage\Database\Models\HomePage;
 use Epesi\Core\Layout\Seeds\ActionBar;
-use Epesi\Core\System\Seeds\Form;
-use Spatie\Permission\Models\Role;
 use Epesi\Core\HomePage\Integration\Joints\HomePageJoint;
 
 class HomePageSettings extends ModuleView
@@ -36,17 +34,14 @@ class HomePageSettings extends ModuleView
 
 		$this->grid = $this->add([
 				'CRUD',
-				'itemCreate' => ActionBar::addButton('add'),
-				'formCreate' => $this->getHomepageForm(),
-				'formUpdate' => $this->getHomepageForm(),
-				'notifyDefault' => ['jsNotify', 'content' => __('Data is saved!'), 'color'   => 'green'],
-				'canDelete' => false, //use custom delete routine
-				'paginator' => false,
-				'menu' => false
+				'displayFields' => ['path', 'role'],
+				'editFields' => ['path', 'role'],
+				'notifyDefault' => ['jsNotify', 'content' => __('Data is saved!'), 'color' => 'green'],
+				'paginator' => false
 		]);
 		
-		$this->grid->setModel($this->getModel());
-		
+		$this->grid->setModel(HomePage::create());
+
 		$availablePages = self::getAvailableHomePages();
 
 		$this->grid->addDecorator('path', ['Multiformat', function($row, $column) use ($availablePages) {
@@ -55,81 +50,16 @@ class HomePageSettings extends ModuleView
 		
 		$this->grid->addDragHandler()->onReorder(function ($order) {
 			$result = true;
-			foreach ($this->getHomepages() as $homepage) {
-				$homepage->priority = array_search($homepage->id, $order);
+			foreach (HomePage::create() as $homepage) {
+				$homepage['priority'] = array_search($homepage['id'], $order);
 				
 				$result &= $homepage->save();
 			}
 			
 			return $result? $this->notify(__('Homepages reordered!')): $this->notifyError(__('Error saving order!'));
 		});
-		
-		$this->grid->addAction(['icon' => 'red trash'], function ($jschain, $id) {
-			HomePage::find($id)->delete();
-				
-			return $jschain->closest('tr')->transition('fade left');
-		}, __('Are you sure?'));
 	}
-	
-	public function getModel()
-	{
-		$availablePages = self::getAvailableHomePages();
-		$availableRoles = Role::get()->pluck('name')->all();
 
-		$rows = [];
-		foreach ($this->getHomepages() as $homepage) {
-			$rows[] = [
-					'id' => $homepage->id,
-					'path' => $homepage->path,
-					'role' => $homepage->role
-			];
-		}
-		
-		$rowsEmpty = [];
-		
-		$model = new \atk4\data\Model($rows? new \atk4\data\Persistence_Static($rows): new \atk4\data\Persistence_Array($rowsEmpty));
-	
-		$pathField = $rows? $model->hasField('path'): $model->addField('path');
-			
-		$roleField = $rows? $model->hasField('role'): $model->addField('role');
-		
-		$pathField->setDefaults(['caption' => __('Page'), 'values' => $availablePages]);
-
-		$roleField->setDefaults(['caption' => __('Role'), 'enum' => $availableRoles]);
-
-		return $model;
-	}
-	
-	public function getHomepages()
-	{
-		return $this->homepages = $this->homepages?? HomePage::orderBy('priority')->get();
-	}
-	
-	public function getHomepageForm()
-	{
-		if (! $this->form) {		
-			$this->form = new Form(['buttonSave' => ['Button', __('Save'), 'primary']]);
-	
-			$this->form->addHook('submit', function($form) {
-				$values = $form->getValues();
-				
-				if ($id = $values['id']?? null) {
-					HomePage::find($id)->update($values);
-					
-					return $this->grid->jsSaveUpdate();
-				}
-	
-				HomePage::create(array_merge($values, [
-						'priority' => HomePage::max('priority') + 1
-				]));
-	
-				return $this->grid->jsSaveCreate();
-			});
-		}
-
-		return $this->form;
-	}
-	
 	/**
 	 * Collect all home pages from module joints
 	 *
@@ -157,8 +87,8 @@ class HomePageSettings extends ModuleView
 	public static function getUserHomePage()
 	{
 		if (! $user = Auth::user()) return;
-		
-		return HomePage::whereIn('role', $user->roles()->pluck('name'))->orderBy('priority')->first();
+
+		return HomePage::create()->addCondition('role', $user->roles()->pluck('name')->toArray())->loadAny();
 	}
 	
 	/**
@@ -170,6 +100,6 @@ class HomePageSettings extends ModuleView
 	{
 		$homepage = self::getUserHomePage();
 		
-		return $homepage? $homepage->path: self::$defaultPath;
+		return $homepage['path']?? self::$defaultPath;
 	}
 }
