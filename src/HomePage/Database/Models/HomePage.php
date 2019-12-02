@@ -18,7 +18,16 @@ class HomePage extends Model
 		parent::init();
 		
 		$this->addFields([
-				['path', 'caption' => __('Page'), 'values' => HomePageSettings::getAvailableHomePages()],
+				[
+						'path', 
+						'caption' => __('Page'), 
+						'values' => HomePageSettings::getAvailableHomePages(), 
+						'ui'   => [
+								'table' => [
+										'KeyValue',
+								],
+						],
+				],
 				['role', 'caption' => __('Role'), 'enum' => Role::get()->pluck('name')->all()],
 				'priority',
 		]);
