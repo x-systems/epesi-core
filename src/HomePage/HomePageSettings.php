@@ -98,8 +98,6 @@ class HomePageSettings extends ModuleView
 	 */
 	public static function getUserHomePagePath()
 	{
-		$homepage = self::getUserHomePage();
-		
-		return $homepage['path']?? self::$defaultPath;
+		return self::getUserHomePage()['path']?: self::$defaultPath;
 	}
 }
