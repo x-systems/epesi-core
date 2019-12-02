@@ -6,33 +6,21 @@ use Epesi\Core\System\Integration\Modules\ModuleView;
 use Illuminate\Support\Facades\Auth;
 use Epesi\Core\HomePage\Database\Models\HomePage;
 use Epesi\Core\Layout\Seeds\ActionBar;
-use Epesi\Core\HomePage\Integration\Joints\HomePageJoint;
 
 class HomePageSettings extends ModuleView
 {
 	protected $label = 'Home Page Administration';
 	
-	protected $homepages;
-	protected $grid;
-	protected $form;
-	
-	/**
-	 * Fallback path in case no home page set for the user
-	 *
-	 * @var string
-	 */
-	protected static $defaultPath = 'view/user.settings';
-	
 	public static function access()
 	{
-		return Auth::user()->can('modify system settings') && self::getAvailableHomePages();
+		return Auth::user()->can('modify system settings') && HomePage::list();
 	}
 	
 	public function body()
 	{
 		ActionBar::addButton('back')->link(url('view/system'));
 
-		$this->grid = $this->add([
+		$grid = $this->add([
 				'CRUD',
 				'displayFields' => ['path', 'role'],
 				'editFields' => ['path', 'role'],
@@ -40,9 +28,9 @@ class HomePageSettings extends ModuleView
 				'paginator' => false
 		]);
 		
-		$this->grid->setModel(HomePage::create());
+		$grid->setModel(HomePage::create());
 
-		$this->grid->addDragHandler()->onReorder(function ($order) {
+		$grid->addDragHandler()->onReorder(function ($order) {
 			$result = true;
 			foreach (HomePage::create() as $homepage) {
 				$homepage['priority'] = array_search($homepage['id'], $order);
@@ -52,46 +40,5 @@ class HomePageSettings extends ModuleView
 			
 			return $result? $this->notify(__('Homepages reordered!')): $this->notifyError(__('Error saving order!'));
 		});
-	}
-
-	/**
-	 * Collect all home pages from module joints
-	 *
-	 * @return array
-	 */
-	public static function getAvailableHomePages()
-	{
-		static $cache;
-		
-		if (! isset($cache)) {
-			$cache = [];
-			foreach (HomePageJoint::collect() as $joint) {
-				$cache[$joint->link()] = $joint->caption();
-			}
-		}
-		
-		return $cache;
-	}
-	
-	/**
-	 * Get the current user home page
-	 *
-	 * @return HomePage
-	 */
-	public static function getUserHomePage()
-	{
-		if (! $user = Auth::user()) return;
-
-		return HomePage::create()->addCondition('role', $user->roles()->pluck('name')->toArray())->loadAny();
-	}
-	
-	/**
-	 * Get the current user home page path
-	 *
-	 * @return HomePage
-	 */
-	public static function getUserHomePagePath()
-	{
-		return self::getUserHomePage()['path']?: self::$defaultPath;
 	}
 }

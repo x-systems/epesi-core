@@ -37,7 +37,7 @@ class SystemController extends Controller
     
     public function home()
     {
-    	return redirect(SystemCore::isInstalled()? \Epesi\Core\HomePage\HomePageSettings::getUserHomePagePath(): 'install');
+    	return redirect(SystemCore::isInstalled()? \Epesi\Core\HomePage\Database\Models\HomePage::pathOfUser(): 'install');
     }
     
     public function logo()
