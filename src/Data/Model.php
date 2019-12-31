@@ -20,6 +20,11 @@ abstract class Model extends AtkModel
 		return new static($atkDb, $defaults);
 	}
 	
+	public static function migrate()
+	{
+		return \atk4\schema\Migration::getMigration(static::create())->migrate();
+	}
+	
 	public function addCrits($crits = [])
 	{
 		foreach ($crits as $condition) {
