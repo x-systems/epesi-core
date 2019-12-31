@@ -4,7 +4,7 @@ namespace Epesi\Core\Data;
 
 use atk4\data\Model as AtkModel;
 
-abstract class Model extends AtkModel
+class Model extends AtkModel
 {
 	/**
 	 * Create atk4 model and assign default persistence
