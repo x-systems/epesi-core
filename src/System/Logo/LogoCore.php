@@ -2,7 +2,7 @@
 
 namespace Epesi\Core\System\Logo;
 
-use Epesi\Core\System\Integration\Modules\ModuleCore;
+use Epesi\Core\System\Modules\ModuleCore;
 
 class LogoCore extends ModuleCore
 {

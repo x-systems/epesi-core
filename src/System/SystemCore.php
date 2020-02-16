@@ -2,7 +2,7 @@
 
 namespace Epesi\Core\System;
 
-class SystemCore extends Integration\Modules\ModuleCore
+class SystemCore extends Modules\ModuleCore
 {
 	protected static $alias = 'system';
 	
@@ -21,4 +21,14 @@ class SystemCore extends Integration\Modules\ModuleCore
 	protected static $recommends = [
 			'dashboard'
 	];
+	
+	public function migrate()
+	{
+	    Models\Module::migrate();
+	    
+	    Models\Variable::migrate();
+	    
+	    return parent::migrate();
+	}
+	
 }

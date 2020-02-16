@@ -2,9 +2,9 @@
 
 namespace Epesi\Core\System\User\Settings\Integration\Joints;
 
-use Epesi\Core\System\Integration\Modules\ModuleJoint;
-use Epesi\Core\System\Integration\Modules\Concerns\HasLaunchButton;
-use Epesi\Core\System\Integration\Modules\Concerns\HasOptions;
+use Epesi\Core\System\Modules\ModuleJoint;
+use Epesi\Core\System\Modules\Concerns\HasLaunchButton;
+use Epesi\Core\System\Modules\Concerns\HasOptions;
 
 abstract class UserSettingsJoint extends ModuleJoint
 {

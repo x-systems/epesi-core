@@ -5,7 +5,7 @@ namespace Epesi\Core\Controllers;
 use Illuminate\Routing\Controller;
 use Epesi\Core\System\SystemCore;
 use Epesi\Core\App as Epesi;
-use Epesi\Core\System\Integration\Modules\ModuleManager;
+use Epesi\Core\System\Modules\ModuleManager;
 use Epesi\Core\Layout\LayoutView;
 use Illuminate\Support\Facades\File;
 
@@ -37,7 +37,7 @@ class SystemController extends Controller
     
     public function home()
     {
-    	return redirect(SystemCore::isInstalled()? \Epesi\Core\HomePage\Database\Models\HomePage::pathOfUser(): 'install');
+    	return redirect(SystemCore::isInstalled()? \Epesi\Core\HomePage\Models\HomePage::pathOfUser(): 'install');
     }
     
     public function logo()

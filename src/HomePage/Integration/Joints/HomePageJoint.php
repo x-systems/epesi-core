@@ -2,7 +2,7 @@
 
 namespace Epesi\Core\HomePage\Integration\Joints;
 
-use Epesi\Core\System\Integration\Modules\ModuleJoint;
+use Epesi\Core\System\Modules\ModuleJoint;
 
 abstract class HomePageJoint extends ModuleJoint
 {

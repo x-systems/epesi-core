@@ -2,7 +2,7 @@
 
 namespace Epesi\Core\System\User;
 
-use Epesi\Core\System\Integration\Modules\ModuleCore;
+use Epesi\Core\System\Modules\ModuleCore;
 
 class UserCore extends ModuleCore
 {

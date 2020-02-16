@@ -4,9 +4,13 @@ namespace Epesi\Core;
 
 use atk4\ui\App as BaseApp;
 use atk4\ui\jsExpression;
-use Epesi\Core\System\Integration\Modules\Concerns\HasLinks;
+use Epesi\Core\System\Modules\Concerns\HasLinks;
 use Epesi\Core\System\SystemCore;
-use Epesi\Core\System\Integration\Modules\ModuleManager;
+use Epesi\Core\System\Modules\ModuleManager;
+use atk4\ui\Exception\ExitApplicationException;
+use Illuminate\Session\TokenMismatchException;
+use atk4\ui\jsFunction;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class App extends BaseApp
 {
@@ -14,7 +18,12 @@ class App extends BaseApp
 	
 	public $version = '2.0.0-alpha1';
 	
+	public $cdn = [
+			'semantic-ui'      => 'https://cdn.jsdelivr.net/npm/fomantic-ui@2.7.2/dist',
+	];
+	
 	public $always_run = false;
+	
 	protected $url_building_ext = '';
 	
 	public function __construct($defaults = [])
@@ -70,6 +79,47 @@ class App extends BaseApp
 		$this->run();
 		
 		return ob_get_clean();
+	}
+	
+	public function renderException($exception)
+	{
+	    ob_start();
+	    if ($exception instanceof TokenMismatchException) {
+	        $this->jsRedirectHomepage(__('Session expired! Redirecting to your home page ...'));
+	    }
+	    elseif ($exception instanceof NotFoundHttpException) {
+	        $this->jsRedirectHomepage(__('Requested page not found! Redirecting to your home page ...'));
+	    }	    
+	    else {
+	        $this->caughtException($exception);
+	    }
+	    
+	    return ob_get_clean();
+	}
+	
+	public function jsRedirectHomepage($message)
+	{
+	    $homepageUrl = url(\Epesi\Core\HomePage\Database\Models\HomePage::pathOfUser());
+	    
+	    $redirectJs = $this->jsRedirectConfirm($homepageUrl, $message)->jsRender();
+	    
+	    if ($this->isJsonRequest()) {
+	        $this->outputResponseJSON([
+	                'success'   => true,
+	                'message'   => $message,
+	                'atkjs'   => $redirectJs
+	        ]);
+	    }
+	    else {
+	        $this->outputResponseHTML('<script>' . $redirectJs . '</script>');
+	    }
+	}
+	
+	public function jsRedirectConfirm($page, $message)
+	{
+	    $redirectJs = $this->jsRedirect($page)->jsRender();
+	    
+	    return new jsExpression("if (confirm([])) { $redirectJs }", [$message]);
 	}
 	
 	/**

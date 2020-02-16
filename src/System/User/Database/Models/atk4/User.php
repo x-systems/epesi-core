@@ -2,10 +2,13 @@
 
 namespace Epesi\Core\System\User\Database\Models\atk4;
 
-use Epesi\Core\Data\Model;
+use atk4\data\Model;
+use Epesi\Core\Data\HasEpesiConnection;
 
 class User extends Model
 {
+    use HasEpesiConnection;
+    
 	public $table = 'users';
 	
 	function init(){

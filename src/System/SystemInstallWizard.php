@@ -6,9 +6,9 @@ use Epesi\Core\System\Seeds\Form;
 use atk4\ui\jsExpression;
 use atk4\ui\Wizard;
 use Illuminate\Support\Facades\Artisan;
-use Epesi\Core\System\Integration\Modules\Concerns\HasAdminMode;
+use Epesi\Core\System\Modules\Concerns\HasAdminMode;
 use Illuminate\Support\Facades\App;
-use Epesi\Core\System\Integration\Modules\ModuleManager;
+use Epesi\Core\System\Modules\ModuleManager;
 use Epesi\Core\System\User\Database\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -190,7 +190,7 @@ class SystemInstallWizard extends Wizard
 				'prompt' => __('Password mismatch')
 		]]);
 		
-		$form->setValues($wizard->recall('user'));
+		$form->model->set($wizard->recall('user'));
 		
 		$form->validate(function ($form) use ($wizard) {
 			$wizard->memorize('user', $form->model->get());
@@ -202,7 +202,7 @@ class SystemInstallWizard extends Wizard
 	public static function stepInstallationCompleted($wizard)
 	{
 		Artisan::call('migrate');
-		
+
 		ob_start();
 		ModuleManager::install('system');
 		ob_end_clean();

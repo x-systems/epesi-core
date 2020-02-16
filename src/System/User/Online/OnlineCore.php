@@ -2,7 +2,7 @@
 
 namespace Epesi\Core\System\User\Online;
 
-use Epesi\Core\System\Integration\Modules\ModuleCore;
+use Epesi\Core\System\Modules\ModuleCore;
 use Epesi\Core\System\User\Online\Integration\UsersOnlineApplet;
 use Epesi\Base\Dashboard\Integration\UsersOnlineUserSettings;
 

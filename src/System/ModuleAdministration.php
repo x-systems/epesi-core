@@ -2,17 +2,18 @@
 
 namespace Epesi\Core\System;
 
-use Epesi\Core\System\Integration\Modules\ModuleView;
+use Epesi\Core\System\Modules\ModuleView;
 use Illuminate\Support\Facades\Auth;
-use Epesi\Core\System\Integration\Modules\ModuleManager;
+use Epesi\Core\System\Modules\ModuleManager;
 use Epesi\Core\Layout\Seeds\ActionBar;
 use Epesi\Core\System\Seeds\Form;
-use atk4\ui\jsNotify;
-use atk4\ui\jsExpression;
+use atk4\ui\jsReload;
 
 class ModuleAdministration extends ModuleView
 {
 	protected $label = 'Module Administration';
+	
+	protected $accordion;
 	
 	public static function access()
 	{
@@ -23,7 +24,7 @@ class ModuleAdministration extends ModuleView
 	{
 		$this->addControlButtons();
 
-		$this->addAccordion($this, $this->topLevelModules());
+		$this->accordion = $this->addAccordion($this, $this->topLevelModules());
 	}
 	
 	public function topLevelModules()
@@ -40,6 +41,10 @@ class ModuleAdministration extends ModuleView
 	public function addAccordion($container, $modules)
 	{
 		$accordion = $container->add(['Accordion', 'type' => ['styled', 'fluid'], 'settings' => ['animateChildren' => false]])->setStyle(['max-width' => '800px', 'margin-left' => 'auto', 'margin-right' => 'auto']);
+		
+		if ($container == $this) {
+		    $this->accordion = $accordion;
+		}
 		
 		foreach ($modules as $moduleClass) {
 			$section = $accordion->addSection($moduleClass::label());
@@ -69,6 +74,8 @@ class ModuleAdministration extends ModuleView
 			
 			$this->addAccordion($section, $submodules);
 		}
+		
+		return $accordion;
 	}
 	
 	public function formatModuleInfo($moduleClass)
@@ -85,15 +92,17 @@ class ModuleAdministration extends ModuleView
 	
 	public function addInstallButton($container, $moduleClass)
 	{
-		$callback = $installCallback = $this->add('jsCallback')->set(function() use ($moduleClass, $container) {
+	    $button = $container->add(['Button', __('Install'), 'class' => ['green']]);
+	    
+	    $callback = $installCallback = $this->add('jsCallback')->set(function() use ($moduleClass, $container) {
 			ob_start();
 			ModuleManager::install($moduleClass);
 			
 			$message = ob_get_clean();
 			
 			return [
-					new jsNotify($message),
-					new jsExpression('window.setTimeout(function() {window.location.replace([])}, 1200)', [self::selfLink()])
+			        $this->notifySuccess($message),
+			        new jsReload($this->accordion),
 			];
 		});
 		
@@ -136,20 +145,22 @@ class ModuleAdministration extends ModuleView
 			$callback = $modal->show();
 		}		
 		
-		$container->add(['Button', __('Install'), 'class' => ['green']])->on('click', $callback);
+		$button->on('click', $callback);
 	}
 	
 	public function addUninstallButton($container, $moduleClass)
 	{
-		$callback = $uninstallCallback = $this->add('jsCallback')->set(function() use ($moduleClass) {
-			ob_start();
+	    $button = $container->add(['Button', __('Uninstall'), 'class' => ['red']]);
+	    
+	    $callback = $uninstallCallback = $button->add(['jsCallback', 'confirm' => __('Are you sure you want to uninstall :module', ['module' => $moduleClass::label()])])->set(function() use ($moduleClass) {
+		    ob_start();
 			ModuleManager::uninstall($moduleClass);
 			
 			$message = ob_get_clean();
 			
 			return [
-					new jsNotify($message),
-					new jsExpression('window.setTimeout(function() {window.location.replace([])}, 1200)', [self::selfLink()])
+			        $this->notifySuccess($message),
+			        new jsReload($this->accordion),
 			];
 		});
 		
@@ -161,15 +172,13 @@ class ModuleAdministration extends ModuleView
 					$message->text->addParagraph($childModule::label());
 				}
 				
-				$view->add(['Button', __('Install'), 'primary'])->on('click', [
-						$uninstallCallback
-				]);
+				$view->add(['Button', __('Install'), 'primary'])->on('click', $uninstallCallback);
 			});
 			
 			$callback = $modal->show();
 		}
-				
-		$container->add(['Button', __('Uninstall'), 'class' => ['red']])->on('click', $callback);
+			
+		$button->on('click', $callback);
 	}
 	
 	public function addReinstallButton($container, $moduleClass)
@@ -189,7 +198,10 @@ class ModuleAdministration extends ModuleView
 		ActionBar::addButton(['icon' => 'refresh', 'label' => __('Clear Cache')])->callback(function($callback) {
 			ModuleManager::clearCache();
 			
-			return $this->notify(__('Cache cleared!'));
+			return [
+			        new jsReload($this->accordion),
+			        $this->notifySuccess(__('Cache cleared!'))
+			];
 		});
 	}
 	

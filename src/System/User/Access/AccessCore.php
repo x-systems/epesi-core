@@ -4,7 +4,7 @@ namespace Epesi\Core\System\User\Access;
 
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Epesi\Core\System\Integration\Modules\ModuleCore;
+use Epesi\Core\System\Modules\ModuleCore;
 use Epesi\Core\System\User\Access\Integration\UserAccessSystemSettings;
 use Illuminate\Support\Facades\Gate;
 

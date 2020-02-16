@@ -2,10 +2,10 @@
 
 namespace Epesi\Core\System\Logo;
 
-use Epesi\Core\System\Integration\Modules\ModuleView;
+use Epesi\Core\System\Modules\ModuleView;
 use Illuminate\Support\Facades\Auth;
 use Epesi\Core\System\Seeds\Form;
-use Epesi\Core\System\Database\Models\Variable;
+use Epesi\Core\System\Models\Variable;
 use Illuminate\Support\Facades\Storage;
 use Epesi\Core\Layout\Seeds\ActionBar;
 use atk4\ui\View;
@@ -29,9 +29,9 @@ class LogoSettings extends ModuleView
 
 		$form = $segment->add(new Form());
 
-		$form->addField('title', __('Base page title'))->set(Variable::get('system.title'));
+		$form->addField('title', __('Base page title'))->set(Variable::recall('system.title'));
 		
-		$form->addField('custom_logo', ['CheckBox', 'caption' => __('Use custom logo')])->set((bool) Variable::get('system.logo'));
+		$form->addField('custom_logo', ['CheckBox', 'caption' => __('Use custom logo')])->set((bool) Variable::recall('system.logo'));
 		
 		$logo = $form->addField('logo', [
 				'UploadImg', 
@@ -85,12 +85,12 @@ class LogoSettings extends ModuleView
 	
 	public static function getLogoFile()
 	{
-		return self::storage()->path(self::alias() . '/' . Variable::get('system.logo', self::$defaultLogo));
+		return self::storage()->path(self::alias() . '/' . Variable::recall('system.logo', self::$defaultLogo));
 	}
 	
 	public static function getTitle()
 	{
-		return Variable::get('system.title', config('epesi.app.title'));
+		return Variable::recall('system.title', config('epesi.app.title'));
 	}
 
 	public static function storage()

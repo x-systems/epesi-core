@@ -13,7 +13,7 @@ use atk4\ui\TableColumn\Template;
 use atk4\data\Persistence_Static;
 use Epesi\Core\System\Seeds\Form;
 use Epesi\Core\Layout\Seeds\ActionBar;
-use Epesi\Core\System\Integration\Modules\ModuleView;
+use Epesi\Core\System\Modules\ModuleView;
 
 class AccessSettings extends ModuleView
 {

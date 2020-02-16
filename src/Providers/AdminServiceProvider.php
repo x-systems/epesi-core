@@ -7,7 +7,7 @@ use Epesi\Core\Console\DatabaseCreateCommand;
 use Epesi\Core\Console\EpesiCommand;
 use Epesi\Core\Console\SetEnvCommand;
 use Epesi\Core\Console\DatabaseConnectionCommand;
-use Epesi\Core\System\Integration\Modules\ModuleManager;
+use Epesi\Core\System\Modules\ModuleManager;
 use Epesi\Core\Console\ModuleInstallCommand;
 
 class AdminServiceProvider extends ServiceProvider

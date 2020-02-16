@@ -4,7 +4,7 @@ namespace Epesi\Core\Layout;
 
 use atk4\ui\jQuery;
 use Illuminate\Support\Arr;
-use Epesi\Core\System\Integration\Modules\ModuleView;
+use Epesi\Core\System\Modules\ModuleView;
 
 /**
  * Implements a classic 100% width admin layout.
@@ -61,7 +61,7 @@ class LayoutView extends ModuleView
         
         $this->setVersion();
         
-        $this->js(true, null, 'body')->niceScroll();
+//         $this->js(true, null, 'body')->niceScroll();
         
 //         $this->js(true, null, new jsExpression('window'))->on('pageshow', new jsFunction(['event'], [
 //         			new jsExpression('
@@ -98,16 +98,20 @@ class LayoutView extends ModuleView
 		$this->location = $crumbs;
 
 		$crumb = $this->locationBar->add('BreadCrumb');
+		
+		$title = [];
 		foreach ($crumbs as $level) {
 			$label = $level['label']?? $level;
 			$link = $level['link']?? null;
 			
 			$crumb->addCrumb($label, $link);
+			
+			$title[] = $label;
 		}
 
 		$crumb->popTitle();
 		
-		$this->app->title = implode(' > ', Arr::prepend($crumbs, config('epesi.app.title', 'EPESI')));
+		$this->app->title = implode(' > ', Arr::prepend($title, config('epesi.app.title', 'EPESI')));
 		
 		return $this;
 	}

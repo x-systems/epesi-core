@@ -2,9 +2,9 @@
 
 namespace Epesi\Core\HomePage;
 
-use Epesi\Core\System\Integration\Modules\ModuleView;
+use Epesi\Core\System\Modules\ModuleView;
 use Illuminate\Support\Facades\Auth;
-use Epesi\Core\HomePage\Database\Models\HomePage;
+use Epesi\Core\HomePage\Models\HomePage;
 use Epesi\Core\Layout\Seeds\ActionBar;
 
 class HomePageSettings extends ModuleView
@@ -31,14 +31,11 @@ class HomePageSettings extends ModuleView
 		$grid->setModel(HomePage::create());
 
 		$grid->addDragHandler()->onReorder(function ($order) {
-			$result = true;
 			foreach (HomePage::create() as $homepage) {
-				$homepage['priority'] = array_search($homepage['id'], $order);
-				
-				$result &= $homepage->save();
+				$homepage->save(['priority' => array_search($homepage['id'], $order)]);
 			}
 			
-			return $result? $this->notify(__('Homepages reordered!')): $this->notifyError(__('Error saving order!'));
+			return $this->notifySuccess(__('Homepages reordered!'));
 		});
 	}
 }

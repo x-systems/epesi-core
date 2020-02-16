@@ -2,7 +2,7 @@
 
 namespace Epesi\Core\System;
 
-use Epesi\Core\System\Integration\Modules\ModuleView;
+use Epesi\Core\System\Modules\ModuleView;
 use Epesi\Core\System\Integration\Joints\SystemSettingsJoint;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,7 +23,7 @@ class SystemSettings extends ModuleView
 
 		$sections = [];
 		/**
-		 * @var SystemSettngsJoint $joint
+		 * @var SystemSettingsJoint $joint
 		 */
 		foreach (SystemSettingsJoint::collect() as $joint) {
 			$sections[$joint->section()][$joint->label()] = $joint;

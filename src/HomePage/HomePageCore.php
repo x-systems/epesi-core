@@ -2,7 +2,7 @@
 
 namespace Epesi\Core\HomePage;
 
-use Epesi\Core\System\Integration\Modules\ModuleCore;
+use Epesi\Core\System\Modules\ModuleCore;
 use Epesi\Core\System\User\Access\AccessCore;
 
 class HomePageCore extends ModuleCore
@@ -21,8 +21,10 @@ class HomePageCore extends ModuleCore
 	
 	public function install()
 	{
+	    Models\HomePage::migrate();
+	    
 		// setup default home pages
-		Database\Models\HomePage::create()->import([
+		Models\HomePage::create()->import([
 	    		[
 			    		'path' => 'view/dashboard',
 			    		'role' => 'Super Admin'

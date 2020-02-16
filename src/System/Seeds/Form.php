@@ -5,7 +5,7 @@ namespace Epesi\Core\System\Seeds;
 use atk4\ui\Form as BaseForm;
 use atk4\ui\jsExpression;
 use atk4\ui\jsFunction;
-use Epesi\Core\System\Integration\Modules\Concerns\Notifies;
+use Epesi\Core\System\Modules\Concerns\Notifies;
 
 class Form extends BaseForm
 {
@@ -97,22 +97,6 @@ class Form extends BaseForm
 		];
 		
 		return $this;
-	}
-	
-	public function setValues($values)
-	{
-		foreach ($values?: [] as $name => $value) {
-			if (! $field = $this->fields[$name]?? null) continue;
-			
-			$field->set($value);
-		}
-		
-		return $this;
-	}
-	
-	public function getValues()
-	{
-		return $this->model->get();
 	}
 	
 	public function validate($callback)

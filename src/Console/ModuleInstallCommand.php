@@ -3,7 +3,7 @@
 namespace Epesi\Core\Console;
 
 use Illuminate\Console\Command;
-use Epesi\Core\System\Integration\Modules\ModuleManager;
+use Epesi\Core\System\Modules\ModuleManager;
 
 class ModuleInstallCommand extends Command
 {
