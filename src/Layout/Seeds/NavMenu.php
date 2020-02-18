@@ -10,6 +10,8 @@ use Epesi\Core\Layout\Integration\Joints\NavMenuJoint;
 
 class NavMenu extends BaseMenu
 {
+    public $ui = 'inverted nav menu';
+    
 	public function init()
 	{		
 		parent::init();

@@ -28,6 +28,10 @@
 	padding: 5px;
 }
 
+.ui.inverted.nav.menu {
+	background-color: #283e4a;
+}
+
 .item.header {
 	height: 44px;
 }

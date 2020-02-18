@@ -25,6 +25,10 @@ class RightMenu extends BaseMenu
 		
 		$this->tools = collect();
 		
+		// credits
+		$this->addItem(__(':epesi powered version :version', ['epesi' => config('epesi.app.credit.title', 'EPESI'), 'version' => $this->app->version]))->setStyle('font-size', '80%')->link(config('epesi.app.credit.link'));
+		
+		// global search
 		$this->addItem()->add(new Input([
 				'placeholder' => 'Search',
 				'icon' => 'search'
