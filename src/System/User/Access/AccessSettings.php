@@ -10,10 +10,10 @@ use atk4\data\Model;
 use atk4\ui\jsReload;
 use atk4\ui\jsExpression;
 use atk4\ui\TableColumn\Template;
-use atk4\data\Persistence_Static;
 use Epesi\Core\System\Seeds\Form;
 use Epesi\Core\Layout\Seeds\ActionBar;
 use Epesi\Core\System\Modules\ModuleView;
+use atk4\data\Persistence\Static_;
 
 class AccessSettings extends ModuleView
 {
@@ -24,7 +24,7 @@ class AccessSettings extends ModuleView
 	
 	public function body()
 	{
-		ActionBar::addButton('back')->link(url('view/system'));
+		ActionBar::addItemButton('back')->link(url('view/system'));
 		
 		$this->showEditPermissions();
 		
@@ -116,7 +116,7 @@ class AccessSettings extends ModuleView
 	
 	protected function getModel($array)
 	{
-		return new Model(new Persistence_Static($array));
+		return new Model(new Static_($array));
 	}
 	
 	protected function addGrantRoleAccessButton()
@@ -142,7 +142,7 @@ class AccessSettings extends ModuleView
 			});
 		});
 		
-		ActionBar::addButton(['icon' => 'group', 'label' => __('Grant Role Access')])->on('click', $modal->show());
+		ActionBar::addItemButton([__('Grant Role Access'), 'icon' => 'group'])->on('click', $modal->show());
 	}
 	
 	protected function addGrantUserAccessButton()
@@ -168,7 +168,7 @@ class AccessSettings extends ModuleView
 			});
 		});
 		
-		ActionBar::addButton(['icon' => 'user', 'label' => __('Grant User Access')])->on('click', $modal->show());
+		ActionBar::addItemButton([__('Grant User Access'), 'icon' => 'user', ])->on('click', $modal->show());
 	}
 	protected function deleteButton()
 	{

@@ -30,16 +30,8 @@ class Variable extends Model
 	    
 	    $this->addFields([
 	            'name',
-	            'value' => ['type' => 'text']
+	            'value' => ['type' => 'text', 'serialize' => 'base64']
 	    ]);
-
-	    $this->addHook('beforeSave', function(Variable $variable) {
-	        $variable['value'] = json_encode($variable['value']);
-	    });
-	    
-	    $this->addHook('beforeLoad', function(Variable $variable) {
-	        $variable['value'] = $variable['value']? json_decode($variable['value']): '';
-	    });
 	}
 	
 	public static function recall($name, $default = null) {
@@ -62,7 +54,7 @@ class Variable extends Model
 		self::$variables->put($name, $value);
 		
 		$variable = self::create()->addCondition('name', $name)->tryLoadAny();
-		
+
 		if ($variable->loaded()) {
 		    $variable->save(compact('value'));
 		}

@@ -29,9 +29,14 @@ class LogoSettings extends ModuleView
 
 		$form = $segment->add(new Form());
 
-		$form->addField('title', __('Base page title'))->set(Variable::recall('system.title'));
+		$form->addField('title', __('Base page title'));
 		
-		$form->addField('custom_logo', ['CheckBox', 'caption' => __('Use custom logo')])->set((bool) Variable::recall('system.logo'));
+		$form->addField('custom_logo', ['CheckBox', 'caption' => __('Use custom logo')]);
+		
+		$form->model->set([
+		        'title' => Variable::recall('system.title'),
+		        'custom_logo' => (bool) Variable::recall('system.logo')
+		]);
 		
 		$logo = $form->addField('logo', [
 				'UploadImg', 
@@ -59,10 +64,10 @@ class LogoSettings extends ModuleView
 		});
 					
 		$form->onSubmit(function($form) {
-			if ($name = $form->model['custom_logo']? $form->model['logo']: null) {
+			if ($logo = $form->model['custom_logo']? $form->model['logo']: null) {
 				$storage = $this->storage();
-				$from = self::alias() . '/tmp/' . $name;
-				$to = self::alias() . '/' . $name;				
+				$from = self::alias() . '/tmp/' . $logo;
+				$to = self::alias() . '/' . $logo;				
 				
 				if ($storage->exists($to)) {
 					$storage->delete($to);
@@ -70,17 +75,17 @@ class LogoSettings extends ModuleView
 				
 				$storage->move($from, $to);
 			}
-	
-			Variable::put('system.logo', $name);
+
+	        Variable::memorize('system.logo', $logo);
 			
-			Variable::put('system.title', $form->model['title']);
+			Variable::memorize('system.title', $form->model['title']);
 			
-			return $form->notify(__('Title and logo updated! Refresh page to see changes ...'));
+			return $this->notifySuccess(__('Title and logo updated! Refresh page to see changes ...'));
 		});
 			
-		ActionBar::addButton('back')->link(url('view/system'));
+		ActionBar::addItemButton('back')->link(url('view/system'));
 			
-		ActionBar::addButton('save')->on('click', $form->submit());
+		ActionBar::addItemButton('save')->on('click', $form->submit());
 	}
 	
 	public static function getLogoFile()

@@ -156,8 +156,8 @@ class LayoutView extends ModuleView
     public function setActionBar()
     {
     	if ($this->actionBar) return;
-    	
-    	$this->actionBar = $this->add(new Seeds\ActionBar(), 'ActionBar');
+
+    	$this->actionBar = $this->add(Seeds\ActionBar::class, 'ActionBar');
     }
     
     public function setVersion()

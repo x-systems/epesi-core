@@ -24,7 +24,7 @@ class ModuleAdministration extends ModuleView
 	{
 		$this->addControlButtons();
 
-		$this->accordion = $this->addAccordion($this, $this->topLevelModules());
+		$this->addAccordion($this, $this->topLevelModules());
 	}
 	
 	public function topLevelModules()
@@ -188,14 +188,14 @@ class ModuleAdministration extends ModuleView
 	
 	public function addControlButtons()
 	{
-		ActionBar::addButton('back')->link(url('view/system'));
+		ActionBar::addItemButton('back')->link(url('view/system'));
 		
 		$this->addClearCacheButton();
 	}
 	
 	public function addClearCacheButton()
 	{
-		ActionBar::addButton(['icon' => 'refresh', 'label' => __('Clear Cache')])->callback(function($callback) {
+	    ActionBar::addItemButton([__('Clear Cache'), 'icon' => 'refresh', 'hint' => __('Clears module cache and re-discovers all available modules')])->callback(function($callback) {
 			ModuleManager::clearCache();
 			
 			return [

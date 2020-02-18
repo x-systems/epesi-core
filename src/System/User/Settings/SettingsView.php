@@ -40,8 +40,8 @@ class SettingsView extends ModuleView
 			return $form->notify(__('Settings saved!'));
 		});
 		
-		ActionBar::addButton('back');
+		ActionBar::addItemButton('back');
 			
-		ActionBar::addButton('save')->on('click', $form->submit());
+		ActionBar::addItemButton('save')->on('click', $form->submit());
 	}
 }

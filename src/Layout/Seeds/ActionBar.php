@@ -2,24 +2,22 @@
 
 namespace Epesi\Core\Layout\Seeds;
 
-use atk4\ui\View;
-use Illuminate\Support\Collection;
-use Epesi\Core\System\Seeds\ActionButton;
+use atk4\ui\Menu;
+use atk4\ui\Item;
 
-class ActionBar extends View
+class ActionBar extends Menu
 {
-	public $ui = 'actionbar segment';
+    public $ui = 'actionbar menu';
+    
+	protected static $buttons = [];
 	
-	/**
-	 * @var Collection
-	 */
-	protected static $buttons;
+	protected static $menus = [];
 	
 	protected static function getPredefined($key)
 	{
-		$predefined = [	
+		$predefined = [
 				'back' => [
-						'label' => __('Back'),
+						__('Back'),
 						'icon' => 'arrow left',
 						'weight' => 10000,
 						'attr' => [
@@ -27,73 +25,75 @@ class ActionBar extends View
 						],
 				],
 				'save' => [
-						'label' => __('Save'),
+						__('Save'),
 						'icon' => 'save',
 				],
 				'add' => [
-						'label' => __('Add'),
+						__('Add'),
 						'icon' => 'add',
 				],
 				'edit' => [
-						'label' => __('Edit'),
+						__('Edit'),
 						'icon' => 'edit'
 				],
 				'delete' => [
-						'label' => __('Delete'),
+						__('Delete'),
 						'icon' => 'trash'
 				],
 		];
 		
-		return $predefined[$key]?? ['label' => $key];
-	}
-	
-	public function __construct($label = null, $class = null)
-	{
-		parent::__construct($label, $class);
-		
-		self::$buttons = collect();
+		return $predefined[$key] ?? ['label' => $key];
 	}
 	
 	public function renderView()
-	{
-		$this->prepareButtons();
-		
-		parent::renderView();
+    {
+        $this->elements = collect($this->elements)->sortByDesc(function ($element) {
+            return $element->weight ?? 10;
+        })->toArray();
+
+        return parent::renderView();
 	}
 	
-	protected function prepareButtons()
+	/**
+	 * Adds a button to the ActionBar
+	 * 
+	 * @param string|array|ActionBarItem $button
+	 * 
+	 * @return Item
+	 */
+	public static function addItemButton($button, $defaults = [])
 	{
-		foreach (self::$buttons->sortByDesc(function ($button) {
-			return $button->weight;
-		}) as $button) {
-			$this->add($button);
-		}
-	}
-	
-	public static function addButton($button)
-	{
-		if (is_string($button)) {
-			$button = self::getPredefined($button);
-		}
+		$button = is_string($button)? self::getPredefined($button): $button;
 		
-		if (is_array($button)) {
-			$button = new ActionButton($button);
-		}
+		$button = is_array($button)? new ActionBarItem($button): $button;
 		
-		self::$buttons->add($button);
+		$actionBar = self::instance();
 		
-		return $button;
+		return $actionBar->addItem($actionBar->mergeSeeds($button, $defaults));
 	}
 	
 	public static function addButtons($buttons)
 	{
-		foreach (is_array($buttons)? $buttons: [$buttons] as $button) {
-			self::addButton($button);
+		foreach ((array) $buttons as $button) {
+			self::addItemButton($button);
 		}
+	}
+	
+	public static function addMenuButton($menu)
+	{
+	    return self::instance()->addMenu($menu);
 	}
 
 	public static function clear()
 	{
-		self::$buttons = collect();
+		self::instance()->elements = null;
+	}
+	
+	/**
+	 * @return self
+	 */
+	public static function instance()
+	{
+		return epesi()->layout->actionBar;
 	}
 }
