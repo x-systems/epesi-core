@@ -4,8 +4,6 @@ namespace Epesi\Core\Layout\Seeds;
 
 use Illuminate\Support\Collection;
 use atk4\ui\Menu as BaseMenu;
-use atk4\ui\Accordion;
-use atk4\ui\jsExpressionable;
 use Epesi\Core\Layout\Integration\Joints\NavMenuJoint;
 
 class NavMenu extends BaseMenu
@@ -41,68 +39,31 @@ class NavMenu extends BaseMenu
 			$weight2 = $entry2['weight']?? 10;
 			
 			return $weight1 <=> $weight2;
-		})->map(function($item, $caption) use ($menu) {
-			if (! ($item['access']?? true)) return;
+		})->map(function($entry, $caption) use ($menu) {
+			if (! ($entry['access'] ?? true)) return;
 			
-			if (!isset($item['link']) && !is_array($item)) {
-				$item = [
-						'link' => $item
-				];
+			if (!isset($entry['action']) && !is_array($entry)) {
+				$entry = ['action' => $entry];
 			}
 			
-			$item['caption'] = $item['caption']?? $caption;
+			$entry['item'] = $entry['item'] ?? $caption;
 			
-			if (is_array($item['caption'])) {
-				$item['caption'] = [$caption] + $item['caption'];
+			if (is_array($entry['item'])) {
+				$entry['item'] = [$caption] + $entry['item'];
 			}
 			
-			if ($subitems = $item['menu']?? []) {
-				$submenu = $menu->addMenu($item['caption']);
+			if ($subitems = $entry['menu'] ?? []) {
+				$submenu = $menu->addMenu($entry['item']);
 				
 				self::addItems($submenu, collect($subitems));
 			}
-			elseif ($subitems = $item['group']?? []) {
-				$subgroup = $menu->addGroup($item['caption']);
-				
-				if (($item['toggle']?? false) && !$menu->in_dropdown) {
-					$subgroup->addClass('toggle-group');
-					$subgroup->add(['Icon', 'dropdown'], 'Icon')->removeClass('item');
-				}
-				
+			elseif ($subitems = $entry['group'] ?? []) {
+			    $subgroup = $menu->addGroup($entry['item']);
+
 				self::addItems($subgroup, collect($subitems));
 			}
-			elseif ($subitems = $item['accordion']?? []) {
-				$accordion = $menu->add(['Accordion']);
-				
-				$section = $accordion->addSection($item['caption']);
-				
-				foreach ($subitems as $subitem) {
-					$subitem = $section->add(['Item', 'Test', 'ui' => 'item'])->setElement('a');
-					
-					$action = null;
-					$link = $item['link']?? '';
-					if (is_string($link) || is_array($link)) {
-						$action = $section->url($link);
-					}
-					
-					if (is_string($link)) {
-						$subitem->setAttr('href', $link);
-					}
-					
-					if ($action instanceof jsExpressionable) {
-						$subitem->js('click', $link);
-					}
-				}
-// 				self::addItems($accordion, collect($subitems));
-			}
 			else {
-				if (is_a($menu, Accordion::class)) {
-					$menu->add(['View', 'Test']);
-				}
-				else {
-					$menu->addItem($item['caption'], $item['link']?? '');
-				}
-				
+			    $menu->addItem($entry['item'], $entry['action'] ?? '');
 			}
 		});
 	}

@@ -4,7 +4,6 @@ namespace Epesi\Core\System\Modules\Concerns;
 
 use Epesi\Core\System\Modules\ModuleView;
 use Illuminate\Support\Str;
-use atk4\core\SessionTrait;
 
 trait HasLinks
 {

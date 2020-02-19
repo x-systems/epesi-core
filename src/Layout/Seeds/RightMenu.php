@@ -4,7 +4,6 @@ namespace Epesi\Core\Layout\Seeds;
 
 use atk4\ui\Menu as BaseMenu;
 use atk4\ui\FormField\Input;
-use Illuminate\Support\Facades\URL;
 use Epesi\Core\Layout\Integration\Joints\UserMenuJoint;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,7 +63,7 @@ class RightMenu extends BaseMenu
 				'action' => url('logout'), 
 				'group' => '10000:user',
 				'callback' => function ($item){
-					$logoutForm = $item->add(['View', 'attr' => ['method' => 'POST', 'action' => URL::to('logout')]])->setElement('form')->addStyle(['display' => 'none']);
+					$logoutForm = $item->add(['View', 'attr' => ['method' => 'POST', 'action' => url('logout')]])->setElement('form')->addStyle(['display' => 'none']);
 					$logoutForm->id = 'logout-form';
 					$logoutForm->add(['View', 'attr' => ['type' => 'hidden', 'name' => '_token', 'value' => csrf_token()]])->setElement('input');
 				},
