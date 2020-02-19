@@ -7,9 +7,7 @@ use atk4\ui\jsExpression;
 use Epesi\Core\System\Modules\Concerns\HasLinks;
 use Epesi\Core\System\SystemCore;
 use Epesi\Core\System\Modules\ModuleManager;
-use atk4\ui\Exception\ExitApplicationException;
 use Illuminate\Session\TokenMismatchException;
-use atk4\ui\jsFunction;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class App extends BaseApp
@@ -28,21 +26,13 @@ class App extends BaseApp
 	
 	public function __construct($defaults = [])
 	{
-		$this->cdn = array_merge($this->cdn, config('epesi.app.cdn', []));
-
-		$this->collectTemplates();
-		
 		parent::__construct([
 				'title' => config('epesi.app.title', 'EPESI'),
+		        'cdn' => array_merge($this->cdn, (array) config('epesi.app.cdn')),
+				//TODO: set the skin from admin / user selection
+		        'skin' => config('epesi.app.skin', $this->skin),
+		        'template_dir' => array_merge(ModuleManager::collect('templates', $this->skin), (array) $this->template_dir)
 		]);
-	}
-	
-	final public function collectTemplates()
-	{
-		//TODO: set the skin from admin / user selection
-		$this->skin = config('epesi.app.skin', $this->skin);
-
-		$this->template_dir = array_merge(ModuleManager::collect('templates', $this->skin), $this->template_dir?: []);
 	}
 	
 	final public static function module()
