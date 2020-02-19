@@ -42,7 +42,7 @@ class NavMenu extends BaseMenu
 		})->map(function($entry, $caption) use ($menu) {
 			if (! ($entry['access'] ?? true)) return;
 			
-			if (!isset($entry['action']) && !is_array($entry)) {
+			if (!is_array($entry)) {
 				$entry = ['action' => $entry];
 			}
 			
