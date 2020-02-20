@@ -1,38 +1,37 @@
 <?php
 
-namespace Epesi\Core\Controllers;
+namespace Epesi\Core;
 
-use Illuminate\Routing\Controller;
+use Illuminate\Routing\Controller as BaseController;
 use Epesi\Core\System\SystemCore;
-use Epesi\Core\App as Epesi;
 use Epesi\Core\System\Modules\ModuleManager;
 use Epesi\Core\Layout\LayoutView;
 use Illuminate\Support\Facades\File;
 
-class SystemController extends Controller
+class Controller extends BaseController
 {
     public function index()
     {
     	return SystemCore::isInstalled()? redirect('home'): redirect('install');
     }
     
-    public function install(Epesi $epesi)
+    public function install(UI $ui)
     {
     	// make sure the installation information is fresh
     	ModuleManager::clearCache();
     	
     	if (SystemCore::isInstalled()) return redirect('home');
     	
-    	$epesi->title = __(':epesi > Installation', ['epesi' => config('epesi.app.title')]);
+    	$ui->title = __(':epesi > Installation', ['epesi' => config('epesi.app.title')]);
     	
-    	$epesi->initLayout('Centered');
+    	$ui->initLayout('Centered');
     	
-    	$epesi->layout->set('logo', url('logo'));
-    	$epesi->layout->template->setHTML('copyright', config('epesi.app.copyright'));
+    	$ui->layout->set('logo', url('logo'));
+    	$ui->layout->template->setHTML('copyright', config('epesi.app.copyright'));
     	
-    	$epesi->add(new \Epesi\Core\System\SystemInstallWizard());
+    	$ui->add(new \Epesi\Core\System\SystemInstallWizard());
     	
-    	return $epesi->response();
+    	return $ui->response();
     }
     
     public function home()
@@ -47,9 +46,9 @@ class SystemController extends Controller
     	return response(File::get($logoFile), 200, ['Content-type' => File::mimeType($logoFile)])->setMaxAge(604800)->setPublic();
     }
     
-    public function view(Epesi $epesi, $module, $method = 'body', $args = [])
+    public function view(UI $ui, $module, $method = 'body', $args = [])
     {
-    	$epesi->initLayout(new LayoutView());
+    	$ui->initLayout(new LayoutView());
     	
     	$alias = explode(':', $module);
     	
@@ -67,10 +66,10 @@ class SystemController extends Controller
 
     	if (! $view) abort(404);
     	
-    	$epesi->add($view)->displayModuleContent($method, $args);
+    	$ui->add($view)->displayModuleContent($method, $args);
     	
-    	$epesi->setLocation($view->location());
+    	$ui->setLocation($view->location());
     	
-    	return $epesi->response();
+    	return $ui->response();
     }
 }

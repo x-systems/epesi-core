@@ -77,7 +77,7 @@ class LayoutView extends ModuleView
         $this->menu = $this->add(['Menu', 'atk-topMenu fixed horizontal', 'element' => 'header'], 'TopMenu');
 
         // company logo
-        // see Epesi\Core\Controllers\SystemController::logo
+        // see \Epesi\Core\Controller::logo
         $this->menu->add(['class' => ['epesi-logo'], 'style' => ['width' =>  '167px']])->add(['Image', url('logo')])->setStyle(['max-height' => '32px']);
         
         if ($this->burger) {
@@ -86,7 +86,7 @@ class LayoutView extends ModuleView
         }
        	
 		// home icon redirects to /home path 
-		// see Epesi\Core\Controllers\SystemController::home
+		// see \Epesi\Core\Controller::home
         $this->menu->addItem(['class' => ['icon epesi-home']], url('home'))->add(['Icon', 'home']);
 
 		// location bar

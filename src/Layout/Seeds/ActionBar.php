@@ -94,6 +94,6 @@ class ActionBar extends Menu
 	 */
 	public static function instance()
 	{
-		return epesi()->layout->actionBar;
+		return ui()->layout->actionBar;
 	}
 }

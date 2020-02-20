@@ -3,9 +3,9 @@
 namespace Epesi\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Epesi\Core\App;
+use Epesi\Core\UI as App;
 
-class Epesi extends Facade
+class UI extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -14,6 +14,6 @@ class Epesi extends Facade
      */
     protected static function getFacadeAccessor()
     {
-    	return App::class;
+        return App::class;
     }
 }

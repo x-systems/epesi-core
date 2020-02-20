@@ -2,7 +2,6 @@
 
 namespace Epesi\Core;
 
-use atk4\ui\App as BaseApp;
 use atk4\ui\jsExpression;
 use Epesi\Core\System\Modules\Concerns\HasLinks;
 use Epesi\Core\System\SystemCore;
@@ -10,7 +9,7 @@ use Epesi\Core\System\Modules\ModuleManager;
 use Illuminate\Session\TokenMismatchException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class App extends BaseApp
+class UI extends \atk4\ui\App
 {
 	use HasLinks;
 	

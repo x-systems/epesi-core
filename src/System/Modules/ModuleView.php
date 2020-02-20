@@ -15,7 +15,7 @@ abstract class ModuleView extends View
 	use Concerns\Notifies;
 	
 	/**
-	 * @var \Epesi\Core\App
+	 * @var \Epesi\Core\UI
 	 */
 	public $app;
 	

@@ -38,7 +38,7 @@ class SystemInstallWizard extends Wizard
 		$this->addStep([__('Complete'), 'icon'=>'check', 'description'=>__('Complete installation')], [__CLASS__, 'stepInstallationCompleted']);
 		
 		// below step is skipped because of redirecting to 'login' path once system installed
-		// see Epesi\Core\Controllers\SystemController::install
+		// see \Epesi\Core\Controller::install
 		$this->addFinish([__CLASS__, 'stepInstallationCompleted']);
 	}
 	

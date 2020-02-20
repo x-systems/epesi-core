@@ -12,11 +12,11 @@ trait HasAssetsAccess
 	}
 	
 	final public static function requireJS($file = 'default.js', $isAsync = false, $isDefer = false) {
-		return epesi()->requireJS(self::assetUrl('js/'. $file), $isAsync, $isDefer);
+		return ui()->requireJS(self::assetUrl('js/'. $file), $isAsync, $isDefer);
 	}
 	
 	final public static function requireCSS($file = 'default.css') {
-		return epesi()->requireCSS(self::assetUrl('css/'. $file));
+		return ui()->requireCSS(self::assetUrl('css/'. $file));
 	}
 	
 	/**
