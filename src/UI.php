@@ -54,9 +54,7 @@ class UI extends \atk4\ui\App
 // 	}
 	
 	public function render()
-	{	
-		$this->module()::requireCSS('epesi.css');
-		
+	{			
 		$this->addCsrfToken();
 		
 		$this->addFavIcon();
@@ -139,6 +137,8 @@ class UI extends \atk4\ui\App
 				
 		//TODO: include below in app.js and app.css
 		
+	    $this->module()::requireCSS('epesi.css');
+	    
 		$localJs = url('storage/system/js');
 		$localCss = url('storage/system/css');
 		
