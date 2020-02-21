@@ -70,11 +70,17 @@ class UI extends \atk4\ui\App
 		return ob_get_clean();
 	}
 	
+	/**
+	 * Handles / renders exceptions
+	 * 
+	 * @param \Exception $exception
+	 * @return string
+	 */
 	public function renderException($exception)
 	{
 	    ob_start();
 	    if ($exception instanceof TokenMismatchException) {
-	        $this->jsRedirectHomepage(__('Session expired! Redirecting to your home page ...'));
+	        $this->jsRedirectHomepage(__('Session expired! Redirecting to login screen ...'));
 	    }
 	    elseif ($exception instanceof NotFoundHttpException) {
 	        $this->jsRedirectHomepage(__('Requested page not found! Redirecting to your home page ...'));
@@ -86,6 +92,11 @@ class UI extends \atk4\ui\App
 	    return ob_get_clean();
 	}
 	
+	/**
+	 * Redirects to epesi homepage
+	 * 
+	 * @param string $message
+	 */
 	public function jsRedirectHomepage($message)
 	{
 	    $homepageUrl = url(HomePage\Models\HomePage::pathOfUser());
@@ -104,6 +115,13 @@ class UI extends \atk4\ui\App
 	    }
 	}
 	
+	/**
+	 * Displays confirmation dialog and redirects to $page
+	 * 
+	 * @param string $page
+	 * @param string $message
+	 * @return \atk4\ui\jsExpression
+	 */
 	public function jsRedirectConfirm($page, $message)
 	{
 	    $redirectJs = $this->jsRedirect($page)->jsRender();
@@ -157,6 +175,9 @@ class UI extends \atk4\ui\App
 		$this->requireJS($urlJs.'/clipboard.js');
 	}
 	
+	/**
+	 * Add Laravel required csrf token to the page
+	 */
 	public function addCsrfToken()
 	{
 		$this->html->template->appendHTML('meta', $this->getTag('meta', ['name' => 'csrf-token', 'content' => csrf_token()]));
@@ -168,6 +189,9 @@ class UI extends \atk4\ui\App
 		})');
 	}
 	
+	/**
+	 * Adds the favicon set in config
+	 */
 	public function addFavIcon()
 	{
 		$this->html->template->appendHTML('HEAD', $this->getTag('link', ['rel' => 'shortcut icon', 'href' => config('epesi.ui.favicon', url('favicon.png'))]));
