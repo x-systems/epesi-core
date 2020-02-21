@@ -4,7 +4,6 @@ namespace Epesi\Core;
 
 use atk4\ui\jsExpression;
 use Epesi\Core\System\Modules\Concerns\HasLinks;
-use Epesi\Core\System\SystemCore;
 use Epesi\Core\System\Modules\ModuleManager;
 use Illuminate\Session\TokenMismatchException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -41,7 +40,7 @@ class UI extends \atk4\ui\App
 	
 	final public static function module()
 	{
-		return SystemCore::class;
+	    return System\SystemCore::class;
 	}
 	
 	public function response()
@@ -60,6 +59,8 @@ class UI extends \atk4\ui\App
 	
 	public function render()
 	{			
+	    System\SystemCore::requireCSS('epesi.css');
+	    
 		$this->addCsrfToken();
 		
 		$this->addFavIcon();
@@ -114,7 +115,7 @@ class UI extends \atk4\ui\App
 	        ]);
 	    }
 	    else {
-	        $this->outputResponseHTML('<script>' . $redirectJs . '</script>');
+	        $this->outputResponseHTML($this->getTag('script', $redirectJs));
 	    }
 	}
 	
@@ -142,8 +143,6 @@ class UI extends \atk4\ui\App
 				
 		//TODO: include below in app.js and app.css
 		
-	    $this->module()::requireCSS('epesi.css');
-	    
 		$localJs = url('storage/system/js');
 		$localCss = url('storage/system/css');
 		
