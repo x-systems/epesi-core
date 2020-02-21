@@ -30,7 +30,12 @@ class UI extends \atk4\ui\App
 		        'cdn' => array_merge($this->cdn, (array) config('epesi.ui.cdn')),
 				//TODO: set the skin from admin / user selection
 		        'skin' => config('epesi.ui.skin', $this->skin),
-		        'template_dir' => array_merge(ModuleManager::collect('templates', $this->skin), (array) $this->template_dir)
+		        'template_dir' => array_merge(ModuleManager::collect('templates', $this->skin), (array) $this->template_dir),
+		        'catch_error_types' => config('app.debug') ? 
+		                  // debug mode
+		                  E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_USER_DEPRECATED : 
+		                  // production mode
+		                  E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR
 		]);
 	}
 	
