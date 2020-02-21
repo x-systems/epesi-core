@@ -88,7 +88,7 @@ class UI extends \atk4\ui\App
 	
 	public function jsRedirectHomepage($message)
 	{
-	    $homepageUrl = url(\Epesi\Core\HomePage\Database\Models\HomePage::pathOfUser());
+	    $homepageUrl = url(HomePage\Models\HomePage::pathOfUser());
 	    
 	    $redirectJs = $this->jsRedirectConfirm($homepageUrl, $message)->jsRender();
 	    
