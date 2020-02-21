@@ -99,17 +99,17 @@ class SystemInstallWizard extends Wizard
 		
 		$license->js(true)->niceScroll();
 		
-		$license->template->setHTML('epesi', config('epesi.app.title'));
+		$license->template->setHTML('epesi', config('epesi.ui.title'));
 		
-		$license->template->setHTML('copyright', config('epesi.app.copyright'));
+		$license->template->setHTML('copyright', config('epesi.ui.copyright'));
 		
 		$column = $columns->addColumn();
 		
 		$form = $column->add(new Form());
 		$form->addField('copyright', ['CheckBox', 'caption' => __('I will not remove the Copyright notice as required by the MIT license.')], ['required'=>true]);
-		$form->addField('logo', ['CheckBox', 'caption' => __('I will not remove ":epesi powered" logo and the link from the application login screen or the toolbar.', ['epesi' => config('epesi.app.title')])], ['required'=>true]);
+		$form->addField('logo', ['CheckBox', 'caption' => __('I will not remove ":epesi powered" logo and the link from the application login screen or the toolbar.', ['epesi' => config('epesi.ui.title')])], ['required'=>true]);
 		$form->addField('support', ['CheckBox', 'caption' => __('I will not remove "Support -> About" credit page from the application menu.')], ['required'=>true]);
-		$form->addField('store', ['CheckBox', 'caption' => __('I will not remove or rename ":epesi Store" links from the application.', ['epesi' => config('epesi.app.title')])], ['required'=>true]);
+		$form->addField('store', ['CheckBox', 'caption' => __('I will not remove or rename ":epesi Store" links from the application.', ['epesi' => config('epesi.ui.title')])], ['required'=>true]);
 		
 		$form->onSubmit(function ($form) use ($wizard) {
 			return $wizard->jsNext();
@@ -218,7 +218,7 @@ class SystemInstallWizard extends Wizard
 				'password' => Hash::make($user['password']),
 		])->assignRole('Super Admin');
 		
-		$wizard->add(['Header', __(':epesi was successfully installed!', ['epesi' => config('epesi.app.title')]), 'huge centered']);
+		$wizard->add(['Header', __(':epesi was successfully installed!', ['epesi' => config('epesi.ui.title')]), 'huge centered']);
 	}
 
 	public static function getDisplayLanguages() {

@@ -111,7 +111,7 @@ class LayoutView extends ModuleView
 
 		$crumb->popTitle();
 		
-		$this->app->title = implode(' > ', Arr::prepend($title, config('epesi.app.title', 'EPESI')));
+		$this->app->title = implode(' > ', Arr::prepend($title, config('epesi.ui.title', 'EPESI')));
 		
 		return $this;
 	}

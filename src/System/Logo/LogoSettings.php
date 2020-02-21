@@ -95,7 +95,7 @@ class LogoSettings extends ModuleView
 	
 	public static function getTitle()
 	{
-		return Variable::recall('system.title', config('epesi.app.title'));
+		return Variable::recall('system.title', config('epesi.ui.title'));
 	}
 
 	public static function storage()

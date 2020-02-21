@@ -26,10 +26,10 @@ class UI extends \atk4\ui\App
 	public function __construct($defaults = [])
 	{
 		parent::__construct([
-				'title' => config('epesi.app.title', 'EPESI'),
-		        'cdn' => array_merge($this->cdn, (array) config('epesi.app.cdn')),
+				'title' => config('epesi.ui.title', 'EPESI'),
+		        'cdn' => array_merge($this->cdn, (array) config('epesi.ui.cdn')),
 				//TODO: set the skin from admin / user selection
-		        'skin' => config('epesi.app.skin', $this->skin),
+		        'skin' => config('epesi.ui.skin', $this->skin),
 		        'template_dir' => array_merge(ModuleManager::collect('templates', $this->skin), (array) $this->template_dir)
 		]);
 	}
@@ -170,7 +170,7 @@ class UI extends \atk4\ui\App
 	
 	public function addFavIcon()
 	{
-		$this->html->template->appendHTML('HEAD', $this->getTag('link', ['rel' => 'shortcut icon', 'href' => config('epesi.app.favicon', url('favicon.png'))]));
+		$this->html->template->appendHTML('HEAD', $this->getTag('link', ['rel' => 'shortcut icon', 'href' => config('epesi.ui.favicon', url('favicon.png'))]));
 	}
 	
 	public function enablePjax()

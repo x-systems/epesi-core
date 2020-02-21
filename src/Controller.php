@@ -22,12 +22,12 @@ class Controller extends BaseController
     	
     	if (SystemCore::isInstalled()) return redirect('home');
     	
-    	$ui->title = __(':epesi > Installation', ['epesi' => config('epesi.app.title')]);
+    	$ui->title = __(':epesi > Installation', ['epesi' => config('epesi.ui.title')]);
     	
     	$ui->initLayout('Centered');
     	
     	$ui->layout->set('logo', url('logo'));
-    	$ui->layout->template->setHTML('copyright', config('epesi.app.copyright'));
+    	$ui->layout->template->setHTML('copyright', config('epesi.ui.copyright'));
     	
     	$ui->add(new \Epesi\Core\System\SystemInstallWizard());
     	

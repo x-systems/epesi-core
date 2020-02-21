@@ -17,6 +17,6 @@ class LogoCore extends ModuleCore
 	public static function boot()
 	{
 		// dynamically set the page title based on GUI setting
-		config(['epesi.app.title' => LogoSettings::getTitle()]);
+		config(['epesi.ui.title' => LogoSettings::getTitle()]);
 	}
 }
