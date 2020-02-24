@@ -10,8 +10,8 @@ use atk4\data\Model;
 use atk4\ui\jsReload;
 use atk4\ui\jsExpression;
 use atk4\ui\TableColumn\Template;
-use Epesi\Core\System\Seeds\Form;
-use Epesi\Core\Layout\Seeds\ActionBar;
+use Epesi\Core\System\View\Form;
+use Epesi\Core\Layout\View\ActionBar;
 use Epesi\Core\System\Modules\ModuleView;
 use atk4\data\Persistence\Static_;
 

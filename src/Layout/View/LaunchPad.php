@@ -1,12 +1,12 @@
 <?php
 
-namespace Epesi\Core\Layout\Seeds;
+namespace Epesi\Core\Layout\View;
 
 use Illuminate\Support\Facades\URL;
 use atk4\ui\jsExpression;
 use atk4\ui\VirtualPage;
 use Closure;
-use Epesi\Core\System\Seeds\LaunchButton;
+use Epesi\Core\System\View\LaunchButton;
 
 class LaunchPad extends jsExpression
 {

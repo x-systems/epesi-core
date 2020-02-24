@@ -2,7 +2,7 @@
 
 namespace Epesi\Core\System;
 
-use Epesi\Core\System\Seeds\Form;
+use Epesi\Core\System\View\Form;
 use atk4\ui\jsExpression;
 use atk4\ui\Wizard;
 use Illuminate\Support\Facades\Artisan;

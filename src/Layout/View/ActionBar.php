@@ -1,6 +1,6 @@
 <?php
 
-namespace Epesi\Core\Layout\Seeds;
+namespace Epesi\Core\Layout\View;
 
 use atk4\ui\Menu;
 use atk4\ui\Item;

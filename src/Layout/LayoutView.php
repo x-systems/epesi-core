@@ -125,7 +125,7 @@ class LayoutView extends ModuleView
 	{
 		if ($this->menuRight) return;
 
-		$this->menuRight = $this->menu->add(new Seeds\RightMenu([
+		$this->menuRight = $this->menu->add(new View\RightMenu([
 				'ui' => false
 		]), 'RightMenu')->addClass('right menu')->removeClass('item');
 	}
@@ -134,7 +134,7 @@ class LayoutView extends ModuleView
     {
         if ($this->menuLeft) return;
         
-        $this->menuLeft = $this->add(new Seeds\NavMenu('left vertical labeled sidebar'), 'LeftMenu');
+        $this->menuLeft = $this->add(new View\NavMenu('left vertical labeled sidebar'), 'LeftMenu');
 
         if (! $this->burger) return;
 
@@ -157,7 +157,7 @@ class LayoutView extends ModuleView
     {
     	if ($this->actionBar) return;
 
-    	$this->actionBar = $this->add(Seeds\ActionBar::class, 'ActionBar');
+    	$this->actionBar = $this->add(View\ActionBar::class, 'ActionBar');
     }
     
     public function setVersion()

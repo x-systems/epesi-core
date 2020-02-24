@@ -5,8 +5,8 @@ namespace Epesi\Core\System;
 use Epesi\Core\System\Modules\ModuleView;
 use Illuminate\Support\Facades\Auth;
 use Epesi\Core\System\Modules\ModuleManager;
-use Epesi\Core\Layout\Seeds\ActionBar;
-use Epesi\Core\System\Seeds\Form;
+use Epesi\Core\Layout\View\ActionBar;
+use Epesi\Core\System\View\Form;
 use atk4\ui\jsReload;
 
 class ModuleAdministration extends ModuleView

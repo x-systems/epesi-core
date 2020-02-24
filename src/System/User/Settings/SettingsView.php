@@ -4,8 +4,8 @@ namespace Epesi\Core\System\User\Settings;
 
 use Epesi\Core\System\Modules\ModuleView;
 use Epesi\Core\System\User\Settings\Integration\Joints\UserSettingsJoint;
-use Epesi\Core\System\Seeds\Form;
-use Epesi\Core\Layout\Seeds\ActionBar;
+use Epesi\Core\System\View\Form;
+use Epesi\Core\Layout\View\ActionBar;
 use Epesi\Core\System\User\Settings\Database\Models\UserSetting;
 
 class SettingsView extends ModuleView

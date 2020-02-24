@@ -4,10 +4,10 @@ namespace Epesi\Core\System\Logo;
 
 use Epesi\Core\System\Modules\ModuleView;
 use Illuminate\Support\Facades\Auth;
-use Epesi\Core\System\Seeds\Form;
+use Epesi\Core\System\View\Form;
 use Epesi\Core\System\Models\Variable;
 use Illuminate\Support\Facades\Storage;
-use Epesi\Core\Layout\Seeds\ActionBar;
+use Epesi\Core\Layout\View\ActionBar;
 use atk4\ui\View;
 
 class LogoSettings extends ModuleView

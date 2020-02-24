@@ -1,10 +1,11 @@
 <?php 
 
-namespace Epesi\Core\Layout\Seeds;
+namespace Epesi\Core\Layout\View;
 
 use Illuminate\Support\Collection;
 use atk4\ui\Menu as BaseMenu;
 use Epesi\Core\Layout\Integration\Joints\NavMenuJoint;
+use atk4\ui\jsChain;
 
 class NavMenu extends BaseMenu
 {
@@ -31,7 +32,7 @@ class NavMenu extends BaseMenu
 // 			}
 // 		');
 	}
-	
+
 	public static function addItems($menu, Collection $items)
 	{
 		$items->sort(function ($entry1, $entry2) {
@@ -41,7 +42,7 @@ class NavMenu extends BaseMenu
 			return $weight1 <=> $weight2;
 		})->map(function($entry, $caption) use ($menu) {
 			if (! ($entry['access'] ?? true)) return;
-			
+
 			if (!is_array($entry)) {
 				$entry = ['action' => $entry];
 			}
@@ -52,9 +53,12 @@ class NavMenu extends BaseMenu
 				$entry['item'] = [$caption] + $entry['item'];
 			}
 			
-			if ($subitems = $entry['menu'] ?? []) {
+			if ($subitems = $entry['menu'] ?? []) {		
 				$submenu = $menu->addMenu($entry['item']);
 				
+// 				$submenu->addClass('right pointing');
+// 				$submenu->js = ['transition' => 'swing left', 'on' => 'click'];
+
 				self::addItems($submenu, collect($subitems));
 			}
 			elseif ($subitems = $entry['group'] ?? []) {

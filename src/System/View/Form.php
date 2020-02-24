@@ -1,6 +1,6 @@
 <?php
 
-namespace Epesi\Core\System\Seeds;
+namespace Epesi\Core\System\View;
 
 use atk4\ui\Form as BaseForm;
 use atk4\ui\jsExpression;

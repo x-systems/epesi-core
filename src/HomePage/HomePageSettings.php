@@ -5,7 +5,7 @@ namespace Epesi\Core\HomePage;
 use Epesi\Core\System\Modules\ModuleView;
 use Illuminate\Support\Facades\Auth;
 use Epesi\Core\HomePage\Models\HomePage;
-use Epesi\Core\Layout\Seeds\ActionBar;
+use Epesi\Core\Layout\View\ActionBar;
 
 class HomePageSettings extends ModuleView
 {
