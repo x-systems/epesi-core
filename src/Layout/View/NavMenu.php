@@ -5,7 +5,6 @@ namespace Epesi\Core\Layout\View;
 use Illuminate\Support\Collection;
 use atk4\ui\Menu as BaseMenu;
 use Epesi\Core\Layout\Integration\Joints\NavMenuJoint;
-use atk4\ui\jsChain;
 
 class NavMenu extends BaseMenu
 {

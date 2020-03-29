@@ -30,9 +30,24 @@ use Epesi\Core\System\Modules\ModuleView;
  */
 class LayoutView extends ModuleView
 {
+    /**
+     * @var View\NavMenu
+     */
     public $menuLeft;    // vertical menu
+       
+    /**
+     * @var \atk4\ui\Menu
+     */
     public $menu;        // horizontal menu
+    
+    /**
+     * @var \atk4\ui\Menu
+     */
     public $menuRight;   // vertical pull-down
+       
+    /**
+     * @var View\ActionBar
+     */
     public $actionBar;   
     public $locationBar;
     
@@ -50,13 +65,13 @@ class LayoutView extends ModuleView
     public function init()
     {
         parent::init();
-
+        
         $this->setMenu();
         $this->setActionBar();
         
 //         if (request()->pjax()) return;
         
-        $this->setMenuLeft();        
+        $this->setMenuLeft();  
         $this->setMenuRight();
         
         $this->setVersion();
@@ -81,7 +96,6 @@ class LayoutView extends ModuleView
         $this->menu->add(['class' => ['epesi-logo'], 'style' => ['width' =>  '167px']])->add(['Image', url('logo')])->setStyle(['max-height' => '32px']);
         
         if ($this->burger) {
-        	/** @scrutinizer ignore-call */
         	$this->burger = $this->menu->addItem(['class' => ['icon atk-leftMenuTrigger']]);
         }
        	
@@ -134,7 +148,7 @@ class LayoutView extends ModuleView
     {
         if ($this->menuLeft) return;
         
-        $this->menuLeft = $this->add(new View\NavMenu('left vertical labeled sidebar'), 'LeftMenu');
+        $this->menuLeft = View\NavMenu::addTo($this, 'left vertical labeled sidebar', ['LeftMenu']);
 
         if (! $this->burger) return;
 
@@ -157,7 +171,9 @@ class LayoutView extends ModuleView
     {
     	if ($this->actionBar) return;
 
-    	$this->actionBar = $this->add(View\ActionBar::class, 'ActionBar');
+    	$this->actionBar = View\ActionBar::addTo($this, [], ['ActionBar']);
+    	
+    	return $this;
     }
     
     public function setVersion()
