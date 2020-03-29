@@ -18,6 +18,11 @@ class SQL extends \atk4\data\Persistence\SQL
      */
     public function __construct(DatabaseManager $database)
     {
-    	parent::__construct(Connection::connect($database->connection()->getPdo()));
+    	$pdo = $database->connection()->getPdo();
+    	
+    	// temporary fix of atk4/data inability to handle PREPARE on 'is null'
+    	$pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
+
+    	parent::__construct(Connection::connect($pdo));
     }
 }
