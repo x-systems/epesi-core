@@ -25,7 +25,8 @@ class Variable extends Model
 		self::$variables = self::pluck('value', 'name');
 	}
 	
-	public function init() {
+	public function init(): void
+	{
 	    parent::init();
 	    
 	    $this->addFields([

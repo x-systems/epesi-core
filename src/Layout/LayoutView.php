@@ -5,6 +5,8 @@ namespace Epesi\Core\Layout;
 use atk4\ui\jQuery;
 use Illuminate\Support\Arr;
 use Epesi\Core\System\Modules\ModuleView;
+use atk4\core\SessionTrait;
+use atk4\ui\jsExpression;
 
 /**
  * Implements a classic 100% width admin layout.
@@ -30,6 +32,8 @@ use Epesi\Core\System\Modules\ModuleView;
  */
 class LayoutView extends ModuleView
 {
+    use SessionTrait;
+    
     /**
      * @var View\NavMenu
      */
@@ -62,7 +66,7 @@ class LayoutView extends ModuleView
     
     protected $location;
 
-    public function init()
+    public function init(): void
     {
         parent::init();
         
@@ -152,18 +156,15 @@ class LayoutView extends ModuleView
 
         if (! $this->burger) return;
 
-        if (! session()->get('menu', 1)) {
-        	$this->isMenuLeftVisible = false;
-        }
+        $this->isMenuLeftVisible = $this->learn('menu', $this->isMenuLeftVisible);
         
         $this->burger->add(['Icon',	'content'])->on('click', [
         		(new jQuery('.ui.left.sidebar'))->toggleClass('visible'),
         		(new jQuery('.epesi-logo'))->toggleClass('expanded'),
         		(new jQuery('body'))->toggleClass('atk-leftMenu-visible'),
         		$this->burger->add('jsCallback')->set(function($j, $visible) {
-        			session()->put('menu', $visible? 1: 0);
-        			session()->save();
-        		}, [new \atk4\ui\jsExpression( '$("#' . $this->menuLeft->id . '").hasClass("visible")? 1: 0' )])
+        		    $this->memorize('menu', filter_var($visible, FILTER_VALIDATE_BOOLEAN));
+        		}, [$this->menuLeft->js(true)->hasClass('visible')])
         ]);
     }
     

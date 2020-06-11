@@ -11,7 +11,8 @@ class Module extends Model
     
     public $table = 'modules';
     
-    function init() {
+    function init(): void
+    {
         parent::init();
         
         $this->addFields([

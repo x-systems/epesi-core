@@ -14,6 +14,8 @@ use Epesi\Core\System\View\Form;
 use Epesi\Core\Layout\View\ActionBar;
 use Epesi\Core\System\Modules\ModuleView;
 use atk4\data\Persistence\Static_;
+use atk4\ui\Table;
+use atk4\ui\TableColumn\ActionButtons;
 
 class AccessSettings extends ModuleView
 {
@@ -69,13 +71,13 @@ class AccessSettings extends ModuleView
 			})->toArray();
 
 			$column = $this->columns()->addColumn();
-			$rolesTable = $column->add('Table');
+			$rolesTable = Table::addTo($column);
 			$rolesTable->setModel($this->getModel($rolesData), false);
 			
 			$rolesTable->addColumn('name', 'Text', ['caption' => __('Roles allowed to :permission', ['permission' => $permission->name])]);
 			
-			$roleActions = $rolesTable->addColumn(null, 'Actions');
-			$roleActions->addAction($this->deleteButton(), function($jQuery, $roleId) use ($permission) {
+			$roleActions = $rolesTable->addColumn(null, ActionButtons::class);
+			$roleActions->addButton($this->deleteButton(), function($jQuery, $roleId) use ($permission) {
 				Role::findById($roleId)->revokePermissionTo($permission);
 				
 				return $this->reload();
@@ -83,13 +85,13 @@ class AccessSettings extends ModuleView
 				
 			$usersData = $permission->users()->get()->toArray();
 
-			$usersTable = $column->add('Table');
+			$usersTable = Table::addTo($column);
 			$usersTable->setModel($this->getModel($usersData), false);
 				
 			$usersTable->addColumn('name', 'Text', ['caption' => __('Users allowed to :permission', ['permission' => $permission->name])]);
 				
-			$userActions = $usersTable->addColumn(null, 'Actions');
-			$userActions->addAction($this->deleteButton(), function($jQuery, $userId) use ($permission) {
+			$userActions = $usersTable->addColumn(null, ActionButtons::class);
+			$userActions->addButton($this->deleteButton(), function($jQuery, $userId) use ($permission) {
 				User::find($userId)->revokePermissionTo($permission);
 					
 				return $this->reload();

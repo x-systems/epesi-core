@@ -11,6 +11,7 @@ class NavMenu extends BaseMenu
     public $ui = 'inverted nav menu';
     
 	public function init()
+	public function init(): void
 	{		
 		parent::init();
 		

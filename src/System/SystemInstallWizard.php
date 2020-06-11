@@ -16,7 +16,7 @@ class SystemInstallWizard extends Wizard
 {
 	use HasAdminMode;
 	
-	public function init()
+	public function init(): void
 	{
 		parent::init();
 

@@ -11,7 +11,8 @@ class User extends Model
     
 	public $table = 'users';
 	
-	function init(){
+	function init(): void
+	{
 		parent::init();
 		
 		$this->addFields(['name']);

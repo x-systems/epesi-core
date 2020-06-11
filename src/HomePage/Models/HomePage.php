@@ -25,7 +25,8 @@ class HomePage extends Model
 	 */
 	protected static $defaultPath = 'view/user.settings';
 	
-	function init() {
+	function init(): void
+	{
 		parent::init();
 		
 		$this->addFields([

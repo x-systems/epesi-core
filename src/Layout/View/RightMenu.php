@@ -16,7 +16,7 @@ class RightMenu extends BaseMenu
 	
 	protected $userMenuLabel;
 	
-	public function init()
+	public function init(): void
 	{		
 		parent::init();
 
