@@ -31,7 +31,7 @@ class Variable extends Model
 	    
 	    $this->addFields([
 	            'name',
-	            'value' => ['type' => 'text', 'serialize' => 'base64']
+	            'value' => ['type' => 'text', 'serialize' => 'json']
 	    ]);
 	}
 	
