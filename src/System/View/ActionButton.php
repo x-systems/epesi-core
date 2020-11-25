@@ -4,7 +4,7 @@ namespace Epesi\Core\System\View;
 
 use atk4\ui\View;
 use atk4\ui\Icon;
-use atk4\ui\jsCallback;
+use atk4\ui\JsCallback;
 
 class ActionButton extends View
 {
@@ -27,7 +27,7 @@ class ActionButton extends View
     
     public $callback;
 
-    public function renderView()
+    public function renderView(): void
     {
         $this->addIcon();
         
@@ -73,10 +73,10 @@ class ActionButton extends View
     	if (!$callable = $this->callback) return;
     	
     	if (is_callable($callable)) {
-    		$callable = $this->add('jsCallback')->set($callable);
+    		$callable = JsCallback::addTo($this)->set($callable);
     	}
     	
-    	if ($callable instanceof jsCallback) {
+    	if ($callable instanceof JsCallback) {
     		$this->on('click', $callable);
     	}
     	

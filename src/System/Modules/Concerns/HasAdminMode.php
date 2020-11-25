@@ -10,5 +10,5 @@ trait HasAdminMode
 		return $this;
 	}
 	
-	abstract public function stickyGet($name, $newValue = null);
+	abstract public function stickyGet(string $name, ?string $newValue = null): ?string;
 }

@@ -24,9 +24,9 @@ class SystemCore extends Modules\ModuleCore
 	
 	public function migrate()
 	{
-	    Models\Module::migrate();
+	    Model\Module::migrate();
 	    
-	    Models\Variable::migrate();
+	    Model\Variable::migrate();
 	    
 	    return parent::migrate();
 	}

@@ -1,12 +1,13 @@
 <?php
 
-namespace Epesi\Core\HomePage\Models;
+namespace Epesi\Core\HomePage\Model;
 
 use atk4\data\Model;
 use Epesi\Core\Data\HasEpesiConnection;
 use Spatie\Permission\Models\Role;
 use Epesi\Core\HomePage\Integration\Joints\HomePageJoint;
 use Illuminate\Support\Facades\Auth;
+use atk4\ui\Table;
 
 class HomePage extends Model
 {
@@ -25,24 +26,22 @@ class HomePage extends Model
 	 */
 	protected static $defaultPath = 'view/user.settings';
 	
-	function init(): void
+	protected function init(): void
 	{
 		parent::init();
-		
+
 		$this->addFields([
 		        'path' => [
-						'type' => 'enum',
 						'caption' => __('Page'),
 						'values' => self::list(),
 						'ui' => [
 								'table' => [
-										'KeyValue',
+										Table\Column\KeyValue::class,
 								],
 								'filter' => true
 						],
 				],
 		        'role' => [
-						'type' => 'enum', 
 						'caption' => __('Role'), 
 						'values' => Role::get()->pluck('name', 'name')->all(), 
 						'ui' => [
@@ -64,7 +63,7 @@ class HomePage extends Model
 		
 		$this->setOrder('priority');
 
-		$this->addHook('beforeInsert', function($model, & $data) {
+		$this->onHook(\atk4\data\Model::HOOK_BEFORE_INSERT, function($model, & $data) {
 			$data['priority'] = $data['priority']?: $this->action('fx', ['max', 'priority'])->getOne() + 1;
 		});
 	}
@@ -107,6 +106,6 @@ class HomePage extends Model
 	 */
 	public static function pathOfUser()
 	{
-		return HomePage::ofUser()['path']?: self::$defaultPath;
+		return HomePage::ofUser()->get('path') ?: self::$defaultPath;
 	}
 }

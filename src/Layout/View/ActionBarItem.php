@@ -3,7 +3,7 @@
 namespace Epesi\Core\Layout\View;
 
 use atk4\ui\Item;
-use atk4\ui\jsCallback;
+use atk4\ui\JsCallback;
 
 class ActionBarItem extends Item
 {
@@ -13,7 +13,7 @@ class ActionBarItem extends Item
     
     public $hint;
     
-    public function renderView()
+    public function renderView(): void
     {
         $this->addCallback();
         
@@ -34,10 +34,10 @@ class ActionBarItem extends Item
     public function addCallback()
     {
         if (is_callable($callable = $this->callback)) {
-            $callable = $this->add('jsCallback')->set($callable);
+        	$callable = JsCallback::addTo($this)->set($callable);
         }
         
-        if ($callable instanceof jsCallback) {
+        if ($callable instanceof JsCallback) {
             $this->on('click', $callable);
         }
         

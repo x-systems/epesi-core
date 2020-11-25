@@ -20,16 +20,7 @@ trait HasEpesiConnection
 	
 	public static function migrate()
 	{
-		return \atk4\schema\Migration::getMigration(static::create())->migrate();
-	}
-	
-	public function addCrits($crits = [])
-	{
-		foreach ($crits as $condition) {
-			$this->addCondition(...$condition);
-		}
-		
-		return $this;
+		return (new \atk4\schema\Migration(static::create()))->create();
 	}
 	
 	/**

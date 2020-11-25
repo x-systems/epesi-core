@@ -2,7 +2,7 @@
 
 namespace Epesi\Core\System\Modules;
 
-use Epesi\Core\System\Models\Module;
+use Epesi\Core\System\Model\Module;
 use Illuminate\Support\Facades\Cache;
 use atk4\core\Exception;
 use Illuminate\Support\Facades\File;
@@ -19,66 +19,54 @@ class ModuleManager
 
 	/**
 	 * Check if a module is installed providing an alias or class name
-	 *
-	 * @param string $classOrAlias
-	 *
-	 * @return boolean
 	 */
-	public static function isInstalled($classOrAlias)
+	public static function isInstalled(string $classOrAlias): bool
 	{
-		return self::getClass($classOrAlias, true)? 1: 0;
+		return (bool) self::getClass($classOrAlias, true);
 	}
 	
 	/**
 	 * Check if a module is available providing an alias or class name
-	 * 
-	 * @param string $classOrAlias
-	 * 
-	 * @return boolean
 	 */
-	public static function isAvailable($classOrAlias)
+	public static function isAvailable(string $classOrAlias): bool
 	{
 		return class_exists(self::getClass($classOrAlias));
 	}
 
 	/**
 	 * Get the module core class from class or alias
-	 * 
-	 * @param string $classOrAlias
-	 * @return string;
 	 */
-	public static function getClass($classOrAlias, $installedOnly = false) {
+	public static function getClass(string $classOrAlias, bool $installedOnly = false): ?string
+	{
 		$modules = $installedOnly? self::getInstalled(): self::getAll();
 
-		if (collect($modules)->contains($classOrAlias)) return $classOrAlias;
+		if (collect($modules)->contains($classOrAlias)) {
+			return $classOrAlias;
+		}
 		
-		return $modules[$classOrAlias]?? null;
+		return $modules[$classOrAlias] ?? null;
 	}
 	
 	/**
 	 * Get a collection of installed modules in alias -> class pairs
-	 * 
-	 * @return \Illuminate\Support\Collection;
 	 */
-	public static function getInstalled()
+	public static function getInstalled(): array
 	{
-		return self::$installed = self::$installed?? self::getCached('epesi-modules-installed', function() {
+		return self::$installed = self::$installed ?? self::getCached('epesi-modules-installed', function() {
 			try {
 			    $installedModules = Module::pluck('class', 'alias');
 			} catch (\Exception $e) {
 				$installedModules = collect();
 			}
 			
-			return $installedModules;
+			return $installedModules->all();
 		});
 	}
 	
 	/**
 	 * Get a collection of all manifested modules in alias -> class pairs
-	 * 
-	 * @return \Illuminate\Support\Collection;
 	 */
-	public static function getAll()
+	public static function getAll(): array
 	{
 		return self::getCached('epesi-modules-available', function () {
 			$modules = collect();
@@ -88,7 +76,7 @@ class ModuleManager
 				}
 			}
 
-			return $modules->pluck('class', 'alias');
+			return $modules->pluck('class', 'alias')->all();
 		});
 	}
 	
@@ -96,13 +84,8 @@ class ModuleManager
 	 * Scans the profided $basePath directrory recursively to locate modules
 	 * A directory is considered having a module when it has a file descendant of ModuleCore
 	 * having the directory name with 'Core' suffix, e.g Test -> TestCore extends ModuleCore
-	 * 
-	 * @param string $namespace
-	 * @param string $basePath
-	 * 
-	 * @return \Illuminate\Support\Collection
 	 */
-	protected static function discoverModuleClasses($namespace, $basePath)
+	protected static function discoverModuleClasses(string $namespace, string $basePath): array
 	{
 	    $ret = collect();
 	    
@@ -124,17 +107,15 @@ class ModuleManager
 	        $ret = $ret->merge(self::discoverModuleClasses($subModuleNamespace, $path));
 	    }
 	    
-	    return $ret;
+	    return $ret->all();
 	}
 	
 	/**
 	 * Common method to use for caching of data within module manager
-	 * 
-	 * @param string $key
-	 * @param \Closure $default
+
 	 * @return mixed
 	 */
-	protected static function getCached($key, \Closure $default)
+	protected static function getCached(string $key, \Closure $default)
 	{
 		if (! Cache::has($key)) {
 			Cache::forever($key, $default());
@@ -157,26 +138,18 @@ class ModuleManager
 	
 	/**
 	 * Alias for collect when no return values expected
-	 *
-	 * @param string $method
-	 * @return array
 	 */
-	public static function call($method, $args = [])
+	public static function call(string $method, array $args = []): void
 	{
-		return self::collect($method, $args);
+		self::collect($method, $args);
 	}
 	
 	/**
 	 * Collect array of results from $method in all installed module core classes
-	 *
-	 * @param string $method
-	 * @return array
 	 */
-	public static function collect($method, $args = [])
+	public static function collect(string $method, array $args = []): array
 	{
-		$args = is_array($args)? $args: [$args];
-		
-		$installedModules = self::getInstalled();
+		$installedModules = collect(self::getInstalled());
 		
 		// if epesi is not installed fake having the system module to enable its functionality
 		if (! $installedModules->contains(\Epesi\Core\System\SystemCore::class)) {
@@ -197,19 +170,17 @@ class ModuleManager
 
 	/**
 	 * Install the module class provided as argument
-	 * 
-	 * @param string $classOrAlias
 	 */
-	public static function install($classOrAlias, $installRecommended = true)
+	public static function install(string $classOrAlias, bool $installRecommended = true)
 	{
 		if (self::isInstalled($classOrAlias)) {
-			print ('Module "' . $classOrAlias . '" already installed!');
+			print sprintf('Module "%s" already installed!', $classOrAlias);
 			
 			return true;
 		}
 		
 		if (! $moduleClass = self::getClass($classOrAlias)) {			
-			throw new \Exception('Module "' . $classOrAlias . '" could not be identified');
+			throw new \Exception(sprintf('Module "%s" could not be identified', $classOrAlias));
 		}
 		
 		/**
@@ -251,7 +222,7 @@ class ModuleManager
 				
 		self::clearCache();
 		
-		print ('Module ' . $module->label() . ' successfully installed!');
+		print sprintf('Module "%s" successfully installed!', $module->label());
 		
 		return true;
 	}
@@ -259,27 +230,24 @@ class ModuleManager
 	/**
 	 * Install modules that $moduleClass requires
 	 * Performs operation recursively for all required modules
-	 * 
-	 * @param string $moduleClass
-	 * @throws \Exception
-	 * @return boolean
 	 */
-	protected static function satisfyDependencies($moduleClass) {
+	protected static function satisfyDependencies(string $moduleClass): bool
+	{
 		self::$processing[$moduleClass] = true;
 		
 		while ($unsatisfiedDependencies = self::unsatisfiedDependencies($moduleClass)) {
 			$parentModule = array_shift($unsatisfiedDependencies);
 				
 			if (self::$processing[$parentModule]?? false) {
-				throw new \Exception('Cross dependency: '. $parentModule);
+				throw new \Exception(sprintf('Cross dependency: %s', $parentModule));
 			}
 				
 			if (! self::isAvailable($parentModule)) {
-				throw new \Exception('Module not found: "' . $parentModule . '"');
+				throw new \Exception(sprintf('Module "%s" not found!', $parentModule));
 			}
 	
 			print("\n\r");
-			print('Installing required module: "' . $parentModule . '" by "' . $moduleClass . '"');
+			print sprintf('Installing required module: "%s" by "%s"', $parentModule, $moduleClass);
 
 			self::install($parentModule);
 		}
@@ -291,23 +259,17 @@ class ModuleManager
 	
 	/**
 	 * Finds modules which are required by $moduleClass but not yet installed
-	 * 
-	 * @param string $moduleClass
-	 * 
-	 * @return array
 	 */
-	protected static function unsatisfiedDependencies($moduleClass) {
+	protected static function unsatisfiedDependencies(string $moduleClass): array
+	{
 		return collect($moduleClass::requires())->diff(self::getInstalled())->filter()->all();
 	}	
 	
 	/**
 	 * Finds $moduleClass dependencies recursively (including dependencies of dependencies)
-	 * 
-	 * @param string $moduleClass
-	 * 
-	 * @return array
 	 */
-	public static function listDependencies($moduleClass) {
+	public static function listDependencies(string $moduleClass): array
+	{
 		$ret = collect();
 		foreach (collect($moduleClass::requires()) as $parentClass) {
 			$ret->add($parentClass = self::getClass($parentClass));
@@ -320,12 +282,9 @@ class ModuleManager
 	
 	/**
 	 * Finds $moduleClass recommended modules recursively (including recommended of recommended)
-	 * 
-	 * @param string $moduleClass
-	 * 
-	 * @return array|number|mixed
 	 */
-	public static function listRecommended($moduleClass) {
+	public static function listRecommended(string $moduleClass): array
+	{
 		$ret = collect();
 		foreach (collect($moduleClass::recommended()) as $childClass) {
 			$ret->add($childClass = self::getClass($childClass));
@@ -338,10 +297,9 @@ class ModuleManager
 	
 	/**
 	 * Creates array of dependencies of installed modules
-	 * 
-	 * @return array
 	 */
-	public static function listDependents() {
+	public static function listDependents(): array
+	{
 		$ret = [];
 		foreach (self::getInstalled() as $moduleClass) {
 			foreach ($moduleClass::requires() as $parentClass) {
@@ -353,22 +311,17 @@ class ModuleManager
 	
 	/**
 	 * Runs uninstallation routine on $classOrAlias
-	 * 
-	 * @param string $classOrAlias
-	 * @throws \Exception
-
-	 * @return boolean
 	 */
-	public static function uninstall($classOrAlias)
+	public static function uninstall(string $classOrAlias): bool
 	{
 		if (! self::isInstalled($classOrAlias)) {
-			print ('Module "' . $classOrAlias . '" is not installed!');
+			print sprintf('Module "%s" is not installed!', $classOrAlias);
 			
 			return true;
 		}
 		
 		if (! $moduleClass = self::getClass($classOrAlias)) {
-			throw new \Exception('Module "' . $classOrAlias . '" could not be identified');
+			throw new \Exception(sprintf('Module "%s" could not be identified', $classOrAlias));
 		}
 		
 		foreach (self::listDependents()[$moduleClass]?? [] as $childModule) {
@@ -397,7 +350,7 @@ class ModuleManager
 		
 		self::clearCache();
 		
-		print ('Module ' . $module->label() . ' successfully uninstalled!');
+		print sprintf('Module "%s" successfully uninstalled!', $module->label());
 		
 		return true;
 	}

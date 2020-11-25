@@ -7,6 +7,7 @@ use Epesi\Core\System\SystemCore;
 use Epesi\Core\System\Modules\ModuleManager;
 use Epesi\Core\Layout\LayoutView;
 use Illuminate\Support\Facades\File;
+use atk4\ui\Layout;
 
 class Controller extends BaseController
 {
@@ -24,19 +25,19 @@ class Controller extends BaseController
     	
     	$ui->title = __(':epesi > Installation', ['epesi' => config('epesi.ui.title')]);
     	
-    	$ui->initLayout('Centered');
+    	$ui->initLayout(new Layout\Centered());
     	
     	$ui->layout->set('logo', url('logo'));
-    	$ui->layout->template->setHTML('copyright', config('epesi.ui.copyright'));
+    	$ui->layout->template->dangerouslySetHTML('copyright', config('epesi.ui.copyright'));
     	
-    	$ui->add(new \Epesi\Core\System\SystemInstallWizard());
+    	$ui->add(new System\SystemInstallWizard());
     	
     	return $ui->response();
     }
     
     public function home()
     {
-    	return redirect(SystemCore::isInstalled()? \Epesi\Core\HomePage\Models\HomePage::pathOfUser(): 'install');
+    	return redirect(SystemCore::isInstalled()? HomePage\Model\HomePage::pathOfUser(): 'install');
     }
     
     public function logo()
@@ -60,16 +61,14 @@ class Controller extends BaseController
     		$viewClass = $module::view($viewAlias);
 
     		if (class_exists($viewClass)) {
-    			$view = new $viewClass();
+    			$view = [$viewClass];
     		}
     	}
 
     	if (! $view) abort(404);
     	
-    	$ui->add($view)->displayModuleContent($method, $args);
+    	$location = $ui->add($view)->displayModuleContent($method, $args)->location();
     	
-    	$ui->setLocation($view->location());
-    	
-    	return $ui->response();
+    	return $ui->setLocation($location)->response();
     }
 }

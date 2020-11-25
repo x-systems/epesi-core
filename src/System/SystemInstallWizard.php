@@ -3,7 +3,6 @@
 namespace Epesi\Core\System;
 
 use Epesi\Core\System\View\Form;
-use atk4\ui\jsExpression;
 use atk4\ui\Wizard;
 use Illuminate\Support\Facades\Artisan;
 use Epesi\Core\System\Modules\Concerns\HasAdminMode;
@@ -11,12 +10,14 @@ use Illuminate\Support\Facades\App;
 use Epesi\Core\System\Modules\ModuleManager;
 use Epesi\Core\System\User\Database\Models\User;
 use Illuminate\Support\Facades\Hash;
+use atk4\ui\View;
+use atk4\ui\Message;
 
 class SystemInstallWizard extends Wizard
 {
 	use HasAdminMode;
 	
-	public function init(): void
+	protected function init(): void
 	{
 		parent::init();
 
@@ -27,26 +28,26 @@ class SystemInstallWizard extends Wizard
 	{
 		$this->addStep(__('Welcome'), [__CLASS__, 'stepWelcome']);
 		
-		$this->addStep([__('License'), 'icon'=>'id card', 'description'=>__('Accept license conditions')], [__CLASS__, 'stepLicense']);
+		$this->addStep([__('License'), 'icon'=>'id card', 'description'=>__('Accept license conditions')], [self::class, 'stepLicense']);
 			
-		$this->addStep([__('Database'), 'icon'=>'database', 'description'=>__('Database connection settings')], [__CLASS__, 'stepDatabase']);
+		$this->addStep([__('Database'), 'icon'=>'database', 'description'=>__('Database connection settings')], [self::class, 'stepDatabase']);
 		
-		$this->addStep([__('Environment'), 'icon'=>'configure', 'description'=>__('Check environment')], [__CLASS__, 'stepEnvironment']);
+		$this->addStep([__('Environment'), 'icon'=>'configure', 'description'=>__('Check environment')], [self::class, 'stepEnvironment']);
 		
-		$this->addStep([__('Super Admin'), 'icon'=>'user', 'description'=>__('Create first user')], [__CLASS__, 'stepUser']);
+		$this->addStep([__('Super Admin'), 'icon'=>'user', 'description'=>__('Create first user')], [self::class, 'stepUser']);
 		
-		$this->addStep([__('Complete'), 'icon'=>'check', 'description'=>__('Complete installation')], [__CLASS__, 'stepInstallationCompleted']);
+		$this->addStep([__('Complete'), 'icon'=>'check', 'description'=>__('Complete installation')], [self::class, 'stepInstallationCompleted']);
 		
 		// below step is skipped because of redirecting to 'login' path once system installed
 		// see \Epesi\Core\Controller::install
-		$this->addFinish([__CLASS__, 'stepInstallationCompleted']);
+		$this->addFinish(\Closure::fromCallable([self::class, 'stepInstallationCompleted']));
 	}
 	
 	public function addRequiredNote()
 	{
-		$this->add(['View', __('denotes required field'), 'class' => ['required-note']])->setStyle(['float' => 'right']);
+		View::addTo($this, [__('denotes required field'), 'class' => ['required-note']])->setStyle(['float' => 'right']);
 		
-		eval_css('
+		$this->getApp()->addStyle('
 			.required-note::before {
 				margin: 0 .2em 0 0;
 				content: \'*\';
@@ -62,10 +63,10 @@ class SystemInstallWizard extends Wizard
 	
 	public static function stepWelcome($wizard)
 	{
-		$columns = $wizard->add('Columns');
+		$columns = \atk4\ui\Columns::addTo($wizard);
 		
 		$column = $columns->addColumn();
-		$column->add(['Message', __('Thank you for downloading EPESI!')])->text
+		Message::addTo($column, [__('Thank you for downloading EPESI!')])->text
 		->addParagraph(__('This wizard will guide you though the process of setting up your new CRM / ERP installation'))
 		->addParagraph(__('Select the installation language and click NEXT button to proceed to next step'));
 		
@@ -75,14 +76,14 @@ class SystemInstallWizard extends Wizard
 
 		$values = array_intersect_key(self::getDisplayLanguages(), $systemLanguages);
 		
-		$form = $column->add(new Form());
+		$form = Form::addTo($column);
 		
-		$form->addField('language', ['DropDown', 'values' => $values, 'caption' => __('Select Language'), 'iconLeft' => 'globe'], ['required'=>true])->set($wizard->recall('language', 'en'));
+		$form->addControl('language', [\atk4\ui\Form\Control\Dropdown::class, 'values' => $values, 'caption' => __('Select Language'), 'iconLeft' => 'globe'], ['required'=>true])->set($wizard->recall('language', 'en'));
 		
 		$form->onSubmit(function ($form) use ($wizard) {
-			$wizard->memorize('language', $form->model['language']);
+			$wizard->memorize('language', $form->model->get('language'));
 			
-			App::setLocale($form->model['language']);
+			App::setLocale($form->model->get('language'));
 			
 			return $wizard->jsNext();
 		});
@@ -92,10 +93,10 @@ class SystemInstallWizard extends Wizard
 	
 	public static function stepLicense($wizard)
 	{
-		$columns = $wizard->add('Columns');
+		$columns = \atk4\ui\Columns::addTo($wizard);
 		$column = $columns->addColumn();
 		
-		$license = $column->add(['View', 'defaultTemplate' => 'license.html'])->setStyle(['max-height' => '500px', 'overflow' => 'auto', 'padding' => '5px']);
+		$license = View::addTo($column, ['defaultTemplate' => 'license.html'])->setStyle(['max-height' => '500px', 'overflow' => 'auto', 'padding' => '5px']);
 		
 		$license->js(true)->niceScroll();
 		
@@ -105,11 +106,11 @@ class SystemInstallWizard extends Wizard
 		
 		$column = $columns->addColumn();
 		
-		$form = $column->add(new Form());
-		$form->addField('copyright', ['CheckBox', 'caption' => __('I will not remove the Copyright notice as required by the MIT license.')], ['required'=>true]);
-		$form->addField('logo', ['CheckBox', 'caption' => __('I will not remove ":epesi powered" logo and the link from the application login screen or the toolbar.', ['epesi' => config('epesi.ui.title')])], ['required'=>true]);
-		$form->addField('support', ['CheckBox', 'caption' => __('I will not remove "Support -> About" credit page from the application menu.')], ['required'=>true]);
-		$form->addField('store', ['CheckBox', 'caption' => __('I will not remove or rename ":epesi Store" links from the application.', ['epesi' => config('epesi.ui.title')])], ['required'=>true]);
+		$form = Form::addTo($column);
+		$form->addControl('copyright', [\atk4\ui\Form\Control\Checkbox::class, 'caption' => __('I will not remove the Copyright notice as required by the MIT license.')], ['required'=>true]);
+		$form->addControl('logo', [\atk4\ui\Form\Control\Checkbox::class, 'caption' => __('I will not remove ":epesi powered" logo and the link from the application login screen or the toolbar.', ['epesi' => config('epesi.ui.title')])], ['required'=>true]);
+		$form->addControl('support', [\atk4\ui\Form\Control\Checkbox::class, 'caption' => __('I will not remove "Support -> About" credit page from the application menu.')], ['required'=>true]);
+		$form->addControl('store', [\atk4\ui\Form\Control\Checkbox::class, 'caption' => __('I will not remove or rename ":epesi Store" links from the application.', ['epesi' => config('epesi.ui.title')])], ['required'=>true]);
 		
 		$form->onSubmit(function ($form) use ($wizard) {
 			return $wizard->jsNext();
@@ -122,21 +123,21 @@ class SystemInstallWizard extends Wizard
 	{
 		$wizard->addRequiredNote();
 		
-		$form = $wizard->add('Form');
+		$form = Form::addTo($wizard);
 		
-		$form->addField('host', __('Database Host'), ['required'=>true])->placeholder = __('e.g. localhost');
-		$form->addField('port', __('Database Port'));
+		$form->addControl('host', __('Database Host'), ['required'=>true])->placeholder = __('e.g. localhost');
+		$form->addControl('port', __('Database Port'));
 		
-		$form->addField('driver', ['DropDown', 'values' => [
+		$form->addControl('driver', [\atk4\ui\Form\Control\Dropdown::class, 'values' => [
 				'mysql' => 'MySQL',
 				'postgre' => 'PostgeSQL',
 		], 'caption' => __('Database Engine')], ['required'=>true]);
 		
-		$form->addField('database', __('Database Name'));
-		$form->addField('username', __('Database Server User'), ['required'=>true]);
-		$form->addField('password', ['Password', 'caption' => __('Database Server Password')], ['required'=>true]);
+		$form->addControl('database', __('Database Name'));
+		$form->addControl('username', __('Database Server User'), ['required'=>true]);
+		$form->addControl('password', [\atk4\ui\Form\Control\Password::class, 'caption' => __('Database Server Password')], ['required'=>true]);
 		
-		$form->addField('create', ['CheckBox', 'caption' => __('Create New Database')])->on('change', new jsExpression('if ($(event.target).is(":checked")) alert([])', [__('WARNING: Make sure you have CREATE access level to do this!')]));
+		$form->addControl('create', [\atk4\ui\Form\Control\Checkbox::class, 'caption' => __('Create New Database')])->on('change', new \atk4\ui\JsExpression('if ($(event.target).is(":checked")) alert([])', [__('WARNING: Make sure you have CREATE access level to do this!')]));
 
 		foreach ($wizard->recall('connection', []) as $name => $value) {
 			if (! $field = $form->fields[$name]?? null) continue;
@@ -173,12 +174,12 @@ class SystemInstallWizard extends Wizard
 	{
 		$wizard->addRequiredNote();
 		
-		$form = $wizard->add([new Form, 'buttonSave' => 'Button']);
+		$form = Form::addTo($wizard, ['buttonSave' => [\atk4\ui\Button::class]]);
 		
-		$form->addField('name', __('Name'), ['required'=>true])->placeholder = __('e.g. John Doe');
-		$form->addField('email', __('Email'), ['required'=>true])->placeholder = __('e.g. john.doe@epesi.cloud');
-		$form->addField('password', ['Password', 'caption' => __('Password')], ['required'=>true]);
-		$form->addField('password_verify', ['Password', 'caption' => __('Verify Password')], ['required'=>true]);
+		$form->addControl('name', __('Name'), ['required'=>true])->placeholder = __('e.g. John Doe');
+		$form->addControl('email', __('Email'), ['required'=>true])->placeholder = __('e.g. john.doe@epesi.cloud');
+		$form->addControl('password', [\atk4\ui\Form\Control\Password::class, 'caption' => __('Password')], ['required'=>true]);
+		$form->addControl('password_verify', [\atk4\ui\Form\Control\Password::class, 'caption' => __('Verify Password')], ['required'=>true]);
 		
 		$form->addFieldRules('email', [[
 				'type'   => 'email',
@@ -190,7 +191,7 @@ class SystemInstallWizard extends Wizard
 				'prompt' => __('Password mismatch')
 		]]);
 		
-		$form->model->set($wizard->recall('user'));
+		$form->model->setMulti($wizard->recall('user', []));
 		
 		$form->validate(function ($form) use ($wizard) {
 			$wizard->memorize('user', $form->model->get());
@@ -218,7 +219,7 @@ class SystemInstallWizard extends Wizard
 				'password' => Hash::make($user['password']),
 		])->assignRole('Super Admin');
 		
-		$wizard->add(['Header', __(':epesi was successfully installed!', ['epesi' => config('epesi.ui.title')]), 'huge centered']);
+		\atk4\ui\Header::addTo($wizard, [__(':epesi was successfully installed!', ['epesi' => config('epesi.ui.title')]), 'huge centered']);
 	}
 
 	public static function getDisplayLanguages() {

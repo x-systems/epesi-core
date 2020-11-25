@@ -8,7 +8,7 @@ trait Notifies
     {
         $options = array_merge(['duration'=> 1500], is_array($options)? $options: ['message' => $options]);
 
-        return new \atk4\ui\jsToast($options);
+        return new \atk4\ui\JsToast($options);
     }
     
     public function notifySuccess($options)

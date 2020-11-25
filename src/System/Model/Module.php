@@ -1,6 +1,6 @@
 <?php
 
-namespace Epesi\Core\System\Models;
+namespace Epesi\Core\System\Model;
 
 use atk4\data\Model;
 use Epesi\Core\Data\HasEpesiConnection;
@@ -11,7 +11,7 @@ class Module extends Model
     
     public $table = 'modules';
     
-    function init(): void
+    protected function init(): void
     {
         parent::init();
         

@@ -21,10 +21,10 @@ class HomePageCore extends ModuleCore
 	
 	public function install()
 	{
-	    Models\HomePage::migrate();
+	    Model\HomePage::migrate();
 	    
 		// setup default home pages
-		Models\HomePage::create()->import([
+		Model\HomePage::create()->import([
 	    		[
 			    		'path' => 'view/dashboard',
 			    		'role' => 'Super Admin'

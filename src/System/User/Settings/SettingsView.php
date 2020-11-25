@@ -7,6 +7,7 @@ use Epesi\Core\System\User\Settings\Integration\Joints\UserSettingsJoint;
 use Epesi\Core\System\View\Form;
 use Epesi\Core\Layout\View\ActionBar;
 use Epesi\Core\System\User\Settings\Database\Models\UserSetting;
+use atk4\ui\View;
 
 class SettingsView extends ModuleView
 {
@@ -14,9 +15,9 @@ class SettingsView extends ModuleView
 	
 	public function body()
 	{
-		$layout = $this->add(['View'])->addStyle('max-width:800px;margin:auto;');
-		$layout->add(['Header', __('User Settings')]);
-		$segment = $layout->add(['View', ['ui' => 'segment']]);
+		$layout = View::addTo($this)->addStyle('max-width:800px;margin:auto;');
+		\atk4\ui\Header::addTo($layout, [__('User Settings')]);
+		$segment = View::addTo($layout, ['ui' => 'segment']);
 		
 		foreach (UserSettingsJoint::collect() as $joint) {
 			$segment->add($joint->button());
@@ -32,7 +33,7 @@ class SettingsView extends ModuleView
 		$form = $this->add(new Form());
 		$form->addElements($joint->elements());
 		$form->confirmLeave();
-		$form->model->set(UserSetting::getGroup($joint->group()));
+		$form->model->setMulti(UserSetting::getGroup($joint->group()));
 
 		$form->validate(function(Form $form) use ($joint) {
 			UserSetting::putGroup($joint->group(), $form->model->get());

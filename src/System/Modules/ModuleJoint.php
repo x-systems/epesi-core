@@ -27,14 +27,12 @@ abstract class ModuleJoint
 	{
 		$ret = collect();
 		foreach (self::list() as $class) {
-			/**
-			 * @var ModuleJoint $joint
-			 */
+			/** @var ModuleJoint $joint */
 			$joint = new $class();
 
-			if (! $joint->access()) continue;
-			
-			$ret->add($joint);
+			if ($joint->access()) {
+				$ret->add($joint);
+			}
 		}
 		
 		return $ret;

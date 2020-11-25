@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Epesi\Core\System\Modules\ModuleManager;
 use Epesi\Core\Layout\View\ActionBar;
 use Epesi\Core\System\View\Form;
-use atk4\ui\jsReload;
 
 class ModuleAdministration extends ModuleView
 {
@@ -29,7 +28,7 @@ class ModuleAdministration extends ModuleView
 	
 	public function topLevelModules()
 	{
-		$modules = ModuleManager::getAll();
+		$modules = collect(ModuleManager::getAll());
 
 		return $modules->filter(function ($subModuleClass) use ($modules) {
 			return ! $modules->map(function($moduleClass){
@@ -40,7 +39,7 @@ class ModuleAdministration extends ModuleView
 	
 	public function addAccordion($container, $modules)
 	{
-		$accordion = $container->add(['Accordion', 'type' => ['styled', 'fluid'], 'settings' => ['animateChildren' => false]])->setStyle(['max-width' => '800px', 'margin-left' => 'auto', 'margin-right' => 'auto']);
+		$accordion = \atk4\ui\Accordion::addTo($container, ['type' => ['styled', 'fluid'], 'settings' => ['animateChildren' => false]])->setStyle(['max-width' => '800px', 'margin-left' => 'auto', 'margin-right' => 'auto']);
 		
 		if ($container == $this) {
 		    $this->accordion = $accordion;
@@ -49,24 +48,24 @@ class ModuleAdministration extends ModuleView
 		foreach ($modules as $moduleClass) {
 			$section = $accordion->addSection($moduleClass::label());
 
-			$section->add(['Message', 'ui' => 'tiny message'])->template->appendHTML('Content', $this->formatModuleInfo($moduleClass));
+			\atk4\ui\Message::addTo($section, ['ui' => 'tiny message'])->template->appendHTML('Content', $this->formatModuleInfo($moduleClass));
 
 			if (ModuleManager::isInstalled($moduleClass)) {
-				$label = ['Label', __('Installed'), 'green'];
+				$label = [\atk4\ui\Label::class, __('Installed'), 'green'];
 				
 				$this->addUninstallButton($section, $moduleClass);
 				
 // 				$this->addReinstallButton($section, $moduleClass);
 			}
 			else {
-				$label = ['Label', __('Available'), 'yellow'];
+				$label = [\atk4\ui\Label::class, __('Available'), 'yellow'];
 				
 				$this->addInstallButton($section, $moduleClass);
 			}
 
 			$section->add($label, 'title')->setStyle('float', 'right');
 			
-			$submodules = ModuleManager::getAll()->filter(function ($subModuleClass) use ($moduleClass) {
+			$submodules = collect(ModuleManager::getAll())->filter(function ($subModuleClass) use ($moduleClass) {
 				return $subModuleClass::isSubModuleOf($moduleClass);
 			});
 			
@@ -92,9 +91,9 @@ class ModuleAdministration extends ModuleView
 	
 	public function addInstallButton($container, $moduleClass)
 	{
-	    $button = $container->add(['Button', __('Install'), 'class' => ['green']]);
+		$button = \atk4\ui\Button::addTo($container, [__('Install'), 'class' => ['green']]);
 	    
-	    $callback = $installCallback = $this->add('jsCallback')->set(function() use ($moduleClass, $container) {
+		$callback = $installCallback = \atk4\ui\JsCallback::addTo($this)->set(function() use ($moduleClass, $container) {
 			ob_start();
 			ModuleManager::install($moduleClass);
 			
@@ -102,7 +101,7 @@ class ModuleAdministration extends ModuleView
 			
 			return [
 			        $this->notifySuccess($message),
-			        new jsReload($this->accordion),
+			        new \atk4\ui\JsReload($this->accordion),
 			];
 		});
 		
@@ -110,9 +109,9 @@ class ModuleAdministration extends ModuleView
 		$recommended = ModuleManager::listRecommended($moduleClass);
 		
 		if ($dependencies || $recommended) {
-			$modal = $this->add(['Modal', 'title' => __(':module Module Installation', ['module' => $moduleClass::label()])])->set(function($view) use ($installCallback, $moduleClass, $dependencies, $recommended) {
+			$modal = \atk4\ui\Modal::addTo($this, ['title' => __(':module Module Installation', ['module' => $moduleClass::label()])])->set(function($view) use ($installCallback, $moduleClass, $dependencies, $recommended) {
 				if ($dependencies) {
-					$message = $view->add(['Message', __('Module has following dependencies which will be installed')]);
+					$message = \atk4\ui\Message::addTo($view, [__('Module has following dependencies which will be installed')]);
 					
 					foreach ($dependencies as $parentModule) {
 						$message->text->addParagraph($parentModule::label());
@@ -120,13 +119,13 @@ class ModuleAdministration extends ModuleView
 				}
 				
 				if ($recommended) {
-					$message = $view->add(['Message', __('Select to install recommended modules for best experience')]);
+					$message = \atk4\ui\Message::addTo($view, [__('Select to install recommended modules for best experience')]);
 					
-					$form = $view->add(new Form());
+					$form = Form::addTo($view);
 					foreach ($recommended as $childModule) {
 						if (! ModuleManager::isAvailable($childModule)) continue;
 						
-						$form->addField($childModule::alias(), ['CheckBox', 'caption' => $childModule::label()]);
+						$form->addControl($childModule::alias(), ['CheckBox', 'caption' => $childModule::label()]);
 					}
 					
 					$form->onSubmit(function ($form) use ($moduleClass) {
@@ -137,7 +136,7 @@ class ModuleAdministration extends ModuleView
 					});
 				}
 				
-				$view->add(['Button', __('Install'), 'primary'])->on('click', [
+				\atk4\ui\Button::addTo($view, [__('Install'), 'primary'])->on('click', [
 						isset($form)? $form->submit(): $installCallback
 				]);
 			});
@@ -150,9 +149,9 @@ class ModuleAdministration extends ModuleView
 	
 	public function addUninstallButton($container, $moduleClass)
 	{
-	    $button = $container->add(['Button', __('Uninstall'), 'class' => ['red']]);
+		$button = \atk4\ui\Button::addTo($container, [__('Uninstall'), 'class' => ['red']]);
 	    
-	    $callback = $uninstallCallback = $button->add(['jsCallback', 'confirm' => __('Are you sure you want to uninstall :module', ['module' => $moduleClass::label()])])->set(function() use ($moduleClass) {
+		$callback = $uninstallCallback = \atk4\ui\JsCallback::addTo($button, ['confirm' => __('Are you sure you want to uninstall :module', ['module' => $moduleClass::label()])])->set(function() use ($moduleClass) {
 		    ob_start();
 			ModuleManager::uninstall($moduleClass);
 			
@@ -160,19 +159,19 @@ class ModuleAdministration extends ModuleView
 			
 			return [
 			        $this->notifySuccess($message),
-			        new jsReload($this->accordion),
+			        new \atk4\ui\JsReload($this->accordion),
 			];
 		});
 		
 		if ($dependents = ModuleManager::listDependents()[$moduleClass]?? []) {
-			$modal = $this->add(['Modal', 'title' => __(':module Module Installation', ['module' => $moduleClass::label()])])->set(function($view) use ($moduleClass, $dependents, $uninstallCallback) {
-				$message = $view->add(['Message', __('Module is required by following modules')]);
+			$modal = \atk4\ui\Modal::addTo($this, ['title' => __(':module Module Installation', ['module' => $moduleClass::label()])])->set(function($view) use ($moduleClass, $dependents, $uninstallCallback) {
+				$message = \atk4\ui\Message::addTo($view, [__('Module is required by following modules')]);
 					
 				foreach ($dependents as $childModule) {
 					$message->text->addParagraph($childModule::label());
 				}
 				
-				$view->add(['Button', __('Install'), 'primary'])->on('click', $uninstallCallback);
+				\atk4\ui\Button::addTo($view, [__('Install'), 'primary'])->on('click', $uninstallCallback);
 			});
 			
 			$callback = $modal->show();
@@ -183,7 +182,7 @@ class ModuleAdministration extends ModuleView
 	
 	public function addReinstallButton($container, $moduleClass)
 	{
-		$container->add(['Button', __('Re-install')]);
+		\atk4\ui\Button::addTo($container, [__('Re-install')]);
 	}
 	
 	public function addControlButtons()
@@ -199,7 +198,7 @@ class ModuleAdministration extends ModuleView
 			ModuleManager::clearCache();
 			
 			return [
-			        new jsReload($this->accordion),
+					new \atk4\ui\JsReload($this->accordion),
 			        $this->notifySuccess(__('Cache cleared!'))
 			];
 		});

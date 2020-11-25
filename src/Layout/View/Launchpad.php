@@ -3,33 +3,30 @@
 namespace Epesi\Core\Layout\View;
 
 use Illuminate\Support\Facades\URL;
-use atk4\ui\jsExpression;
 use atk4\ui\VirtualPage;
 use Closure;
 use Epesi\Core\System\View\LaunchButton;
+use atk4\ui\JsModal;
+use atk4\ui\View;
 
-class LaunchPad extends jsExpression
+class Launchpad extends View
 {
-	protected $parent;
+	protected $title = 'Launchpad';
 	
-	public function __construct($parent)
+	protected $virtualPage;
+		
+	protected function init(): void
 	{
-    	$this->parent = $parent;
-    	
-		parent::__construct('$(this).atkCreateModal([arg])', [
-				'arg' => [
-						'uri' => $this->getURL(),
-						'title' => __('Launchpad'),
-						'mode' => 'json'
-				]
-		]);
+		$this->virtualPage = VirtualPage::addTo($this->getOwner())->set(Closure::fromCallable([$this, 'getContents']));
+		
+		parent::init();
 	}
-    
-	protected function getURL()
-    {
-    	return $this->parent->add('VirtualPage')->set(Closure::fromCallable([$this, 'getContents']))->getJSURL('cut');
-    }
-    
+	
+	public function getJsModal()
+	{
+		return new JsModal($this->title, $this->virtualPage);
+	}
+	
     protected function getContents(VirtualPage $vp)
     {
     	$vp->add([
@@ -38,12 +35,14 @@ class LaunchPad extends jsExpression
     					'icon' => 'user'
     			])
     	])->link(URL::to('/'));
+    	
     	$vp->add([
     			new LaunchButton([
     					'label' => 'Test Button 2',
     					'icon' => 'car'
     			])
     	]);
+    	
     	$vp->add([
     			new LaunchButton([
     					'label' => 'Test Button 3',

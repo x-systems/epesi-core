@@ -11,7 +11,7 @@ class User extends Model
     
 	public $table = 'users';
 	
-	function init(): void
+	protected function init(): void
 	{
 		parent::init();
 		

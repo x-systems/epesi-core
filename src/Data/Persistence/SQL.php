@@ -5,16 +5,12 @@ namespace Epesi\Core\Data\Persistence;
 use atk4\dsql\Connection;
 use Illuminate\Database\DatabaseManager;
 
-class SQL extends \atk4\data\Persistence\SQL
+class SQL extends \atk4\data\Persistence\Sql
 {
     /**
      * Take a laravel connection and pass it to ATK Data
      *
-     * @param \Illuminate\Database\DatabaseManager $db The Laravel database manager
-     *
-     * @return \atk4\data\Persistence_SQL
-     * @throws \atk4\data\Exception
-     * @throws \atk4\dsql\Exception
+     * @return \atk4\data\Persistence\SQL
      */
     public function __construct(DatabaseManager $database)
     {

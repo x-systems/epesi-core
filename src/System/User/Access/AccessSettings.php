@@ -7,15 +7,13 @@ use Epesi\Core\System\User\Database\Models\User;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use atk4\data\Model;
-use atk4\ui\jsReload;
-use atk4\ui\jsExpression;
-use atk4\ui\TableColumn\Template;
 use Epesi\Core\System\View\Form;
 use Epesi\Core\Layout\View\ActionBar;
 use Epesi\Core\System\Modules\ModuleView;
 use atk4\data\Persistence\Static_;
 use atk4\ui\Table;
-use atk4\ui\TableColumn\ActionButtons;
+use atk4\ui\Button;
+use atk4\ui\Columns;
 
 class AccessSettings extends ModuleView
 {
@@ -43,19 +41,20 @@ class AccessSettings extends ModuleView
 			return $permission;
 		})->toArray();
 
-		$table = $this->columns()->addColumn()->add(['Table', 'selectable'])->addStyle('cursor', 'pointer');
+		$table = $this->columns()->addColumn()->add([Table::class, 'selectable'])->addStyle('cursor', 'pointer');
 		$table->setModel($this->getModel($permissionsData), false);
 		
-		$table->addColumn('name', 'Text', ['caption' => __('Permissions')]);
+		$table->addColumn('name', Table\Column\Text::class, ['caption' => __('Permissions')]);
 		
-		$table->addColumn(null, new Template([['i', 'class' => 'indicator arrow circle right icon']]), ['caption' => 'Test'])->setAttr('class', ['right aligned']);
+		$table->addColumn(null, new Table\Column\Template([['i', 'class' => 'indicator arrow circle right icon']]), ['caption' => 'Test'])->setAttr('class', ['right aligned']);
 		
-		eval_css('
-		table.selectable tr:not(.active) .indicator {
-			display: none;
-		}');
+		$this->getApp()->addStyle('
+			table.selectable tr:not(.active) .indicator {
+				display: none;
+			}'
+		);
 		
-		$table->on('click', 'tr', $this->reload(new jsExpression('$(this).data("id")')));
+		$table->on('click', 'tr', $this->reload(new \atk4\ui\JsExpression('$(this).data("id")')));
 		
 		if ($permissionId = $this->permissionId()) {
 			$permission = Permission::findById($permissionId);
@@ -74,9 +73,9 @@ class AccessSettings extends ModuleView
 			$rolesTable = Table::addTo($column);
 			$rolesTable->setModel($this->getModel($rolesData), false);
 			
-			$rolesTable->addColumn('name', 'Text', ['caption' => __('Roles allowed to :permission', ['permission' => $permission->name])]);
+			$rolesTable->addColumn('name', [Table\Column\Text::class], ['caption' => __('Roles allowed to :permission', ['permission' => $permission->name])]);
 			
-			$roleActions = $rolesTable->addColumn(null, ActionButtons::class);
+			$roleActions = $rolesTable->addColumn(null, [Table\Column\ActionButtons::class]);
 			$roleActions->addButton($this->deleteButton(), function($jQuery, $roleId) use ($permission) {
 				Role::findById($roleId)->revokePermissionTo($permission);
 				
@@ -88,9 +87,9 @@ class AccessSettings extends ModuleView
 			$usersTable = Table::addTo($column);
 			$usersTable->setModel($this->getModel($usersData), false);
 				
-			$usersTable->addColumn('name', 'Text', ['caption' => __('Users allowed to :permission', ['permission' => $permission->name])]);
+			$usersTable->addColumn('name', [Table\Column\Text::class], ['caption' => __('Users allowed to :permission', ['permission' => $permission->name])]);
 				
-			$userActions = $usersTable->addColumn(null, ActionButtons::class);
+			$userActions = $usersTable->addColumn(null, [Table\Column\ActionButtons::class]);
 			$userActions->addButton($this->deleteButton(), function($jQuery, $userId) use ($permission) {
 				User::find($userId)->revokePermissionTo($permission);
 					
@@ -101,19 +100,19 @@ class AccessSettings extends ModuleView
 	
 	protected function columns()
 	{
-		return $this->columns = $this->columns?: $this->add('Columns');
+		return $this->columns = $this->columns?: Columns::addTo($this);
 	}
 	
 	protected function permissionId()
 	{
-		return $this->app->stickyGet($this->columns()->name)?: $this->getModuleVariable('permission');
+		return $this->getApp()->stickyGet($this->columns()->name)?: $this->getModuleVariable('permission');
 	}
 	
 	protected function reload($permissionExpression = null)
 	{
 		$columns = $this->columns();
 		
-		return $this->reload = $this->reload?: new jsReload($columns, [$columns->name => $permissionExpression?: '']);
+		return $this->reload = $this->reload?: new \atk4\ui\JsReload($columns, [$columns->name => $permissionExpression?: '']);
 	}
 	
 	protected function getModel($array)
@@ -123,14 +122,14 @@ class AccessSettings extends ModuleView
 	
 	protected function addGrantRoleAccessButton()
 	{
-		$modal = $this->add(['Modal', 'title' => __('Grant Role Access')])->set(function($view) {
-			$form = $view->add(new Form(['buttonSave' => ['Button', __('Save'), 'primary']]));
+		$modal = \atk4\ui\Modal::addTo($this, ['title' => __('Grant Role Access')])->set(function($view) {
+			$form = Form::addTo($view, ['buttonSave' => ['Button', __('Save'), 'primary']]);
 			
-			$form->addField('role', ['DropDown', 'caption' => __('Grant'), 'values' => Role::all()->pluck('name', 'id')])->set($this->getModuleVariable('permission'));
+			$form->addControl('role', [\atk4\ui\Form\Control\Dropdown::class, 'caption' => __('Grant'), 'values' => Role::all()->pluck('name', 'id')])->set($this->getModuleVariable('permission'));
 			
-			$form->addField('permission', ['DropDown', 'caption' => __('Access To'), 'values' => Permission::all()->pluck('name', 'id')])->set($this->getModuleVariable('permission'));
+			$form->addControl('permission', [\atk4\ui\Form\Control\Dropdown::class, 'caption' => __('Access To'), 'values' => Permission::all()->pluck('name', 'id')])->set($this->getModuleVariable('permission'));
 
-			$form->layout->addButton(['Button', __('Cancel')])->on('click', $view->owner->hide());
+			$form->layout->addButton([Button::class, __('Cancel')])->on('click', $view->getOwner()->hide());
 
 			$form->onSubmit(function($form) use ($view) {
 				$values = $form->getValues();
@@ -138,7 +137,7 @@ class AccessSettings extends ModuleView
 				Role::findById($values['role'])->givePermissionTo($values['permission']);
 				
 				return [
-						$view->owner->hide(),
+						$view->getOwner()->hide(),
 						$this->reload()
 				];
 			});
@@ -149,14 +148,14 @@ class AccessSettings extends ModuleView
 	
 	protected function addGrantUserAccessButton()
 	{
-		$modal = $this->add(['Modal', 'title' => __('Grant User Access')])->set(function($view) {
-			$form = $view->add(new Form(['buttonSave' => ['Button', __('Save'), 'primary']]));
+		$modal = \atk4\ui\Modal::addTo($this, ['title' => __('Grant User Access')])->set(function($view) {
+			$form = Form::addTo($view, ['buttonSave' => [Button::class, __('Save'), 'primary']]);
 			
-			$form->addField('user', ['DropDown', 'caption' => __('Grant'), 'values' => User::all()->pluck('name', 'id')]);
+			$form->addControl('user', [\atk4\ui\Form\Control\Dropdown::class, 'caption' => __('Grant'), 'values' => User::all()->pluck('name', 'id')]);
 			
-			$form->addField('permission', ['DropDown', 'caption' => __('Access To'), 'values' => Permission::all()->pluck('name', 'id')])->set($this->getModuleVariable('permission'));
+			$form->addControl('permission', [\atk4\ui\Form\Control\Dropdown::class, 'caption' => __('Access To'), 'values' => Permission::all()->pluck('name', 'id')])->set($this->getModuleVariable('permission'));
 			
-			$form->layout->addButton(['Button', __('Cancel')])->on('click', $view->owner->hide());
+			$form->layout->addButton([Button::class, __('Cancel')])->on('click', $view->getOwner()->hide());
 			
 			$form->onSubmit(function($form) use ($view) {
 				$values = $form->getValues();
@@ -164,7 +163,7 @@ class AccessSettings extends ModuleView
 				User::find($values['user'])->givePermissionTo($values['permission']);
 				
 				return [
-						$view->owner->hide(),
+						$view->getOwner()->hide(),
 						$this->reload()
 				];
 			});

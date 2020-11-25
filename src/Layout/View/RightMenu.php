@@ -3,9 +3,14 @@
 namespace Epesi\Core\Layout\View;
 
 use atk4\ui\Menu as BaseMenu;
-use atk4\ui\FormField\Input;
+use atk4\ui\Form\Control\Input;
 use Epesi\Core\Layout\Integration\Joints\UserMenuJoint;
 use Illuminate\Support\Facades\Auth;
+use atk4\ui\View;
+use atk4\ui\VirtualPage;
+use Epesi\Core\System\View\LaunchButton;
+use atk4\ui\JsModal;
+use Illuminate\Support\Facades\URL;
 
 class RightMenu extends BaseMenu
 {
@@ -16,7 +21,7 @@ class RightMenu extends BaseMenu
 	
 	protected $userMenuLabel;
 	
-	public function init(): void
+	protected function init(): void
 	{		
 		parent::init();
 
@@ -25,11 +30,14 @@ class RightMenu extends BaseMenu
 		$this->tools = collect();
 		
 		// credits
-		$this->addItem(__(':epesi powered version :version', ['epesi' => config('epesi.ui.credit.title', 'EPESI'), 'version' => $this->app->version]))->setStyle('font-size', '80%')->link(config('epesi.ui.credit.link'));
+		$this->addItem(__(':epesi powered version :version', [
+				'epesi' => config('epesi.ui.credit.title', 'EPESI'), 
+				'version' => $this->getApp()->version
+		]))->setStyle('font-size', '80%')->link(config('epesi.ui.credit.link'));
 		
 		// global search
 		$this->addItem()->add(new Input([
-				'placeholder' => 'Search',
+				'placeholder' => 'Search ' . config('epesi.ui.title', 'EPESI'),
 				'icon' => 'search'
 		]))->addClass('transparent');
 		
@@ -37,7 +45,7 @@ class RightMenu extends BaseMenu
 		
 		$this->addItem([
 				'icon' => 'th'
-		], new LaunchPad($this));
+		], Launchpad::addTo($this)->getJsModal());
 		
 		foreach(UserMenuJoint::collect() as $joint) {
 			foreach ($joint->tools()?: [] as $tool) {
@@ -62,10 +70,22 @@ class RightMenu extends BaseMenu
 				'item' => ['Logout', 'icon' => 'sign out', 'attr' => ['onclick' => "event.preventDefault();$('#logout-form').submit();"]],
 				'action' => url('logout'), 
 				'group' => '10000:user',
-				'callback' => function ($item){
-					$logoutForm = $item->add(['View', 'attr' => ['method' => 'POST', 'action' => url('logout')]])->setElement('form')->addStyle(['display' => 'none']);
-					$logoutForm->id = 'logout-form';
-					$logoutForm->add(['View', 'attr' => ['type' => 'hidden', 'name' => '_token', 'value' => csrf_token()]])->setElement('input');
+				'callback' => function ($item) {
+					$logoutForm = View::addTo($item, [
+							'id' => 'logout-form', 
+							'attr' => [
+									'method' => 'POST', 
+									'action' => url('logout'),
+							],
+					])->setElement('form')->addStyle(['display' => 'none']);
+
+					View::addTo($logoutForm, [
+							'attr' => [
+									'type' => 'hidden', 
+									'name' => '_token', 
+									'value' => csrf_token(),
+							],
+					])->setElement('input');
 				},
 		]);
 	}
@@ -96,7 +116,7 @@ class RightMenu extends BaseMenu
 		
 	}
 	
-	public function renderView()
+	public function renderView(): void
 	{
 		$this->addRegisteredEntries();
 		

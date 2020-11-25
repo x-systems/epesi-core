@@ -1,6 +1,6 @@
 <?php
 
-namespace Epesi\Core\System\Models;
+namespace Epesi\Core\System\Model;
 
 use atk4\data\Model;
 use Epesi\Core\Data\HasEpesiConnection;
@@ -25,7 +25,7 @@ class Variable extends Model
 		self::$variables = self::pluck('value', 'name');
 	}
 	
-	public function init(): void
+	protected function init(): void
 	{
 	    parent::init();
 	    
@@ -38,9 +38,9 @@ class Variable extends Model
 	public static function recall($name, $default = null) {
 		self::cache();
 		
-		if (! self::$variables->has($name)) return $default;
+		if (!self::$variables->has($name)) return $default;
 		
-		return self::$variables->get($name, $default)?? $default;
+		return self::$variables->get($name, $default) ?? $default;
 	}
 	
 	public static function memorize($name, $value) {
@@ -67,7 +67,7 @@ class Variable extends Model
 	public static function forget($name, $throwError=true) {
 		self::cache();
 		
-		if (! self::$variables->has($name) && $throwError) {
+		if (!self::$variables->has($name) && $throwError) {
 			throw new \Exception('No such variable in database: ' . $name);
 		}
 		

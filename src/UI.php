@@ -2,7 +2,6 @@
 
 namespace Epesi\Core;
 
-use atk4\ui\jsExpression;
 use Epesi\Core\System\Modules\Concerns\HasLinks;
 use Epesi\Core\System\Modules\ModuleManager;
 use Illuminate\Session\TokenMismatchException;
@@ -29,12 +28,12 @@ class UI extends \atk4\ui\App
 		        'cdn' => array_merge($this->cdn, (array) config('epesi.ui.cdn')),
 				//TODO: set the skin from admin / user selection
 		        'skin' => config('epesi.ui.skin', $this->skin),
-		        'template_dir' => array_merge(ModuleManager::collect('templates', $this->skin), (array) $this->template_dir),
-		        'catch_error_types' => config('app.debug') ? 
-		                  // debug mode
-		                  E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_USER_DEPRECATED : 
-		                  // production mode
-		                  E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR
+		        'template_dir' => array_merge(ModuleManager::collect('templates', [$this->skin]), (array) $this->template_dir),
+// 		        'catch_error_types' => config('app.debug') ? 
+// 		                  // debug mode
+// 		                  E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_USER_DEPRECATED : 
+// 		                  // production mode
+// 		                  E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR
 		]);
 	}
 	
@@ -103,7 +102,7 @@ class UI extends \atk4\ui\App
 	 */
 	public function jsRedirectHomepage($message)
 	{
-	    $homepageUrl = url(HomePage\Models\HomePage::pathOfUser());
+	    $homepageUrl = url(HomePage\Model\HomePage::pathOfUser());
 	    
 	    $redirectJs = $this->jsRedirectConfirm($homepageUrl, $message)->jsRender();
 	    
@@ -124,13 +123,13 @@ class UI extends \atk4\ui\App
 	 * 
 	 * @param string $page
 	 * @param string $message
-	 * @return \atk4\ui\jsExpression
+	 * @return \atk4\ui\JsExpression
 	 */
 	public function jsRedirectConfirm($page, $message)
 	{
 	    $redirectJs = $this->jsRedirect($page)->jsRender();
 	    
-	    return new jsExpression("if (confirm([])) { $redirectJs }", [$message]);
+	    return new \atk4\ui\JsExpression("if (confirm([])) { $redirectJs }", [$message]);
 	}
 	
 	/**
@@ -244,7 +243,7 @@ class UI extends \atk4\ui\App
 	
 	public function addJs($js, $args = [])
 	{
-		$this->html->js(true, new jsExpression($js, $args));
+		$this->html->js(true, new \atk4\ui\JsExpression($js, $args));
 	}
 
 	/**
@@ -253,7 +252,7 @@ class UI extends \atk4\ui\App
 	 * {@inheritDoc}
 	 * @see \atk4\ui\App::requireJS()
 	 */
-	public function requireJS($url, $isAsync = false, $isDefer = false)
+	public function requireJs($url, $isAsync = false, $isDefer = false)
 	{
 		static $cache;
 		
@@ -276,7 +275,9 @@ class UI extends \atk4\ui\App
 	 */
 	public function setLocation($location)
 	{
-		return $this->layout->setLocation($location);
+		$this->layout->setLocation($location);
+		
+		return $this;
 	}
 	
 	public function packageInfo()

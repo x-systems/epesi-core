@@ -5,17 +5,19 @@ namespace Epesi\Core\Layout\View;
 use Illuminate\Support\Collection;
 use atk4\ui\Menu as BaseMenu;
 use Epesi\Core\Layout\Integration\Joints\NavMenuJoint;
+use atk4\ui\jQuery;
 
 class NavMenu extends BaseMenu
 {
     public $ui = 'inverted nav menu';
     
-	public function init()
-	public function init(): void
+//     public $defaultTemplate = 'layout/maestro-sidenav.html';
+    
+    protected function init(): void
 	{		
 		parent::init();
 		
-		$this->addHeader($this->app->title);
+		$this->addHeader($this->getApp()->title);
 		
 		$items = collect();
 		foreach(NavMenuJoint::collect() as $joint) {
@@ -26,7 +28,7 @@ class NavMenu extends BaseMenu
 		
 // 		$this->js(true)->find('.toggle-group .header')->click(new jsFunction(['e'], [new jsExpression('$(e.target).next(".menu").slideToggle()')]))->click();
 		
-// 		$this->app->addStyle('
+// 		$this->getApp()->addStyle('
 // 			.toggle-group .header {
 // 				cursor: pointer;
 // 			}
@@ -71,4 +73,25 @@ class NavMenu extends BaseMenu
 			}
 		});
 	}
+	
+// 	public function addGroup($name, string $template = 'menugroup.html')
+// 	{
+// 	    return parent::addGroup($name, $template)->addClass('atk-maestro-sidenav')->removeClass('item');
+// 	}
+	
+// 	public function addItem($item = null, $action = null)
+// 	{
+// 	    return parent::addItem($item, $action)->addClass('atk-maestro-sidenav');
+// 	}
+	
+// 	public function renderView(): void
+// 	{
+// 	    parent::renderView();
+	    
+// 	    //initialize all menu group at ounce.
+// 	    //since atkSideNav plugin default setting are for Maestro, no need to pass settings to initialize it.
+// 	    $js = (new jQuery('.atk-maestro-sidenav'))->atkSidenav();
+	    
+// 	    $this->js(true, $js);
+// 	}
 }

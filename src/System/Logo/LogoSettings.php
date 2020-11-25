@@ -5,7 +5,7 @@ namespace Epesi\Core\System\Logo;
 use Epesi\Core\System\Modules\ModuleView;
 use Illuminate\Support\Facades\Auth;
 use Epesi\Core\System\View\Form;
-use Epesi\Core\System\Models\Variable;
+use Epesi\Core\System\Model\Variable;
 use Illuminate\Support\Facades\Storage;
 use Epesi\Core\Layout\View\ActionBar;
 use atk4\ui\View;
@@ -23,23 +23,23 @@ class LogoSettings extends ModuleView
 	
 	public function body()
 	{
-		$layout = $this->add(['View'])->addStyle('max-width:1200px;margin:auto;');
-		$layout->add(['Header', __($this->label)]);
-		$segment = $layout->add(['View', ['ui' => 'segment']]);
+		$layout = View::addTo($this)->addStyle('max-width:1200px;margin:auto;');
+		\atk4\ui\Header::addTo($layout, [ __($this->label)]);
+		$segment = View::addTo($layout, ['ui' => 'segment']);
 
-		$form = $segment->add(new Form());
+		$form = Form::addTo($segment);
 
-		$form->addField('title', __('Base page title'));
+		$form->addControl('title', __('Base page title'));
 		
-		$form->addField('custom_logo', ['CheckBox', 'caption' => __('Use custom logo')]);
+		$form->addControl('custom_logo', [\atk4\ui\Form\Control\Checkbox::class, 'caption' => __('Use custom logo')]);
 		
-		$form->model->set([
+		$form->model->setMulti([
 		        'title' => Variable::recall('system.title'),
 		        'custom_logo' => (bool) Variable::recall('system.logo')
 		]);
 		
-		$logo = $form->addField('logo', [
-				'UploadImg', 
+		$logo = $form->addControl('logo', [
+				\atk4\ui\Form\Control\UploadImage::class, 
 				'defaultSrc' => url('logo'), 
 				'thumbnail' => (new View(['element'=>'img', 'class' => ['right', 'floated', 'image'], 'ui' => true]))->setStyle('max-width', '150px'),
 				'placeholder' => __('Upload file to replace system logo')
@@ -64,7 +64,7 @@ class LogoSettings extends ModuleView
 		});
 					
 		$form->onSubmit(function($form) {
-			if ($logo = $form->model['custom_logo']? $form->model['logo']: null) {
+			if ($logo = $form->model->get('custom_logo') ? $form->model->get('logo') : null) {
 				$storage = $this->storage();
 				$from = self::alias() . '/tmp/' . $logo;
 				$to = self::alias() . '/' . $logo;				
@@ -78,7 +78,7 @@ class LogoSettings extends ModuleView
 
 	        Variable::memorize('system.logo', $logo);
 			
-			Variable::memorize('system.title', $form->model['title']);
+			Variable::memorize('system.title', $form->model->get('title'));
 			
 			return $this->notifySuccess(__('Title and logo updated! Refresh page to see changes ...'));
 		});

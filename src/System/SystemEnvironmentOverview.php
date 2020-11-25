@@ -6,6 +6,8 @@ use atk4\ui\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use atk4\ui\Columns;
+use atk4\ui\Header;
 
 class SystemEnvironmentOverview extends View
 {
@@ -60,17 +62,17 @@ class SystemEnvironmentOverview extends View
 		];
 	}
 		
-	public function renderView()
+	public function renderView(): void
 	{
 		$this->addClass('ui grid');
 		
-		$columns = $this->add('Columns');
+		$columns = Columns::addTo($this);
 
 		$this->addLegend($columns->addRow());
 		
 		$column = $columns->addColumn()->setStyle('min-width', '350px');
 		
-		$grid = $column->add(['View', 'class' => ['ui grid']]);
+		$grid = View::addTo($column, ['class' => ['ui grid']]);
 		
 		$this->addGroupResults(__('System'), $this->testSystemCompatibility(), $grid);
 		
@@ -78,7 +80,7 @@ class SystemEnvironmentOverview extends View
 		
 		$column = $columns->addColumn()->setStyle('min-width', '350px');
 		
-		$grid = $column->add(['View', 'class' => ['ui grid']]);
+		$grid = View::addTo($column, ['class' => ['ui grid']]);
 		
 		$this->addGroupResults(__('Database'), $this->testDatabasePermissions(), $grid);
 
@@ -89,11 +91,11 @@ class SystemEnvironmentOverview extends View
 	{
 		$container = $container?: $this;
 		
-		$legend = $container->add(['Header', __('Scan of Environment Parameters')])->setStyle('margin-left', '2em');
-		$legend = $container->add('View')->setStyle('margin-left', 'auto');
+		$legend = \atk4\ui\Header::addTo($container, [__('Scan of Environment Parameters')])->setStyle('margin-left', '2em');
+		$legend = View::addTo($container)->setStyle('margin-left', 'auto');
 		
 		foreach (self::severityMap() as $severity) {
-			$legend->add(['Label', $severity['result'], 'class' => ["$severity[color] horizontal"]]);
+			\atk4\ui\Label::addTo($legend, [$severity['result'], 'class' => ["$severity[color] horizontal"]]);
 		}
 	}
 	
@@ -103,7 +105,7 @@ class SystemEnvironmentOverview extends View
 		
 		$container = $container?: $this;
 		
-		$container->add(['Header', $group]);
+		$container->add([Header::class, $group]);
 		
 		$severityMap = self::severityMap();
 		
@@ -111,9 +113,9 @@ class SystemEnvironmentOverview extends View
 			$color = $severityMap[$test['severity']]['color'];
 			$result = $test['result']?? $severityMap[$test['severity']]['result'];
 
-			$row = $container->add(['View', 'class' => ['row']]);
-			$row->add(['View', $test['name'], 'class' => ['nine wide column']]);
-			$row->add(['View', 'class' => ['six wide right aligned column']])->add(['Label', $result, 'class' => ["$color horizontal"]]);
+			$row = View::addTo($container, ['class' => ['row']]);
+			View::addTo($row, [$test['name'], 'class' => ['nine wide column']]);
+			View::addTo($row, ['class' => ['six wide right aligned column']])->add([\atk4\ui\Label::class, $result, 'class' => ["$color horizontal"]]);
 		}
 	}
 	
@@ -168,7 +170,7 @@ class SystemEnvironmentOverview extends View
 	{
 		$ret = [];
 		
-		if ($requiredPhpVersion = $this->app->packageInfo()['require']['php']?? null) {
+		if ($requiredPhpVersion = $this->getApp()->packageInfo()['require']['php']?? null) {
 			$ret[] = [
 					'name' => __('PHP version required :version', ['version' => $requiredPhpVersion]),
 					'result' => PHP_VERSION,

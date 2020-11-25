@@ -3,8 +3,6 @@
 namespace Epesi\Core\System\View;
 
 use atk4\ui\Form as BaseForm;
-use atk4\ui\jsExpression;
-use atk4\ui\jsFunction;
 use Epesi\Core\System\Modules\Concerns\Notifies;
 
 class Form extends BaseForm
@@ -30,7 +28,7 @@ class Form extends BaseForm
 					'decorator' => [$desc]
 					]: $desc;
 					
-					$field = $parent->addField($name, $desc['decorator']?? [], $desc['options']?? []);
+					$field = $parent->addControl($name, $desc['decorator']?? [], $desc['options']?? []);
 					
 					if ($default = $desc['default']) {
 						$field->set($default);
@@ -77,7 +75,7 @@ class Form extends BaseForm
 	}
 	
 	public function addFieldsDisplayRules($fieldsDisplayRules) {
-		$this->setFieldsDisplayRules(array_merge($this->fieldsDisplayRules?: [], $fieldsDisplayRules));
+		$this->setControlsDisplayRules(array_merge($this->fieldsDisplayRules?: [], $fieldsDisplayRules));
 	}
 	
 	public function addGroupDisplayRules($groupDisplayRules) {
@@ -102,7 +100,9 @@ class Form extends BaseForm
 	public function validate($callback)
 	{
 		$this->setApiConfig([
-				'beforeSend' => new jsFunction(['settings'], [new jsExpression('return $(this).form("is valid")')]),
+				'beforeSend' => new \atk4\ui\JsFunction(['settings'], [
+						new \atk4\ui\JsExpression('return $(this).form("is valid")')
+				]),
 		]);
 		
 		$this->setFormConfig([

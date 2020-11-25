@@ -4,6 +4,7 @@ namespace Epesi\Core\Layout\View;
 
 use atk4\ui\Menu;
 use atk4\ui\Item;
+use atk4\core\Factory;
 
 class ActionBar extends Menu
 {
@@ -45,13 +46,13 @@ class ActionBar extends Menu
 		return $predefined[$key] ?? ['label' => $key];
 	}
 	
-	public function renderView()
+	public function renderView(): void
     {
         $this->elements = collect($this->elements)->sortByDesc(function ($element) {
             return $element->weight ?? 10;
         })->toArray();
 
-        return parent::renderView();
+        parent::renderView();
 	}
 	
 	/**
@@ -69,7 +70,7 @@ class ActionBar extends Menu
 		
 		$actionBar = self::instance();
 		
-		return $actionBar->addItem($actionBar->mergeSeeds($button, $defaults));
+		return $actionBar->addItem(Factory::mergeSeeds($button, $defaults));
 	}
 	
 	public static function addButtons($buttons)

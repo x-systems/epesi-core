@@ -118,7 +118,7 @@ class PackageManifest
 
         $ignoreAll = in_array('*', $ignore = $this->packagesToIgnore());
 
-        $this->write(collect($packages)->mapWithKeys(function ($package) {
+        $this->write(collect($packages['packages'])->mapWithKeys(function ($package) {
             return [$this->format($package['name']) => $package['extra']['epesi'] ?? []];
         })->each(function ($configuration) use (&$ignore) {
             $ignore = array_merge($ignore, $configuration['dont-discover'] ?? []);

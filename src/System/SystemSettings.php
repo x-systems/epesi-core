@@ -17,9 +17,9 @@ class SystemSettings extends ModuleView
 	
 	public function body()
 	{
-		$layout = $this->add(['View'])->addStyle('max-width:1200px;margin:auto;');
-		$layout->add(['Header', __($this->label)]);
-		$segment = $layout->add(['View', ['ui' => 'segment']]);
+		$layout = \atk4\ui\View::addTo($this)->addStyle('max-width:1200px;margin:auto;');
+		\atk4\ui\Header::addTo($layout, [__($this->label)]);
+		$segment = \atk4\ui\View::addTo($layout, ['ui' => 'segment']);
 
 		$sections = [];
 		/**
@@ -32,7 +32,7 @@ class SystemSettings extends ModuleView
 		ksort($sections);
 		
 		foreach ($sections as $sectionName => $sectionJoints) {
-			$segment->add(['Header', $sectionName]);
+			\atk4\ui\Header::addTo($segment, [$sectionName]);
 			
 			ksort($sectionJoints);
 			
