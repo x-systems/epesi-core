@@ -125,7 +125,7 @@ class ModuleAdministration extends ModuleView
 					foreach ($recommended as $childModule) {
 						if (! ModuleManager::isAvailable($childModule)) continue;
 						
-						$form->addControl($childModule::alias(), ['CheckBox', 'caption' => $childModule::label()]);
+						$form->addControl($childModule::alias(), [\atk4\ui\Form\Control\Checkbox::class, 'caption' => $childModule::label()]);
 					}
 					
 					$form->onSubmit(function ($form) use ($moduleClass) {

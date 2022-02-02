@@ -4,6 +4,7 @@ namespace Epesi\Core\System\View;
 
 use atk4\ui\Form as BaseForm;
 use Epesi\Core\System\Modules\Concerns\Notifies;
+use atk4\ui\Label;
 
 class Form extends BaseForm
 {
@@ -11,7 +12,7 @@ class Form extends BaseForm
 	
 	public $buttonSave = null;
 	
-	protected $fieldRules = [];
+	protected $controlRules = [];
 	protected $validationRules = [];
 	
 	public function addElements($elements, $parent = null) {
@@ -20,12 +21,12 @@ class Form extends BaseForm
 		foreach ($elements as $name => $desc) {
 			$name = $desc['name']?? $name;
 			
-			$this->addFieldRules($name, $desc['rules']?? []);
+			$this->addControlRules($name, $desc['rules']?? []);
 			
 			switch ($desc['type']?? 'field') {
 				case 'field':
 					$desc = is_string($desc)? [
-					'decorator' => [$desc]
+						'decorator' => [$desc]
 					]: $desc;
 					
 					$field = $parent->addControl($name, $desc['decorator']?? [], $desc['options']?? []);
@@ -35,7 +36,7 @@ class Form extends BaseForm
 					}
 					
 					if ($desc['display']?? false) {
-						$this->addFieldsDisplayRules([$name => $desc['display']]);
+						$this->addControlDisplayRules([$name => $desc['display']]);
 					}
 					break;
 					
@@ -58,7 +59,7 @@ class Form extends BaseForm
 					break;
 					
 				case 'view':
-					$seed = $desc['seed']?? ['Label', $name];
+					$seed = $desc['seed']?? [Label::class, $name];
 					
 					$region = $desc['region']?? null;
 					
@@ -74,22 +75,22 @@ class Form extends BaseForm
 		return $this;
 	}
 	
-	public function addFieldsDisplayRules($fieldsDisplayRules) {
-		$this->setControlsDisplayRules(array_merge($this->fieldsDisplayRules?: [], $fieldsDisplayRules));
+	public function addControlDisplayRules($controlDisplayRules) {
+		$this->setControlsDisplayRules(array_merge($this->controlDisplayRules?: [], $controlDisplayRules));
 	}
 	
 	public function addGroupDisplayRules($groupDisplayRules) {
-		$fieldsDisplayRules = $this->fieldsDisplayRules;
+		$controlDisplayRules = $this->controlDisplayRules;
 		
 		$this->setGroupDisplayRules($groupDisplayRules);
 		
-		$this->addFieldsDisplayRules($fieldsDisplayRules);
+		$this->addControlDisplayRules($controlDisplayRules);
 	}
 	
-	public function addFieldRules($field, $rules = []) {
+	public function addControlRules($field, $rules = []) {
 		if (! $rules) return;
 		
-		$this->fieldRules[$field] = $rules['rules']?? [
+		$this->controlRules[$field] = $rules['rules']?? [
 				'identifier' => $field,
 				'rules' => $rules
 		];
@@ -106,7 +107,7 @@ class Form extends BaseForm
 		]);
 		
 		$this->setFormConfig([
-				'fields' => $this->fieldRules
+				'fields' => $this->controlRules
 		]);
 		
 		$this->onSubmit(function ($form) use ($callback) {
@@ -122,7 +123,7 @@ class Form extends BaseForm
 			return $errors?: $callback($this);
 		});
 			
-			return $this;
+		return $this;
 	}
 	
 	public function submit()

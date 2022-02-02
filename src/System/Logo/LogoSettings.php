@@ -45,7 +45,7 @@ class LogoSettings extends ModuleView
 				'placeholder' => __('Upload file to replace system logo')
 		]);
 		
-		$form->addFieldsDisplayRules(['logo' => ['custom_logo' => 'checked']]);
+		$form->addControlDisplayRules(['logo' => ['custom_logo' => 'checked']]);
 		
 		$logo->onDelete(function($fileName) use ($logo) {
 			$this->storage()->delete(self::alias() . '/tmp/' . $fileName);
